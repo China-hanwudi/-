@@ -1,0 +1,71 @@
+# Python and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials/
+secrets/
+
+# Raw, licensed, controlled, or participant-derived data
+data/
+data_raw/
+external/
+raw/
+media/
+audio/
+video/
+transcripts/
+participant_data/
+controlled_data/
+IEMOCAP/
+MELD/
+EmotionTalk/
+*.wav
+*.mp3
+*.mp4
+*.avi
+*.tar
+*.tar.gz
+*.zip
+*.7z
+*.rar
+
+# Derived features, per-query outputs, and model bundles
+*.npz
+*.npy
+*.joblib
+*.pkl
+*.pt
+*.pth
+*.safetensors
+*.csv.gz
+experiment/artifacts/
+experiment/models/
+experiment/checkpoints/
+
+# Private working documents and screenshots
+*.docx
+~$*
+screenshots/
+codex-clipboard-*
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
