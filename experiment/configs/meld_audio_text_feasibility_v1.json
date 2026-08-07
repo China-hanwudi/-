@@ -1,0 +1,83 @@
+{
+  "protocol": "meld_audio_text_feasibility_v1",
+  "scope": "real WAV audio plus official text; train/dev labels only; test parquet and labels sealed",
+  "dataset_source": {
+    "official_labels_repo": "declare-lab/MELD",
+    "official_labels_branch": "master",
+    "audio_transport_repo": "WiktorJakubowski/MELD-splits",
+    "audio_transport_commit": "44fda1abe3c853c765d9052a51a916652195174a",
+    "license_boundary": "Underlying MELD official data card is GPL-3.0; transport repository has no independent license field",
+    "train_parquet": [
+      {
+        "name": "train-00000-of-00002.parquet",
+        "bytes": 501117533,
+        "sha256": "d58e13d4574bc1abcc0afe073b43ad7c8410e57a9b9f4edd12e24282609b69a9"
+      },
+      {
+        "name": "train-00001-of-00002.parquet",
+        "bytes": 501177818,
+        "sha256": "1e7ebfae51090c307403938fe4eae3fc1ae8b53195f4344d713695f91ab266bf"
+      }
+    ],
+    "dev_parquet": [
+      {
+        "name": "validation-00000-of-00001.parquet",
+        "bytes": 110490859,
+        "sha256": "5c4589df6e6de0eecca6392536e1f72dcde500d44a43f1aaf339941e3fab328a"
+      }
+    ],
+    "train_labels_sha256": "d2fa2d6529cf03cac2989efec05c9b27d8fd2f4c8fc5974c7ae88aa537fa02db",
+    "dev_labels_sha256": "2e89c6f8aa182d6f62f8c6331aece905ac7273ca4999660bfb5213e1d0370c1c"
+  },
+  "audio_features": {
+    "version": "handcrafted_pcm_v1",
+    "maximum_seconds": 12.0,
+    "frame_seconds": 0.025,
+    "hop_seconds": 0.01
+  },
+  "seeds": [17, 29, 43, 71, 101],
+  "vectorizer": {
+    "analyzer": "word",
+    "ngram_range": [1, 2],
+    "min_df": 2,
+    "max_df": 0.98,
+    "max_features": 12000,
+    "sublinear_tf": true,
+    "strip_accents": "unicode"
+  },
+  "classifier": {
+    "loss": "log_loss",
+    "penalty": "l2",
+    "alpha": 0.00001,
+    "class_weight": "balanced",
+    "average": true,
+    "max_iter": 1500,
+    "tol": 0.0001
+  },
+  "history_dropout_augmentation": true,
+  "crossfit_folds": 5,
+  "selector_calibration_fraction": 0.20,
+  "risk_quantile": 0.90,
+  "risk_model": {
+    "learning_rate": 0.05,
+    "max_iter": 200,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 30,
+    "l2_regularization": 0.1
+  },
+  "audio_standardization_clip": 8.0,
+  "coverage_targets": [0.10, 0.25, 0.50],
+  "ece_bins": 15,
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260805,
+  "gates": {
+    "minimum_audio_gain_auc": 0.02,
+    "minimum_audio_gain_spearman": 0.05,
+    "minimum_audio_gain_auc_ci_low": 0.0,
+    "minimum_audio_gain_spearman_ci_low": 0.0,
+    "minimum_nontrivial_coverage": 0.10,
+    "maximum_selected_harm_rate": 0.15,
+    "maximum_mean_excess_nll": 0.0,
+    "maximum_mean_excess_ci_high": 0.0
+  }
+}

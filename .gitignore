@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Dataset and media files are not redistributed
+data/
+datasets/
+*.wav
+*.mp3
+*.mp4
+*.avi
+*.parquet
+*.pkl
+
+# Derived sample-level artifacts, model bundles and features
+experiment/artifacts/
+*_per_query.csv
+*_per_query.csv.gz
+*.npz
+*.npy
+*.joblib
+*.ckpt
+*.pt
+*.pth
+
+# Secrets and local configuration
+.env
+.env.*
+*.key
+*.pem

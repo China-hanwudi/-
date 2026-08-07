@@ -1,0 +1,81 @@
+{
+  "protocol": "meld_audio_text_feasibility_v1",
+  "scope": "MELD official train/dev text plus real WAV lightweight acoustic features; test sealed",
+  "snapshot_date": "2026-08-06",
+  "data": {
+    "train_rows": 9988,
+    "dev_rows": 1108,
+    "eligible_dev_queries": 765,
+    "eligible_dev_dialogues": 103,
+    "test_opened": false
+  },
+  "seeds": [17, 29, 43, 71, 101],
+  "cluster_bootstrap": {
+    "unit": "dialogue",
+    "replicates": 2000,
+    "seed": 20260805
+  },
+  "base_models": {
+    "current_only": {
+      "accuracy": 0.47833935018050544,
+      "weighted_f1": 0.43360856818324306,
+      "macro_f1": 0.2948961950555425,
+      "nll": 5.7562732775729835
+    },
+    "within_model_zero_history": {
+      "accuracy": 0.47833935018050544,
+      "weighted_f1": 0.42842410672085846,
+      "macro_f1": 0.2812593866816276,
+      "nll": 4.936441353828909
+    },
+    "full_history": {
+      "accuracy": 0.4720216606498195,
+      "weighted_f1": 0.4233991342131056,
+      "macro_f1": 0.27764255322235515,
+      "nll": 4.989871928967059
+    }
+  },
+  "natural_negative_transfer": {
+    "harm_rate": 0.4326797385620915,
+    "harm_rate_ci95": [0.3939, 0.4723],
+    "mean_excess_nll": 0.08416923459502512,
+    "mean_excess_nll_ci95": [-0.061, 0.227],
+    "mean_harm_nats": 1.078,
+    "mean_harm_nats_ci95": [0.891, 1.259],
+    "excess_nll_p90": 1.623,
+    "excess_nll_p99": 4.555
+  },
+  "selectors": {
+    "text_meta": {
+      "harm_auc": 0.6064989488632408,
+      "balanced_accuracy": 0.5701372742840436,
+      "spearman": 0.19442896625627493
+    },
+    "text_plus_lightweight_audio": {
+      "harm_auc": 0.5954237264538405,
+      "balanced_accuracy": 0.5671161262477898,
+      "spearman": 0.13846191732739055
+    },
+    "audio_auc_increment": -0.011075222409400398,
+    "audio_auc_increment_ci95": [-0.045721458550860336, 0.02296562960681679],
+    "audio_spearman_increment": -0.05596704892888438,
+    "audio_spearman_increment_ci95": [-0.11226775477366248, -0.0016641376496618987]
+  },
+  "strict_q90_policy": {
+    "history_coverage": 0.0,
+    "interpretation": "all queries fall back to zero-history; not a non-trivial safe policy"
+  },
+  "frozen_result_sha256": "ccc6b1937e7d68eda9033c646152e472d1c294cc76c3e60a6a88cdae94f51943",
+  "reproducibility": {
+    "independent_repeat_byte_identical": true,
+    "per_query_shape": [1108, 15],
+    "per_query_exact_equal": true,
+    "max_abs_numeric_difference": 0.0
+  },
+  "decision": {
+    "natural_negative_transfer": "PASS",
+    "lightweight_audio_increment": "FAIL",
+    "nontrivial_safe_fallback": "FAIL",
+    "carma_combination_method_validated": false
+  }
+}

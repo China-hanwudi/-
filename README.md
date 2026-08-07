@@ -5,7 +5,7 @@
 > 状态：**PROVISIONAL / 研究候选方案**
 >
 > 更新时间：2026-08-07
-> 当前证据：已完成方法设计与合成环境 sanity check，**尚未完成真实数据主实验**。
+> 当前证据：已完成方法设计、合成环境 sanity check，以及一次 **MELD train/dev 真实音频＋文本 Pilot**；MELD test 仍封存。该 Pilot 支持“自然负迁移值得研究”，但现有风险门控没有通过预冻结安全门。
 
 CARMA-Affect研究多模态对话情感识别中的一个风险决策问题：在测试期不访问当前或历史真实情感标签的条件下，模型能否判断一组严格过去的同说话人历史会改善还是损害当前情感预测，并在伤害风险不可接受时回退到只看当前信息的模型？
 
@@ -33,12 +33,33 @@ CARMA-Affect研究多模态对话情感识别中的一个风险决策问题：�
 | 方法定义与风险边界 | 已完成 | 已定义组合效用、条件边际效用和策略级校准 |
 | 数据集角色与协议 | 已完成设计 | MELD用于Pilot，EmotionTalk/IEMOCAP用于主确认 |
 | 合成环境sanity check | 已完成 | 仅验证算法逻辑与风险-覆盖率权衡 |
-| G0自然负迁移审计 | 待执行 | 首先在MELD train/dev复现强基线 |
+| MELD真实音频＋文本Pilot | 已完成 | 765个有同说话人历史的dev查询；test未打开 |
+| G0自然负迁移审计 | 初步通过 | 43.27%有历史查询NLL受损，95% CI 39.39%–47.23% |
 | G1历史交互审计 | 待执行 | 在EmotionTalk或IEMOCAP train内采样历史组合 |
 | CARMA-Lite实现 | 条件启动 | 仅在G0/G1通过后投入完整开发 |
-| 独立风险校准 | 待执行 | 需要cluster-level calibration与真实数据验证 |
+| 旧式point-risk独立校准 | 已完成但失败 | 严格q90策略0覆盖；不能当作安全方法成功 |
+| CARMA组合策略校准 | 待执行 | 需要在G1通过后另行实现与验证 |
 
-## 当前结果：仅合成验证
+## MELD真实数据Pilot结果
+
+本轮使用MELD官方train/dev文本与真实WAV轻量声学特征；历史仅取同一dialogue、同一speaker且严格更早的话语。train内按dialogue进行5折cross-fitting，dev只作一次冻结路线判门，test未打开。
+
+| 结果项 | 数值 | 解释 |
+|---|---:|---|
+| 有历史dev查询 | 765 | 位于103个dialogue中 |
+| 自然历史伤害率 | 43.27% | 95% CI 39.39%–47.23% |
+| 平均超额NLL | +0.084 nats | 95% CI -0.061–+0.227，均值不排除0 |
+| 受损查询平均伤害 | 1.078 nats | 95% CI 0.891–1.259 |
+| 超额NLL p90 / p99 | 1.623 / 4.555 | 表明存在重尾风险 |
+| 文本meta harm AUC | 0.6065 | 弱但高于随机 |
+| 文本＋轻量声学 harm AUC | 0.5954 | 较文本下降0.0111 |
+| 严格conformal q90覆盖率 | 0% | 全部回退，不构成非平凡安全策略 |
+
+因此，MELD Pilot支持“历史会在相当一部分查询上造成自然负迁移”，但不支持“轻量音频能提升伤害预测”，也不支持“现有point-risk门控已经实现安全、非平凡的历史利用”。这不是完整CARMA组合条件效用模型的主结果。
+
+详细实验合同、统计结果和限制见[MELD音频文本Pilot报告](docs/04_MELD音频文本Pilot结果.md)，机器可读聚合快照见[`results/meld/`](results/meld/)。
+
+## 合成sanity check
 
 合成环境预先写入状态切换、失配历史和历史冗余，因此下列结果只能说明方法逻辑可运行，不能证明真实情感数据中存在相同机制。
 
@@ -57,6 +78,8 @@ CARMA-Affect研究多模态对话情感识别中的一个风险决策问题：�
 - [研究方案与核心问题](docs/research-plan.md)
 - [方法与实验协议](docs/method-and-experiments.md)
 - [进度、当前结果与下一步](docs/progress-and-results.md)
+- [MELD真实音频＋文本Pilot报告](docs/04_MELD音频文本Pilot结果.md)
+- [MELD聚合结果快照](results/meld/README.md)
 - [单页方法图PDF](assets/CARMA-Affect_method-framework.pdf)
 - [方法图与中文讲解PDF](assets/CARMA-Affect_method-framework-and-explanation.pdf)
 - [原始研究方案DOCX](docs/source/CARMA-Affect_research-plan_2026-08-05.docx)
