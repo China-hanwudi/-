@@ -10,7 +10,7 @@ Phase 1 — 预注册与 benchmark 冻结（in_progress）
 
 ## Next Step
 
-在不读取 90–99 内部封存组的前提下，完成 EmotionTalk train-only 端点目标诊断：0–64 训练、65–79 选型、80–89 校准；只有符号—严重度错配在独立选型组复现，才进入完整随机历史子集增强。
+在不使用 80–89 校准组和 90–99 内部 holdout 性能的前提下，先完成无损 float64 train-only OOF base cache，再按 `bidirectional_emotion_utility_v1` 生成不同集合 `P(S)`、`P(S+h_i)`、`P(T)`、`P(T-h_i)`；只有双向法同时优于 forward-only/backward-only，并通过分类、安全与非零覆盖门，才进入 calibration。
 
 ## Confirmatory Evidence Gate
 
@@ -110,6 +110,11 @@ Status: pending
 | 在 PowerShell 中误用 Bash heredoc `<<` 读取 JSON | 1 | 改用 PowerShell here-string 管道到 Python stdin，不重复 Bash 语法 |
 | EmotionTalk benchmark 误把 dialogue 单列当全局 cluster | 1 | 首轮 CI 作废；改用 `group/dialogue` 复合键并新增单元测试后重跑 |
 | PowerShell here-string 插值将 Unicode 私有绝对路径传给 Python 时乱码 | 1 | 从私有 experiment 目录运行并使用相对路径，避免跨层 Unicode 插值 |
+| 首次端点诊断把无历史行纳入 utility selector 拟合 | 1 | 第一折完成前终止无效运行；恢复旧协议的 `history_count>0` eligible 约束，31 项测试通过后重启 |
+| 私有端点缓存首版把 selector 特征量化为 float32 | 1 | direct-mean 复核发生轻微漂移，hurdle 结果作废并私有隔离；缓存改为无损 float64 后重建 |
+| PowerPoint COM 新建/打开演示文稿返回 `0x80048240` | 3 | 停止重复 COM 尝试；使用 `@oai/artifact-tool` 生成可编辑 PPTX，PDF 改由最终渲染经 ReportLab 导出并回渲验证 |
+| 本机未安装 draw.io 桌面端 | 1 | 无法使用 live draw.io 后端；保留原生 PowerPoint 可编辑形状路线 |
+| Poppler shim 无法直接处理含日文目录的输入路径 | 1 | 将最终 PDF 临时复制到 ASCII 临时目录后调用真实 `pdftoppm.exe`，完成回渲检查 |
 
 ## Decisions Made
 
@@ -120,3 +125,7 @@ Status: pending
 | 2026-08-07 | 主探索模型选择 SCU-Set，RCPS 作为安全层 | SCU-Set直接学习逐候选/集合边际效用并支持可逆重用；单纯改阈值创新不足 |
 | 2026-08-07 | SCU 目标升级为 sign×severity/quantile 分布建模 | 双数据集探索显示低伤害概率不等于低平均regret，单一分类或均值目标均不足 |
 | 2026-08-07 | Phase 0 通过并进入 Phase 1 | MELD 第三次独立重跑与冻结结果字节/解压内容完全一致；32 项私有工程测试和 28 项公开新增合同均通过 |
+| 2026-08-07 | 直接端点 mean utility 路线暂停，启动两部式 repair 1/3 | 独立模型选择组中 harm AUC=0.728、目标跨 seed 稳定，但直接 mean Spearman=-0.002；伤害发生与严重度不能由单一均值头替代 |
+| 2026-08-08 | 教师前三点合并为一项组合创新，不分别宣称首创 | 情感理论、六流和模态交互均有高重叠邻近工作；潜在新意在不同集合双向效用、train-only OOF、3×3关系与校准回退的完整闭环 |
+| 2026-08-08 | 强制 `T != S union {h_i}` | 若 `T=S union {h_i}`，前向加入与后向删除代数相同，所谓双向无新增信息 |
+| 2026-08-08 | 端点 hurdle 不再作为进入新方法的充分依据 | 可见 hurdle 结果来自已隔离 float32 缓存且关键门失败；必须重新生成无损不同集合 OOF 监督 |

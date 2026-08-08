@@ -69,3 +69,9 @@ codex-clipboard-*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local presentation/PDF build and QA intermediates
+.codex_build/
+tmp/
+assets/*.pptx.inspect.ndjson
+assets/carma_affect_full_research_workflow_20260808/

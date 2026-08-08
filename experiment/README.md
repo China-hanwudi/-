@@ -2,6 +2,14 @@
 
 本目录公开当前 EmotionTalk 三模态外部确认的核心实现、冻结配置和不依赖原始数据的合同测试。
 
+2026-08-08 新增教师三点整合后的 train-only 方法合同：
+
+- `configs/bidirectional_emotion_utility_v1.json`：不同集合双向效用、六流情感编码、3×3关系和GO/STOP门；
+- `src/hva_affect/bidirectional_emotion_utility.py`：非平凡联盟任务、双向目标、3×3关系与VAD/shift特征；
+- `tests/test_bidirectional_emotion_utility.py`：退化双向、标签泄漏、维度与可重复性合同。
+
+这些文件表示新方法**可以开始生成 train-only OOF 子集监督**，不表示新方法已经通过真实数据验证。
+
 ## 目录
 
 - `configs/`：媒体特征与一次性validation协议；

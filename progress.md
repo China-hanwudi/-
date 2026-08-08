@@ -1,5 +1,18 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-08 — 教师三点整合与新流程冻结
+
+- 完成文献新颖性边界复核：三个单点不能分别主张首创，方法主张收敛为“不同集合双向效用 × 情感理论 × 3×3关系 × 校准回退”。
+- 生成新的单页科研全流程图；PPTX 使用原生可编辑形状，另导出 PNG 和单页 PDF。
+- PowerPoint COM 新建和打开均重复返回 HRESULT `0x80048240`，draw.io 桌面端未安装；按技能降级到 `@oai/artifact-tool`，不影响最终可编辑性。
+- PPTX 经独立 PowerPoint/LibreOffice 渲染工具回渲，`slides_test.py` 报告无越界；PDF 经 pypdf 检查为 1 页、960×540 pt，并由 Poppler 回渲人工检查通过。
+- 新增 `bidirectional_emotion_utility.py`：非平凡双向联盟任务、benefit-positive `u+`/`u-`、不同集合采样、3×3关系和 VAD/shift 特征。
+- 新增冻结配置 `bidirectional_emotion_utility_v1.json`，明确角色切分、数据集、基线、指标、消融、train-only 与确认性 GO 门。
+- 新增 7 项合成合同测试；全部公开测试为 `41 passed in 2.74s`。
+- 新增完整科研流程文档与约 3 分钟讲解稿；README、证据索引、当前进度与实验说明同步更新。
+- 新增 readiness 聚合文件，明确当前只证明工程/研究合同就绪，不是模型性能证据。
+- 下一步是完成无损 float64 train-only OOF base cache 并产生四组不同集合概率；80–89 calibration、90–99 internal holdout 和 external test 继续封存。
+
 ## 2026-08-07 — Phase 0 完成并进入预注册阶段
 
 - MELD 独立完整重跑完成，stderr 为空；新聚合 JSON 与原始/既有 repeat 的 SHA-256 均为 `ccc6b1937e7d68eda9033c646152e472d1c294cc76c3e60a6a88cdae94f51943`。
@@ -7,6 +20,14 @@
 - Phase 0 复现与资产审计判定完成；研究转入 Phase 1。EmotionTalk/MELD test 继续封存，当前结果只作探索。
 - 修正 SCU 角色名称，明确 0–64 同时用于 base/utility 拟合，65–79 只做模型选择，80–89 校准，90–99 内部 holdout 保持封存。
 - 新增双数据集 benchmark 探索报告；公开输出仍为 aggregate-only，不包含逐查询、对话、说话人或标签记录。
+- 冻结 EmotionTalk train-only 端点诊断配置：5-fold group cross-fit、5 个 base seeds、5 个 risk seeds；94 个复合对话组用于独立模型选择，59 个校准组和 55 个内部 holdout 组不读取性能。
+- 第一次端点训练在第一折完成前被主动终止：代码审计发现 utility selector 拟合未排除无历史查询。未生成结果文件；修正为仅 `history_count>0` 后，公开合同测试增至 `31 passed` 并重新启动。
+- 修正后的 EmotionTalk 三模态端点诊断完成：模型选择组 2,442 个有历史查询、94 个复合对话 cluster；校准、内部 holdout、validation、test 均未用于训练或指标。
+- 多 seed target 稳定性通过：fit/model-selection 的 pairwise Spearman 中位数为 0.907/0.918，平均多数同号一致率为 0.960/0.961。
+- 伤害分类信号通过（AUC 0.728），直接 mean utility 信号失败（Spearman -0.002）；总体进入随机子集增强的联合门为 FAIL。
+- 25%/50% 覆盖出现符号—严重度偏好反转：harm 头显著降低伤害率，但因罕见大伤害使平均 regret 更差。冻结 repair 1/3 为两部式 hurdle：分别建模伤害概率、伤害幅度和收益幅度。
+- 为避免每次修复都重跑 base，新增只保存在私有 artifacts 的无标识符端点缓存；缓存只含特征、效用目标、history count 与整数 cluster code，不发布。
+- 首版缓存将 selector 特征压成 float32，导致缓存上 direct-mean Spearman 与原始 float64 入口轻微不一致。该 hurdle 运行判为协议无效，结果与缓存已移入私有 quarantine；缓存合同改为 float64 无损保存后重建。
 
 ## 2026-08-07 — 持续科研目标启动
 

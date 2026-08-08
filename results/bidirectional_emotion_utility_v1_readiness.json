@@ -1,0 +1,39 @@
+{
+  "protocol": "bidirectional_emotion_utility_v1",
+  "generated_at": "2026-08-08",
+  "result_type": "engineering_and_research_contract_readiness_not_model_performance",
+  "status": "ready_for_train_only_oof_subset_generation",
+  "completed": {
+    "nontrivial_bidirectional_task_contract": true,
+    "benefit_positive_forward_and_backward_targets": true,
+    "three_by_three_relation_feature_contract": true,
+    "vad_and_emotion_shift_feature_contract": true,
+    "frozen_exploration_config": true,
+    "editable_workflow_pptx": true,
+    "workflow_png": true,
+    "workflow_pdf": true,
+    "unit_tests_passed": 41,
+    "pptx_overflow_test": "passed",
+    "pptx_visual_review": "passed",
+    "pdf_page_count": 1,
+    "pdf_visual_review": "passed"
+  },
+  "existing_empirical_evidence": {
+    "meld_history_harm_rate_exploratory": 0.4327,
+    "emotiontalk_history_harm_rate_exploratory": 0.339,
+    "endpoint_harm_probability_auc_diagnostic": 0.7281915533,
+    "old_aggregate_q90_gate": "failed",
+    "endpoint_hurdle_gate": "failed_or_invalid_due_to_quarantined_float32_cache"
+  },
+  "not_yet_run": [
+    "float64_train_only_oof_subset_probability_generation",
+    "different_set_bidirectional_utility_model_fit",
+    "emotion_domain_feature_increment_test",
+    "three_by_three_relation_increment_test",
+    "calibration_role_evaluation",
+    "internal_holdout_evaluation",
+    "external_test_confirmation"
+  ],
+  "blocking_condition": "A complete lossless float64 train-only OOF cache with P(S), P(S+h_i), P(T), and P(T-h_i) does not yet exist.",
+  "claim_boundary": "This file proves implementation readiness only; it must not be cited as evidence that the proposed method improves emotion prediction."
+}

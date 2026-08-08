@@ -1,6 +1,6 @@
 # CARMA-Affect：纵向个性化情感预测中的历史负迁移与安全回退
 
-> 研究快照：2026-08-07<br>
+> 研究快照：2026-08-08<br>
 > 当前结论：**历史负迁移问题成立；现有严格安全回退方法尚未成功。**<br>
 > 数据边界：EmotionTalk validation 已完成一次性冻结评估；EmotionTalk test 与 MELD test 均保持封存。
 
@@ -9,6 +9,12 @@
 > 在不知道当前真实情感标签的条件下，能否预测加入同说话人历史后会改善还是损害当前情感预测，并在损害风险较高时可靠地回退到 current-only 模型？
 
 当前证据支持把研究推进为“历史负迁移 benchmark／诊断协议”，但**不支持**把现有 CARMA-Affect 写成已经成功的顶会方法。
+
+教师提出的三点已被整合为一条新的、可证伪的方法路线：**不同集合双向效用 × 情感理论约束 × 六流 3×3 关系 × 校准可逆回退**。新流程、冻结协议和核心计算接口已经落地，但真实 train-only OOF 子集实验尚未完成，因此仍不宣称新方法有效。
+
+![CARMA-Affect 新科研全流程](assets/carma_affect_full_research_workflow_20260808.png)
+
+完整定义、实验门槛、相关论文映射和讲解稿见[教师三点整合后的科研全流程](docs/10_教师三点整合后的科研全流程_2026-08-08.md)。
 
 ![EmotionTalk 三模态外部确认结果](assets/emotiontalk_external_confirmation.png)
 
@@ -55,6 +61,7 @@
 | [`experiment/`](experiment/) | 当前 EmotionTalk 三模态验证代码、冻结配置和无数据合同测试 |
 | [`results/`](results/) | 聚合结果 JSON、作图源数据和证据说明 |
 | [`assets/`](assets/) | 目标方法框架图、实际流程图和冻结结果图 |
+| [`output/pdf/`](output/pdf/) | 新科研全流程图的 PDF 版本 |
 | [`DATA_BOUNDARY.md`](DATA_BOUNDARY.md) | 不得上传的数据、权重、特征和许可边界 |
 
 建议阅读顺序：
@@ -64,6 +71,7 @@
 3. [数据集与许可状态](docs/03_数据集与许可状态.md)
 4. [EmotionTalk 三模态外部确认结果](docs/05_EmotionTalk三模态外部确认结果.md)
 5. [当前进度与下一步](docs/06_当前进度与下一步.md)
+6. [教师三点整合后的科研全流程](docs/10_教师三点整合后的科研全流程_2026-08-08.md)
 
 ## 最小代码验证
 
