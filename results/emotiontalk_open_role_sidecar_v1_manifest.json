@@ -1,0 +1,48 @@
+{
+  "dataset": "EmotionTalk",
+  "hashes": {
+    "config_sha256": "ae7c06acbff71719ab3aa38dbe8f81a7705d29cf38a7c65e8a14628f94d02f27",
+    "label_archive": "e89f1f52cd7bd48d4246b725bdd1d3976ab541db6fbef6e06b018625edd56810",
+    "media_features": "d9d8c40c4f1325a68d0b9488c6a54846d29234606039135ac959aeeeedc439c2",
+    "private_sidecar_sha256": "c652a1fe617ca17208d28b1c493ab3a555cc265886af36105c902a6b92fbb089",
+    "row_alignment_sha256": "89e347d086ccf2307e3307efb3fde9f8d22027ab2bec38217d899af01dda7e95",
+    "transcription": "a2b641caa92076a94a40f5c8d7b0e60d9adea99b295c72268a7c542dcc2ad3c9"
+  },
+  "public_content_audit": {
+    "contains_labels": false,
+    "contains_private_paths": false,
+    "contains_row_or_utterance_identifiers": false,
+    "contains_transcripts_or_embeddings": false
+  },
+  "roles": {
+    "base_and_utility_fit": {
+      "groups": 368,
+      "label_statistics_computed": false,
+      "rows": 9549
+    },
+    "model_selection": {
+      "groups": 99,
+      "label_statistics_computed": false,
+      "rows": 2682
+    }
+  },
+  "schema_version": "emotiontalk_open_role_sidecar_manifest_v1",
+  "split": "train_corpus",
+  "split_protocol_id": "scu_set_exploration_v1",
+  "status": "strict_open_role_sidecar_generated_write_once",
+  "trusted_boundary": {
+    "calibration_or_holdout_label_value_indexed_or_aggregated": false,
+    "sidecar_allow_pickle": false,
+    "sidecar_buckets": [
+      0,
+      79
+    ],
+    "sidecar_roles": [
+      "base_and_utility_fit",
+      "model_selection"
+    ],
+    "source_hashes_verified_before_unpickle": true,
+    "unpickled_payload": "train_corpus_only",
+    "validation_or_test_label_payload_opened": false
+  }
+}

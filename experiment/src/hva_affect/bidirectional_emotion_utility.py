@@ -86,6 +86,7 @@ def sample_bidirectional_coalition_tasks(
     draws_per_query: int,
     maximum_candidates: int,
     seed: int,
+    match_context_cardinality: bool = False,
 ) -> list[BidirectionalCoalitionTask]:
     """Sample different-set addition/deletion contexts without using labels."""
 
@@ -107,7 +108,24 @@ def sample_bidirectional_coalition_tasks(
             candidate = int(query_rng.choice(np.asarray(candidates, dtype=int)))
             remainder = tuple(value for value in candidates if value != candidate)
             addition = _random_subset(remainder, query_rng)
-            deletion_companions = _random_subset(remainder, query_rng)
+            if match_context_cardinality:
+                cardinality = len(addition)
+                if cardinality == 0 or cardinality == len(remainder):
+                    # Empty and full subsets are unique at their cardinality, so
+                    # they cannot form a size-matched but membership-different pair.
+                    continue
+                deletion_companions = tuple(
+                    sorted(
+                        int(value)
+                        for value in query_rng.choice(
+                            np.asarray(remainder, dtype=int),
+                            size=cardinality,
+                            replace=False,
+                        )
+                    )
+                )
+            else:
+                deletion_companions = _random_subset(remainder, query_rng)
             if set(deletion_companions) == set(addition):
                 continue
             deletion = tuple(sorted(deletion_companions + (candidate,)))

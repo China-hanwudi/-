@@ -20,8 +20,11 @@ import pandas as pd
 from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
-from sklearn.metrics import accuracy_score, f1_score, log_loss
+from sklearn.metrics import accuracy_score, f1_score
 from sklearn.preprocessing import LabelEncoder
+
+
+NLL_PROBABILITY_FLOOR = 1e-12
 
 
 METHODS = (
@@ -219,11 +222,12 @@ def prediction_metrics(
     y_true: np.ndarray, probabilities: np.ndarray, bins: int
 ) -> dict[str, float]:
     prediction = probabilities.argmax(axis=1)
+    per_row_nll = true_class_loss(y_true, probabilities)
     return {
         "accuracy": float(accuracy_score(y_true, prediction)),
         "weighted_f1": float(f1_score(y_true, prediction, average="weighted", zero_division=0)),
         "macro_f1": float(f1_score(y_true, prediction, average="macro", zero_division=0)),
-        "log_loss": float(log_loss(y_true, probabilities, labels=np.arange(probabilities.shape[1]))),
+        "log_loss": float(np.mean(per_row_nll)),
         "brier": multiclass_brier(y_true, probabilities),
         "ece": top_label_ece(y_true, probabilities, bins),
     }
@@ -231,7 +235,7 @@ def prediction_metrics(
 
 def true_class_loss(y_true: np.ndarray, probabilities: np.ndarray) -> np.ndarray:
     selected = probabilities[np.arange(len(y_true)), y_true]
-    return -np.log(np.clip(selected, 1e-12, 1.0))
+    return -np.log(np.clip(selected, NLL_PROBABILITY_FLOOR, 1.0))
 
 
 def cluster_bootstrap_difference(

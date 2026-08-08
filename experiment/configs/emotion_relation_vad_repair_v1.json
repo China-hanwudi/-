@@ -1,0 +1,256 @@
+{
+  "protocol": "emotion_relation_vad_repair_v1",
+  "status": "repair_3_of_3_frozen_before_fit_gate_and_model_selection",
+  "analysis_role": "open_role_repair_3_of_3",
+  "primary_variant": "full_59d_concat_3x3_vad",
+  "variant_order": [
+    "full_59d_concat_3x3_vad",
+    "base_59d_rank59_capacity_control_299d",
+    "same_modality_relations_vad",
+    "full_relations_no_vad",
+    "concat_vad_no_3x3",
+    "base_59d_only"
+  ],
+  "variant_widths": {
+    "full_59d_concat_3x3_vad": 299,
+    "base_59d_rank59_capacity_control_299d": 299,
+    "same_modality_relations_vad": 227,
+    "full_relations_no_vad": 272,
+    "concat_vad_no_3x3": 191,
+    "base_59d_only": 59
+  },
+  "class_order": [
+    "neutral",
+    "happy",
+    "sad",
+    "angry",
+    "surprised",
+    "disgusted",
+    "fearful"
+  ],
+  "base_seeds": [17, 29, 43, 71, 101],
+  "utility_seeds": [17, 29, 43, 71, 101],
+  "ece_bins": 15,
+  "registered_output_filename": "emotiontalk_emotion_relation_vad_repair_v1_open_role.json",
+  "registered_output_repository_relative_path": "artifacts/emotiontalk_emotion_relation_vad_repair_v1_open_role.json",
+  "registered_input_locks": {
+    "sidecar_manifest_sha256": "bbd843876fa051c5426d0d56870adc939cdf71e1e8eaf552880ab4f89d47f530",
+    "model_config_sha256": "abdf905c3351f3fe265dd4741977c5760aa101fd78257cd803a4e9a504d8fce2",
+    "enforced_before_sidecar_deserialization_or_model_training": true
+  },
+  "fit_internal_gate_split": {
+    "schema_version": "carma_repair3_fit_internal_gate_split_v1",
+    "namespace": "CARMA-Affect/Repair3/fit-internal-gate/v1",
+    "input": "unique FIT_ROLE opaque_group_hashes only",
+    "score": "sha256(utf8(namespace + unit_separator + group_hash))",
+    "ordering": "ascending (score_hex, group_hash)",
+    "gate_eval_fraction": 0.2,
+    "gate_eval_group_count": "ceil(fraction * unique_fit_groups)",
+    "gate_eval_assignment": "first ordered groups",
+    "gate_train_assignment": "remaining ordered groups",
+    "label_stratification": false,
+    "salt_search_or_result_conditioned_resplit": false,
+    "split_spec_sha256": "9b0473c1a418f209bf2a7562b1e851efad36aa07a5efb6ed510d96a61f08b9e0",
+    "eligibility": "both partitions contain all seven classes and at least one history-eligible row; otherwise NO-GO"
+  },
+  "capacity_control": {
+    "variant": "base_59d_rank59_capacity_control_299d",
+    "descriptor": {
+      "application": "X_59 @ E_59x299",
+      "dtype": "float64",
+      "matrix_orientation": "source_by_target",
+      "multiplicity": "count_target_columns_mapped_to_source_index",
+      "namespace": "CARMA-Affect/Repair3/capacity-control/v1",
+      "nonzero_value": "sign / sqrt(multiplicity)",
+      "schema_version": "carma_repair3_rank59_capacity_control_v1",
+      "sign": "sha256(namespace + unit_separator + decimal_j).first_byte_even_is_positive",
+      "source_index_for_target_column": "j_mod_source_width",
+      "source_width": 59,
+      "target_width": 299
+    },
+    "canonical_json": "{\"application\":\"X_59 @ E_59x299\",\"dtype\":\"float64\",\"matrix_orientation\":\"source_by_target\",\"multiplicity\":\"count_target_columns_mapped_to_source_index\",\"namespace\":\"CARMA-Affect/Repair3/capacity-control/v1\",\"nonzero_value\":\"sign / sqrt(multiplicity)\",\"schema_version\":\"carma_repair3_rank59_capacity_control_v1\",\"sign\":\"sha256(namespace + unit_separator + decimal_j).first_byte_even_is_positive\",\"source_index_for_target_column\":\"j_mod_source_width\",\"source_width\":59,\"target_width\":299}",
+    "spec_sha256": "b8d18ce77d49f4b3bc59bd68c6b6ecf3fee136769cc234744eaa293f2a47e522",
+    "matrix_sha256": "20eb5664adacd98324261590d360d1ad2e30306dc0d90e0b622a388f2e1b1f36",
+    "rank": 59,
+    "maximum_eet_identity_error": 5e-16,
+    "superseded_handoff_only_unverifiable_spec_sha256": "d0cf08dba1f81a9393de048ce7211b4591f05dced7a4137767a8daa66c382ab0",
+    "supersession_reason": "The prior handoff supplied only a truncated hash and no reproducible descriptor. Before any real fit-gate result was opened, the exact canonical descriptor above was frozen so its hash can be recomputed rather than hard-coded without provenance."
+  },
+  "frozen_repair_2": {
+    "protocol": "emotiontalk_class_balanced_utility_repair_v1",
+    "config_sha256": "a39886300ceb91b657ba80232fbdc74abf93ec0b4c640782ab51bd55a9abe188",
+    "result_sha256": "547e54e1e6f525944eb6715e760e4a0af78abb9b4d0bea7d1940b4fdc0be1cf4",
+    "reuse": "class balance, deterministic resampling, exact two-head controls, five utility seeds, fit group-OOF 25% threshold"
+  },
+  "data_access_staging": {
+    "stage_1_sha256_verify": [
+      "features_base_and_utility_fit.npz",
+      "labels_base_and_utility_fit.npz",
+      "features_model_selection.npz",
+      "labels_model_selection.npz"
+    ],
+    "stage_1_deserialize": [
+      "features_base_and_utility_fit.npz",
+      "labels_base_and_utility_fit.npz"
+    ],
+    "stage_1_hash_only_never_deserialize": [
+      "features_model_selection.npz",
+      "labels_model_selection.npz"
+    ],
+    "stage_1_materialized_roles": [
+      "base_and_utility_fit"
+    ],
+    "stage_2_selection_label_materialization_requires_fit_gate_pass": true,
+    "stage_2_full_alignment_and_provenance_revalidation": true,
+    "fit_gate_failure_selection_feature_payload_opened": false,
+    "fit_gate_failure_selection_label_deserialized": false,
+    "fit_gate_failure_selection_label_payload_opened": false,
+    "fit_gate_failure_selection_scored": false
+  },
+  "unimodal_projector": {
+    "folds": 5,
+    "loss": "log_loss",
+    "penalty": "l2",
+    "alpha": 0.0001,
+    "max_iter": 400,
+    "tolerance": 0.0001,
+    "class_weight": "balanced",
+    "average": true,
+    "text_analyzer": "char_wb",
+    "text_ngram_min": 2,
+    "text_ngram_max": 5,
+    "text_min_df": 2,
+    "text_max_features": 50000,
+    "text_sublinear_tf": true,
+    "fit_role": "whole-group out-of-fold",
+    "selection_role": "model fit only on the complete fit role",
+    "selection_label_use": "scoring only after fit-only gate",
+    "gold_label_in_inference_features": false
+  },
+  "counterfactual_sampling": {
+    "draws_per_query": 8,
+    "maximum_candidates_per_query": 16,
+    "seed": 20260808,
+    "match_context_cardinality": true
+  },
+  "fusion_current_weight": 0.5,
+  "fusion_contract": {
+    "modality_fusion": "arithmetic mean of text/audio/video seven-class posteriors",
+    "history_pooling": "arithmetic mean over immutable same-group same-speaker strict-past members",
+    "query_context_fusion": "0.5 current posterior plus 0.5 pooled history posterior",
+    "empty_context": "current posterior",
+    "selection_can_choose_weights": false
+  },
+  "vad": {
+    "coordinate_system": "Mehrabian-style pleasure/valence-arousal-dominance design coordinates",
+    "claim_boundary": "fixed theory-inspired engineering anchors; not estimated psychological truth",
+    "source_note": "Theory provenance: Albert Mehrabian, Pleasure-arousal-dominance: A general framework for describing and measuring individual differences in Temperament, Current Psychology 14(4), 261-292 (1996), DOI 10.1007/BF02686918. The seven class coordinates are frozen Mehrabian-style design anchors before fit/model-selection results and are not claimed as dataset-estimated ground truth.",
+    "coordinates": {
+      "neutral": [0.0, 0.0, 0.0],
+      "happy": [0.81, 0.51, 0.46],
+      "sad": [-0.63, -0.27, -0.33],
+      "angry": [-0.51, 0.59, 0.25],
+      "surprised": [0.4, 0.67, -0.13],
+      "disgusted": [-0.6, 0.35, 0.11],
+      "fearful": [-0.64, 0.6, -0.43]
+    },
+    "coordinate_sha256": "65154e73b3ec3d294d65d031f5c0a337a7c564a9f769bd00617957ecb641823a",
+    "feature_source": "seven_class_predicted_posterior_expectation_only",
+    "state_contexts": ["current", "candidate", "s", "t", "t_minus_candidate"],
+    "transition_contexts": ["candidate", "s", "t", "t_minus_candidate"],
+    "state_columns": 15,
+    "transition_columns": 12,
+    "total_columns": 27,
+    "selection_can_choose_mapping": false
+  },
+  "class_balance": {
+    "scheme": "effective_number",
+    "beta": 0.999,
+    "resample_size_multiplier": 1.0,
+    "frequency_unit": "unique_query",
+    "task_weight_rule": "class_weight_divided_by_tasks_for_same_query",
+    "oof_frequency_scope": "training_fold_only",
+    "final_frequency_scope": "all_fit_queries"
+  },
+  "utility_architecture": {
+    "hidden_layer_sizes": [32, 16],
+    "output_heads": 2,
+    "alpha": 0.001,
+    "max_iter": 80,
+    "tolerance": 0.0001,
+    "activation": "tanh",
+    "solver": "adam",
+    "batch_size": 1024,
+    "learning_rate_init": 0.002,
+    "early_stopping": true,
+    "validation_fraction": 0.1,
+    "n_iter_no_change": 8,
+    "capacity_matching": "all four directional controls have the same two-head architecture within each feature variant",
+    "trainable_parameters": {
+      "full_59d_concat_3x3_vad": 10162,
+      "base_59d_rank59_capacity_control_299d": 10162,
+      "base_59d_only": 2482
+    }
+  },
+  "fit_only_open_gate": {
+    "candidate_variant": "full_59d_concat_3x3_vad",
+    "reference_variants": [
+      "base_59d_only",
+      "base_59d_rank59_capacity_control_299d"
+    ],
+    "utility_model": "class_balanced_true_bidirectional_mlp",
+    "minimum_macro_f1_gain_vs_each_reference": 0.002,
+    "nll_maximum_worsening_vs_each_reference": 0.0,
+    "accuracy_minimum_gain_vs_each_reference": 0.0,
+    "same_seed_six_condition_intersection": true,
+    "minimum_successful_utility_seeds_out_of_five": 4,
+    "selection_prediction_if_fail": false,
+    "selection_label_scoring_if_fail": false
+  },
+  "model_selection_contract": {
+    "primary_fixed_before_results": true,
+    "ablations_explanatory_only": true,
+    "selection_can_choose_variant": false,
+    "selection_can_choose_relation_layer": false,
+    "selection_can_choose_class_mapping": false,
+    "selection_can_choose_fusion_weight": false,
+    "registered_and_stronger_gates_require_accuracy_non_worsening": true,
+    "fixed_references": [
+      "current_only",
+      "all_history",
+      "coverage_matched_recency",
+      "class_balanced_backward_mlp"
+    ],
+    "prediction_unit": "one prediction per query",
+    "seed_grid": "five utility seeds by five base seeds"
+  },
+  "optional_teacher": {
+    "status": "predeclared_not_downloaded_not_executed",
+    "model_revision": "MilaNLProc/xlm-emo-t@a6ee7c9fad08d60204e7ae437d41d392381496f0",
+    "role": "four-class auxiliary text feature only, never seven-class supervision",
+    "fit_oof_eligibility": {
+      "minimum_successful_seeds_out_of_five": 4,
+      "minimum_macro_f1_gain": 0.002,
+      "nll_maximum_worsening": 0.0,
+      "accuracy_minimum_gain": 0.0,
+      "same_seed_macro_nll_accuracy_intersection": true
+    },
+    "selection_can_choose_teacher": false,
+    "selection_can_choose_layer": false,
+    "selection_can_choose_class_mapping": false,
+    "johnson_chinese_model": "no_go"
+  },
+  "reporting_contract": {
+    "aggregate_only": true,
+    "forbidden_row_outputs": [
+      "row identifiers",
+      "probabilities",
+      "labels",
+      "predictions",
+      "decision scores"
+    ],
+    "nll_identity_tolerance": 1e-12,
+    "write_once": true,
+    "confirmatory_claim_allowed": false
+  }
+}

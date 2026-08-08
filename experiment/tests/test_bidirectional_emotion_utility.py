@@ -48,6 +48,24 @@ def test_bidirectional_sampling_is_deterministic_and_nontrivial() -> None:
         assert set(task.deletion_context).issubset(set(histories[task.query_index]))
 
 
+def test_size_matched_sampling_removes_cardinality_confound() -> None:
+    histories = [tuple(range(8)), tuple(range(8, 16))]
+    tasks = sample_bidirectional_coalition_tasks(
+        histories,
+        draws_per_query=12,
+        maximum_candidates=8,
+        seed=20260808,
+        match_context_cardinality=True,
+    )
+    assert tasks
+    for task in tasks:
+        deletion_without_candidate = tuple(
+            value for value in task.deletion_context if value != task.candidate_index
+        )
+        assert len(task.addition_context) == len(deletion_without_candidate)
+        assert set(task.addition_context) != set(deletion_without_candidate)
+
+
 def test_forward_and_backward_targets_are_benefit_positive_and_can_differ() -> None:
     labels = np.asarray([0, 1])
     probability_s = np.asarray([[0.40, 0.60], [0.30, 0.70]])

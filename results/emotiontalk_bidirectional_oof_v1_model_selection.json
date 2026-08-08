@@ -1,0 +1,134 @@
+{
+  "cache_contract": {
+    "contains_gold_labels": false,
+    "contains_row_identifiers": false,
+    "numeric_dtype": "float64",
+    "private_not_for_publication": true,
+    "schema": "emotiontalk_bidirectional_oof_cache_v1",
+    "task_feature_count": 59
+  },
+  "claim_boundary": "This run audits whether non-trivial bidirectional utility supervision exists. It does not establish classification or safety improvement.",
+  "hashes": {
+    "base_config_sha256": "fdd5cd3065c33360eb25837feb4e791296183e514d6a74c8017e8d378465a90e",
+    "feature_config_sha256": "591d7c654d858514f25af5f6e11fa56ce15ed446f7b622040b9dd20210dad4c1",
+    "feature_sha256": "d9d8c40c4f1325a68d0b9488c6a54846d29234606039135ac959aeeeedc439c2",
+    "labels_sha256": "e89f1f52cd7bd48d4246b725bdd1d3976ab541db6fbef6e06b018625edd56810",
+    "transcription_sha256": "a2b641caa92076a94a40f5c8d7b0e60d9adea99b295c72268a7c542dcc2ad3c9",
+    "utility_config_sha256": "447689af6b7061604011f13c616591f969a9eb683963cae8d05829e17d5ec64c"
+  },
+  "protocol": "bidirectional_emotion_utility_v1",
+  "roles": {
+    "base_and_utility_fit": {
+      "groups": 379,
+      "rows": 9817
+    },
+    "calibration": {
+      "groups": 59,
+      "rows": 1572
+    },
+    "internal_holdout_sealed": {
+      "groups": 55,
+      "rows": 1394
+    },
+    "model_selection": {
+      "groups": 94,
+      "rows": 2630
+    }
+  },
+  "sealed_audit": {
+    "calibration_rows_used_for_training_or_metrics": 0,
+    "internal_holdout_rows_used_for_training_or_metrics": 0,
+    "row_level_output_emitted": false,
+    "test_rows_used": 0,
+    "validation_rows_used": 0
+  },
+  "seed_stability": {
+    "fit_backward": {
+      "pairwise_spearman_median": 0.877133660636478,
+      "pairwise_spearman_min": 0.8742960296095684,
+      "rows": 58976,
+      "seed_to_ensemble_sign_agreement": [
+        0.935973955507325,
+        0.9353974498100922,
+        0.9336848887683126,
+        0.9357026587086272,
+        0.9365674172544763
+      ],
+      "seeds": 5
+    },
+    "fit_forward": {
+      "pairwise_spearman_median": 0.8784313946839502,
+      "pairwise_spearman_min": 0.8738104617171831,
+      "rows": 58976,
+      "seed_to_ensemble_sign_agreement": [
+        0.9369065382528486,
+        0.9361096039066739,
+        0.9324979652740097,
+        0.9332440314704287,
+        0.9370082745523602
+      ],
+      "seeds": 5
+    },
+    "model_selection_backward": {
+      "pairwise_spearman_median": 0.9021204226524016,
+      "pairwise_spearman_min": 0.898598889647701,
+      "rows": 16212,
+      "seed_to_ensemble_sign_agreement": [
+        0.9409079694053787,
+        0.9452257586972613,
+        0.9453491241056008,
+        0.9410313348137183,
+        0.9445472489513941
+      ],
+      "seeds": 5
+    },
+    "model_selection_forward": {
+      "pairwise_spearman_median": 0.9029173074846941,
+      "pairwise_spearman_min": 0.8973304223042163,
+      "rows": 16212,
+      "seed_to_ensemble_sign_agreement": [
+        0.9373303725635331,
+        0.9458425857389587,
+        0.9452257586972613,
+        0.9406612385886998,
+        0.9446706143597335
+      ],
+      "seeds": 5
+    }
+  },
+  "status": "train_only_different_set_oof_supervision_complete; utility_model_not_yet_selected",
+  "target_summary": {
+    "fit_oof": {
+      "backward_harm_rate": 0.45396432447097124,
+      "backward_mean_utility": 0.014651819455948848,
+      "forward_backward_spearman": 0.6452988089112632,
+      "forward_harm_rate": 0.4537269397721107,
+      "forward_mean_utility": 0.013636097266050204,
+      "mean_absolute_asymmetry": 0.14790703854778423,
+      "nonzero_asymmetry_rate_1e_8": 0.9998982637004883,
+      "p90_absolute_asymmetry": 0.40237239649666645,
+      "sign_agreement": 0.8106687466087901,
+      "tasks": 58976
+    },
+    "model_selection": {
+      "backward_harm_rate": 0.44880335553910683,
+      "backward_mean_utility": 0.014429322201456941,
+      "forward_backward_spearman": 0.6720263670598534,
+      "forward_harm_rate": 0.45065383666419934,
+      "forward_mean_utility": 0.014059843574230084,
+      "mean_absolute_asymmetry": 0.13172189343762072,
+      "nonzero_asymmetry_rate_1e_8": 1.0,
+      "p90_absolute_asymmetry": 0.35735251012966707,
+      "sign_agreement": 0.8226005428077967,
+      "tasks": 16212
+    }
+  },
+  "task_counts": {
+    "base_seeds": 5,
+    "fit_groups": 378,
+    "fit_oof": 58976,
+    "model_selection": 16212,
+    "model_selection_groups": 94,
+    "probability_contexts_per_task": 4
+  }
+}

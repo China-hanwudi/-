@@ -1,0 +1,37 @@
+{
+  "protocol": "meld_multimodal_role_sidecars_v1",
+  "status": "frozen_before_role_sidecar_generation",
+  "dataset_id": "MELD",
+  "split_protocol_id": "scu_set_exploration_v1",
+  "roles": {
+    "base_and_utility_fit": [0, 64],
+    "model_selection": [65, 79],
+    "calibration": [80, 89],
+    "internal_holdout": [90, 99]
+  },
+  "source_contract": {
+    "train_csv_sha256": "d2fa2d6529cf03cac2989efec05c9b27d8fd2f4c8fc5974c7ae88aa537fa02db",
+    "train_pickle_sha256": "c4d045d213eb63f650299c9814c463d79b728f0fa9f5df47ef059aac268b3ad5",
+    "train_pickle_parent_archive_sha256": "9adb1c9a9045e6bf3f58875946668f854bc45c3db799986c483b043a2ab1c853",
+    "allowed_missing_feature_rows": 1,
+    "official_csv_is_authoritative_label_source": true,
+    "embedded_pickle_label_is_audit_only": true,
+    "dev_and_test_sources_forbidden": true
+  },
+  "feature_contract": {
+    "audio_dimension": 32,
+    "video_dimension": 2048,
+    "pooling": "utterance_sequence_mean_and_population_std",
+    "text_source": "official_train_csv_utterance",
+    "numeric_dtype": "float32",
+    "history_rule": "same_dialogue_and_same_speaker_and_strictly_lower_Utterance_ID"
+  },
+  "output_contract": {
+    "write_once": true,
+    "one_feature_archive_per_role": true,
+    "one_label_archive_per_role": true,
+    "allow_pickle": false,
+    "private_not_for_repository": true,
+    "public_output": "aggregate manifest only"
+  }
+}

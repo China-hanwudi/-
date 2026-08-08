@@ -4,7 +4,8 @@
   "research_claim": "Emotion-theory-constrained, different-set bidirectional marginal utility for calibrated reversible multimodal history selection",
   "data_roles": {
     "unit": "dialogue_or_dataset_group",
-    "assignment": "sha256(dataset, group, protocol) modulo 100",
+    "assignment": "sha256(dataset, group, split_protocol_id) modulo 100",
+    "split_protocol_id": "scu_set_exploration_v1",
     "base_and_utility_fit": [0, 64],
     "model_selection": [65, 79],
     "calibration": [80, 89],
@@ -46,8 +47,15 @@
     "maximum_candidates_per_query": 20,
     "minimum_history_candidates": 2,
     "seed": 20260808,
+    "match_context_cardinality": true,
     "candidate_policy": "strict_past_with_deterministic_recent_plus_reservoir_cap",
     "forbidden": ["future_turns", "query_group_training_rows", "validation_or_test_labels", "gold_history_emotion"]
+  },
+  "base_subset_augmentation": {
+    "maximum_contexts_per_query": 8,
+    "include_current_only_and_full_history": true,
+    "query_balanced_sample_weight": true,
+    "seed": 20260808
   },
   "model_comparison": {
     "mandatory_baselines": [

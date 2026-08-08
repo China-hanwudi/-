@@ -8,9 +8,34 @@
 
 Phase 1 — 预注册与 benchmark 冻结（in_progress）
 
+### Causal evidence gate 子任务（2026-08-08）
+
+- [x] 独立 history-stripped current-only 身份、checkpoint 与概率合同
+- [x] fit-OOF 冻结 25% query-candidate operating point 与 deterministic tie rule
+- [x] 每个 query 等选中基数的 most-recent recency 对照
+- [x] 五 seed×共享整簇 bootstrap CI 与整簇配对 randomization p 值
+- [x] 完整预声明 Holm family 与 accuracy no-harm/non-inferiority gate
+- [x] aggregate-only exact public whitelist 与 EmotionTalk+MELD hash-bound index
+- [x] synthetic/相关/full regression、compileall 与 diff check
+- [ ] 实现独立 current-only artifact producer/CLI 与实际策略概率 bridge
+- [ ] 通过新的独立只读审计后，才决定是否授权正式 open-role 长跑
+
+## Task-local best_skill card（2026-08-08）
+
+```text
+best_skill: supervised-ML empirical pipeline + open-role query policy + reproducible publication evidence
+train_signal: true bidirectional supervision improves surrogate utility ordering, but the current mean-NLL selector lowers query Macro-F1; distributional repair improves task-level RMSE yet has not passed absolute safety
+selection_split: EmotionTalk frozen model-selection groups 65–79 under scu_set_exploration_v1
+heldout_gate: no reads from groups 80–89/90–99 or validation/test; contract tests, hash/schema checks, cluster-level inference, then an independently sourced second dataset after method lock
+accepted_patterns: fit-only cross-fitting; shared-cluster paired inference; query-level one-prediction estimand; exact current/all/coverage-matched-recency comparisons; public aggregate-only outputs
+rejected_patterns: mean-MLP utility tuning; label-derived inference features; pooled-utterance uncertainty; threshold selection on sealed roles; post-hoc GPT prompt/model selection
+patch_scope: one target/model-family or one metric-contract correction per candidate run
+reject_if: candidate fails to improve query Macro-F1 without positive excess NLL, fails the predeclared seed gate, or cannot outperform the matching recency/all-history strong baselines; after three distinct repair families, stop this selector route
+```
+
 ## Next Step
 
-在不使用 80–89 校准组和 90–99 内部 holdout 性能的前提下，先完成无损 float64 train-only OOF base cache，再按 `bidirectional_emotion_utility_v1` 生成不同集合 `P(S)`、`P(S+h_i)`、`P(T)`、`P(T-h_i)`；只有双向法同时优于 forward-only/backward-only，并通过分类、安全与非零覆盖门，才进入 calibration。
+repair 1/3 与 2/3 均已 NO-GO 且禁止再调参。Repair 3 的 fit 内 group-hash 隔离、rank-59 299D 等信息容量对照、同 seed 双参考 Macro-F1/NLL/accuracy 六门、manifest/model/config TOCTOU 与失败时 selection 不打开均已实现；实现、主进程与独立审计分别复核，独立审计结论为 GO。Causal Stage-B Part 1 的 heldout label/target callback 隔离也已在合成数据上收口，最新全仓为 245 passed。真实 gate 尚未运行。当前唯一下一动作是把完整 staged 状态形成并推送不可变 freeze commit，确认注册输出不存在后只启动一个进程运行唯一一次 Repair 3 fit gate。失败则不得生成/评分 65–79，selector 三修复路线正式停止；通过才一次性运行 model-selection。causal evidence 的统计验证层与 Stage-B Part 1 合同虽已 GO，但真实 independent current-only、selected/recency bridge、evaluate 与跨数据集联合推断仍未完成，不能把单数据集 current/all endpoint 当顶会证据。
 
 ## Confirmatory Evidence Gate
 
@@ -115,6 +140,28 @@ Status: pending
 | PowerPoint COM 新建/打开演示文稿返回 `0x80048240` | 3 | 停止重复 COM 尝试；使用 `@oai/artifact-tool` 生成可编辑 PPTX，PDF 改由最终渲染经 ReportLab 导出并回渲验证 |
 | 本机未安装 draw.io 桌面端 | 1 | 无法使用 live draw.io 后端；保留原生 PowerPoint 可编辑形状路线 |
 | Poppler shim 无法直接处理含日文目录的输入路径 | 1 | 将最终 PDF 临时复制到 ASCII 临时目录后调用真实 `pdftoppm.exe`，完成回渲检查 |
+| 一次多文件 `apply_patch` 因 findings 标题上下文不匹配而整体拒绝 | 1 | 先用 UTF-8 读取真实文件头，再按稳定英文标题分别插入；未发生部分写入 |
+| 因果 backbone 初版发布配置把真实 1,536 维 WavLM mean+std 写为 768 维 | 1 | 只读核对私有特征 shape 后同步修正默认值与发布配置；仍低于 2M 参数门 |
+| v2 初版把 oracle opportunity regret 当作相对 fallback 的安全 regret，且 ensemble 排名与独立 seed bootstrap estimand 不一致 | 1 | 结果生成前停止运行；拆分 excess NLL/oracle regret，排名与 CI 统一为五独立运行均值，改用 seed→cluster 嵌套配对 bootstrap 后重启 |
+| 跨三文件 `apply_patch` 因 progress 标题上下文匹配失败而整体拒绝 | 3 | 三次均确认无部分写入；已改为逐文件、最小标题锚点补丁并成功，后续禁止组合计划三文件提交 |
+| 再次把含 Unicode 的私有绝对路径插入 PowerShell here-string 后传给 Python，触发已知乱码错误 | 2 | 未修改文件；立即改回私有 experiment 工作目录加 ASCII 相对路径。后续所有私有 Python stdin 脚本禁止嵌入该绝对路径 |
+| 单文件 progress 标题-only 插入仍因隐式相邻上下文校验失败 | 1 | 改为显式替换文件前三行（标题、空行、首节标题）后成功；后续顶部插入采用三行锚点 |
+| distributional query 首轮重算的 GroupKFold positions 与冻结 fit checkpoint 不一致 | 1 | 根因是 NumPy 2.3.1→1.26.4 / sklearn 环境下等长 group 的非稳定 tie-order 漂移；runner fail-closed。修复以已散列 checkpoint positions 为权威，并验证 exact cover、无重复、边界、cluster purity 与 59-D bitwise 绑定；不改模型、阈值或 seed |
+| class-balanced 首轮运行的报告 schema 缺逐 utility-seed 指标与组合 reproducibility manifest | 1 | 在结果生成且任何 model-selection 数字可见前中止；保留 abort 日志，仅补报告/provenance 后按完全相同冻结配置重跑 |
+| 为判断 EmotionTalk 文本语言而直接格式化 `transcription.csv` 前 8 行，意外显示同一对话的 `emotion` 列 | 1 | 立即停止；key-only SHA 角色审计确认该对话为 bucket 16（fit），未触及 65–99，但这些标签仍不得进入特征、配置、模型选择或论证。后续文本查看先显式列白名单并由 sidecar fail-closed |
+| PowerShell `foreach {...} |` 语法产生 empty pipe parser error（元数据审计与 sidecar 目标核验各一次） | 2 | 固定先把 `foreach` 结果赋给变量，再单独管道格式化；两次均未产生文件或外部状态变化，后续禁止再用内联 foreach-pipe |
+| 试探的 ACL Anthology `2022.wassa-1.22` 不是 XLM-EMO；Semantic Scholar 无 key 查询又返回 429 | 1 | 明确作废该文献 ID，不重试受限 API；后续用模型仓库 citation metadata、Crossref/ACL title search 或已安装学术检索工具交叉核验 |
+| 请求 XLM-EMO GitHub 的 `README.md` 返回 404 | 1 | 通过 GitHub contents API 确认实际文件为 `README.rst`，随后只读核验；未重复错误路径 |
+| Crossref DOI 精确入口不支持 `select` 参数 | 1 | 去掉列表路由专用参数后重查同一 DOI，成功核验 PAD 理论文献元数据；未把失败响应当成检索成功 |
+| Windows PowerShell 将传给 `rg` 的 `run_*` / `test_*` 路径通配符按字面路径处理 | 1 | 不重复该写法；后续只传目录并用 `rg -g 'pattern'` 过滤，已有命中不作为完整审计结果 |
+| causal runner 在切 0–79 前读取完整 EmotionTalk train/validation 特征；MELD loader 未以 manifest/真实文件 hash 绑定来源 | 1 | 独立审计在任何真实训练前阻断；必须生成物理隔离的 EmotionTalk open-role feature sidecar，并让 MELD loader 重算 alignment、核验冻结 manifest/hash、提供正式 CLI，测试不得使用虚假 hash 代替来源证明 |
+| 一次组合 `rg` 因 PowerShell 字符串转义形成未闭合正则 | 1 | 未修改文件；改为多个 `rg -F`/`rg -e` 字面检索并成功完成陈旧接口审计 |
+| 组合只读命令中第二个 `rg` 无命中返回 exit 1，导致工具整体标记失败 | 1 | 已确认前置输出完整且未修改文件；后续对“可能无命中”的审计使用 `Select-String`/显式允许空结果，不把无命中误判为代码失败 |
+| 用全局 Python 运行 causal runner 专项时因缺 PyTorch 导致整文件 skipped 且退出非零 | 1 | 未产生训练或文件修改；改用已冻结旧实验 `.venv`，同一专项 `16 passed`。后续依赖 torch 的测试固定使用该环境 |
+| 冻结旧实验 `.venv` 未安装 `ruff` | 1 | 不为格式检查污染冻结训练环境；改用 `py_compile`、JSON parser、`git diff --check` 与确定性尾随空白扫描 |
+| 从仓库根目录直接运行新增专项测试时未设置 `PYTHONPATH=experiment/src`，导致 `ModuleNotFoundError: hva_affect` | 1 | 未产生训练或结果；改为解析同级冻结 `.venv` 的相对路径，并显式设置仓库 `experiment/src` 为 `PYTHONPATH` 后再运行 |
+| 首次冻结暂存后的 `git diff --cached --check` 检出 6 个新增文件 EOF 多余空行 | 1 | 未提交、未推送、未运行真实 gate；对稳定文件用 `apply_patch` 去除多余空行，等待并行 Stage-B 收尾后重新暂存并全量复核 |
+| 用 `Measure-Object -Property` 直接传脚本块统计 staged numstat 时 PowerShell 拒绝 Hashtable property | 1 | 文件大小与禁用扩展名审计已完成且未修改文件；后续先将 numstat 映射成数值对象再求和，不重复该语法 |
 
 ## Decisions Made
 
@@ -129,3 +176,6 @@ Status: pending
 | 2026-08-08 | 教师前三点合并为一项组合创新，不分别宣称首创 | 情感理论、六流和模态交互均有高重叠邻近工作；潜在新意在不同集合双向效用、train-only OOF、3×3关系与校准回退的完整闭环 |
 | 2026-08-08 | 强制 `T != S union {h_i}` | 若 `T=S union {h_i}`，前向加入与后向删除代数相同，所谓双向无新增信息 |
 | 2026-08-08 | 端点 hurdle 不再作为进入新方法的充分依据 | 可见 hurdle 结果来自已隔离 float32 缓存且关键门失败；必须重新生成无损不同集合 OOF 监督 |
+| 2026-08-08 | repair 2/3 class-balanced 判定 NO-GO，不再调参 | 虽把 true Macro-F1 从 0.52723 修到 0.54000并胜过current，但accuracy下降，且落后all-history/recency/backward；严格三参考联合门仅2/5 |
+| 2026-08-08 | repair 3/3 固定为情感概率3×3关系＋VAD特征增强，full为预声明primary | 前两条修复只改变效用目标/类平衡，尚未真实实现老师要求的情感理论与六流关系；复用repair2 policy可把增量归因于新特征而非再次换目标 |
+| 2026-08-08 | repair 1/3 distributional query-level 判定 NO-GO，不再调参 | true excess NLL显著改善但Macro-F1未高于current且比同coverage recency低0.01729，0/5过预注册门；forward/backward各4/5不能转化为双向成功 |

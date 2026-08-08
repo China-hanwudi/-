@@ -75,3 +75,5 @@ desktop.ini
 tmp/
 assets/*.pptx.inspect.ndjson
 assets/carma_affect_full_research_workflow_20260808/
+output/pptx/*.inspect.ndjson
+output/pptx/*/
