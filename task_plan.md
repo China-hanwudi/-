@@ -20,6 +20,14 @@ Phase 1 — 预注册与 benchmark 冻结（in_progress）
 - [ ] 实现独立 current-only artifact producer/CLI 与实际策略概率 bridge
 - [ ] 通过新的独立只读审计后，才决定是否授权正式 open-role 长跑
 
+### Selector repair 关闭记录（2026-08-08）
+
+- [x] Repair 1 distributional：NO-GO
+- [x] Repair 2 class-balanced：NO-GO
+- [x] Repair 3 emotion/VAD/3×3：fit-only gate NO-GO（0/5 utility seeds；未打开 model-selection）
+- [x] 按“三种不同修复后停止”规则终止该 selector 模型族，不再进行 Repair 4 或结果驱动调参
+- [ ] 提交并推送 Repair 3 aggregate-only、write-once 结果与审计记录
+
 ## Task-local best_skill card（2026-08-08）
 
 ```text
@@ -35,7 +43,7 @@ reject_if: candidate fails to improve query Macro-F1 without positive excess NLL
 
 ## Next Step
 
-repair 1/3 与 2/3 均已 NO-GO 且禁止再调参。Repair 3 的 fit 内 group-hash 隔离、rank-59 299D 等信息容量对照、同 seed 双参考 Macro-F1/NLL/accuracy 六门、manifest/model/config TOCTOU 与失败时 selection 不打开均已实现；实现、主进程与独立审计分别复核，独立审计结论为 GO。Causal Stage-B Part 1 的 heldout label/target callback 隔离也已在合成数据上收口，最新全仓为 245 passed。真实 gate 尚未运行。当前唯一下一动作是把完整 staged 状态形成并推送不可变 freeze commit，确认注册输出不存在后只启动一个进程运行唯一一次 Repair 3 fit gate。失败则不得生成/评分 65–79，selector 三修复路线正式停止；通过才一次性运行 model-selection。causal evidence 的统计验证层与 Stage-B Part 1 合同虽已 GO，但真实 independent current-only、selected/recency bridge、evaluate 与跨数据集联合推断仍未完成，不能把单数据集 current/all endpoint 当顶会证据。
+Repair 3 已在不可变 freeze commit `fddcda7` 上唯一运行一次并以 fit-only gate NO-GO 结束：0/5 utility seeds 通过，model-selection 预测与评分均未生成，65–79 payload 未打开。当前唯一下一动作是完成 aggregate artifact 的 schema/privacy/hash 审计后强制纳入版本控制并推送，同时完成 Causal Stage-B 的独立 current-only producer/CLI 与策略概率 bridge；随后仅在新的只读审计 GO 后运行真实 fit-only 生产。selector 三修复路线已经正式停止，不得 Repair 4、不得删除结果重跑、不得以封存角色调参。
 
 ## Confirmatory Evidence Gate
 
@@ -128,6 +136,8 @@ Status: pending
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| 当前 Windows PowerShell 的 `ConvertFrom-Json` 不支持 `-Depth` 参数 | 1 | 未修改任何文件；改用 `python -m json.tool` 与无 `-Depth` 的定向字段读取，不重复该参数 |
+| 首次组合 planning patch 使用了错误的 findings/progress 标题锚点 | 1 | `apply_patch` 原子拒绝且无部分写入；读取真实 UTF-8 标题后分文件重试 |
 | 初始仓库缺少持续计划文件 | 1 | 创建 task_plan.md、findings.md、progress.md |
 | PowerShell 默认编码导致中文 Markdown 乱码 | 1 | 后续读取显式使用 UTF-8，不把乱码误判为文件损坏 |
 | `System.IO.Path.GetRelativePath` 在当前 PowerShell/.NET 不可用 | 1 | 使用字符串前缀裁剪或 Python 只读枚举，不重复原命令 |

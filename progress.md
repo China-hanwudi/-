@@ -1,5 +1,14 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-08 — Repair 3 post-run 聚合审计启动
+
+- 确认运行基线为已推送 freeze commit `fddcda76ae326602cd6717eb95251d0c2bd24bff`。
+- 只读计算 Repair 3 结果 SHA-256：`cbdb69b81db27195c86f032cdd263c17718ad5842b363c6b0f4afaee69a45504`。
+- 定向解析确认 fit-only gate 为 NO-GO、0/5 seeds；model-selection 未执行，所有 sealed roles 保持未打开。
+- 未重跑实验、未删除工件、未读取 row/group identifiers 或封存 payload。
+- 正在并行完成 aggregate schema/privacy/hash 审计与 Causal Stage-B producer/bridge 实现。
+- 独立 post-run 审计结论为 artifact integrity/privacy PASS、Repair 3 method gate NO-GO；顶层 schema、aggregate-only privacy、canonical manifest 与十项本地来源 hash 均通过。
+
 ## 2026-08-08 — Repair 3 真实运行前 High 闭环与主进程复核
 
 - 在任何真实 sidecar payload 或 fit-gate 结果打开前，冻结无标签 opaque-group 80/20 fit-internal gate：namespace `CARMA-Affect/Repair3/fit-internal-gate/v1`，SHA 排序、ceil 20%、无分层/无 salt 搜索；projector、utility 与阈值仅在 gate-train 拟合，gate-eval 只在预测承诺后评分。

@@ -1,5 +1,17 @@
 # CARMA-Affect Research Findings
 
+## Repair 3 唯一真实运行的冻结终判（2026-08-08）
+
+- 聚合工件：`experiment/artifacts/emotiontalk_emotion_relation_vad_repair_v1_open_role.json`；SHA-256 为 `cbdb69b81db27195c86f032cdd263c17718ad5842b363c6b0f4afaee69a45504`。
+- 状态为 `fit_only_gate_no_go_no_selection_predictions`；`fit_only_open_gate.passed=false`，`successful_utility_seeds_out_of_five=0`。
+- 五个 utility seed（17/29/43/71/101）均未同时满足相对 59D 与 rank-59 capacity control 的 Macro-F1、NLL、accuracy 六项门槛。
+- 相对 59D 的 Macro-F1 差分别为 -0.002011、+0.000522、-0.008592、-0.017316、-0.010576；相对 capacity control 分别为 -0.003646、-0.002946、-0.010960、-0.007762、-0.000467。没有任何 seed 达到两侧都至少 +0.002。
+- 访问合同明确记录 selection feature/label payload 均未打开或反序列化，selection prediction/scoring 均未执行；calibration、internal holdout、validation、test 仍封存。
+- 独立 post-run 审计通过顶层 schema 白名单、内置 aggregate privacy validator、非有限值/绝对路径/行级数组扫描与本地来源 hash 复核；canonical reproducibility manifest 重算仍为 `d6e64f334e37b17d4d917ee149e04e12c783c2615e8bfce713e185936161a4d3`。
+- primary 五 seed 平均 history coverage 为 0.529869，59D 为 0.568490，rank-59 capacity control 为 0.579212；平均差为 -0.038621/-0.049344。部分 NLL/accuracy 改善伴随更保守的历史使用，不能归因成 relation/VAD 特征优势。
+- 该文件默认被 `.gitignore` 的 `experiment/artifacts/` 规则忽略且当前未跟踪；需在审计完成后仅对这一 aggregate-only 文件使用 `git add -f`。不得删除后重跑。
+- 科研含义：三种 selector repair 已耗尽，不能继续围绕同一模型族调参。下一条可审计路线是 benchmark/否证论文与 Causal Stage-B 的真实 independent current-only、utility OOF、selected/recency bridge 和跨数据集联合推断。
+
 ## Causal Stage-B Part 1 合成合同结论（2026-08-08）
 
 - 新增独立 current-only fit OOF producer、私有 fit protocol-row mapping 与 fit-only utility OOF score producer 的 Stage-B 合同；所有真实 selection/evaluate 接线仍未执行。
