@@ -28,6 +28,12 @@ import torch
 from torch import Tensor, nn
 from torch.nn import functional as F
 
+from .causal_affect_relation import (
+    AffectRelationConfig,
+    CausalAffectRelation,
+    label_vad_table,
+)
+
 
 UTILITY_CONTEXT_ORDER = ("current", "S", "S_plus_h", "T", "T_minus_h")
 
@@ -50,6 +56,11 @@ class CausalBackboneConfig:
     dropout: float = 0.10
     layer_scale_init: float = 1.0e-3
     parameter_limit: int = 2_000_000
+    affect_relation_mode: str = "disabled"
+    affect_relation_hidden_dim: int = 128
+    affect_relation_use_vad_features: bool = False
+    auxiliary_vad_weight: float = 0.0
+    emotion_label_order: tuple[str, ...] = ()
 
     def validate(self) -> None:
         positive = {
@@ -65,6 +76,7 @@ class CausalBackboneConfig:
             "max_relative_turn": self.max_relative_turn,
             "num_classes": self.num_classes,
             "parameter_limit": self.parameter_limit,
+            "affect_relation_hidden_dim": self.affect_relation_hidden_dim,
         }
         invalid = [name for name, value in positive.items() if value <= 0]
         if invalid:
@@ -77,6 +89,53 @@ class CausalBackboneConfig:
             raise ValueError("layer_scale_init must be positive")
         if self.num_classes != 7:
             raise ValueError("CARMA-Affect currently requires exactly seven classes")
+        if self.affect_relation_mode not in {
+            "disabled",
+            "primary_history_relation",
+            "vad_history_only_no_history_3x3",
+            "history_presence_capacity_control",
+        }:
+            raise ValueError("unknown affect-relation mode")
+        if type(self.affect_relation_use_vad_features) is not bool:
+            raise TypeError("affect_relation_use_vad_features must be boolean")
+        if not 0.0 <= self.auxiliary_vad_weight <= 1.0:
+            raise ValueError("auxiliary VAD weight must be in [0, 1]")
+        if self.affect_relation_mode == "disabled":
+            if (
+                self.affect_relation_use_vad_features
+                or self.auxiliary_vad_weight != 0.0
+                or self.emotion_label_order
+            ):
+                raise ValueError(
+                    "disabled affect relation cannot carry VAD supervision fields"
+                )
+        elif self.affect_relation_use_vad_features:
+            if self.auxiliary_vad_weight <= 0.0:
+                raise ValueError("VAD features require positive fit-train auxiliary weight")
+            label_vad_table(self.emotion_label_order)
+        else:
+            if self.auxiliary_vad_weight != 0.0 or self.emotion_label_order:
+                raise ValueError(
+                    "no-VAD ablation must not carry VAD supervision fields"
+                )
+            if self.affect_relation_mode != "primary_history_relation":
+                raise ValueError(
+                    "capacity and no-3x3 controls must retain the frozen VAD branch"
+                )
+
+    def validate_dataset_label_order(self, label_order: tuple[str, ...]) -> None:
+        """Bind fit-train VAD targets to the verified dataset class order."""
+
+        observed = tuple(str(value) for value in label_order)
+        if len(observed) != self.num_classes or len(set(observed)) != self.num_classes:
+            raise ValueError("dataset label order must contain seven unique classes")
+        if (
+            self.auxiliary_vad_weight > 0.0
+            and tuple(self.emotion_label_order) != observed
+        ):
+            raise ValueError(
+                "VAD supervision label order differs from the verified dataset order"
+            )
 
     @classmethod
     def from_mapping(cls, payload: Mapping[str, object]) -> "CausalBackboneConfig":
@@ -99,7 +158,13 @@ class CausalBackboneConfig:
                     model[field] = entry["dim"]
 
         allowed = set(cls.__dataclass_fields__)
-        config = cls(**{key: value for key, value in model.items() if key in allowed})
+        selected = {key: value for key, value in model.items() if key in allowed}
+        if "emotion_label_order" in selected:
+            raw_order = selected["emotion_label_order"]
+            if not isinstance(raw_order, (list, tuple)):
+                raise ValueError("emotion_label_order must be a list of seven labels")
+            selected["emotion_label_order"] = tuple(str(value) for value in raw_order)
+        config = cls(**selected)
         config.validate()
         return config
 
@@ -119,6 +184,7 @@ class BackboneOutput:
     logits: Tensor
     probabilities: Tensor
     effective_history_mask: Tensor
+    query_vad: Tensor | None = None
 
 
 @dataclass
@@ -128,6 +194,7 @@ class ContextBackboneOutput:
     logits: Tensor
     probabilities: Tensor
     effective_history_mask: Tensor
+    query_vad: Tensor | None = None
 
 
 def count_trainable_parameters(module: nn.Module) -> int:
@@ -327,6 +394,36 @@ class CausalMultimodalBackbone(nn.Module):
         self.blocks = nn.ModuleList(_CausalBlock(config) for _ in range(config.num_layers))
         self.output_norm = nn.LayerNorm(config.d_model)
         self.classifier = nn.Linear(config.d_model, config.num_classes)
+        if config.affect_relation_mode == "disabled":
+            self.affect_relation: CausalAffectRelation | None = None
+            self.register_buffer(
+                "vad_label_table",
+                torch.empty(0, 3, dtype=torch.float32),
+                persistent=False,
+            )
+        else:
+            self.affect_relation = CausalAffectRelation(
+                AffectRelationConfig(
+                    d_model=config.d_model,
+                    hidden_dim=config.affect_relation_hidden_dim,
+                    dropout=config.dropout,
+                    auxiliary_vad_weight=config.auxiliary_vad_weight,
+                    use_vad_features=config.affect_relation_use_vad_features,
+                    mode=config.affect_relation_mode,  # type: ignore[arg-type]
+                )
+            )
+            if config.auxiliary_vad_weight > 0.0:
+                self.register_buffer(
+                    "vad_label_table",
+                    label_vad_table(config.emotion_label_order),
+                    persistent=True,
+                )
+            else:
+                self.register_buffer(
+                    "vad_label_table",
+                    torch.empty(0, 3, dtype=torch.float32),
+                    persistent=False,
+                )
         self.reset_parameters()
 
         parameter_count = self.parameter_count()
@@ -463,7 +560,7 @@ class CausalMultimodalBackbone(nn.Module):
         video_features: Tensor,
         modality_mask: Tensor,
         valid_mask: Tensor,
-    ) -> Tensor:
+    ) -> tuple[Tensor, Tensor]:
         projected = torch.stack(
             (
                 self.text_projector(text_features),
@@ -483,7 +580,10 @@ class CausalMultimodalBackbone(nn.Module):
         gate_logits = gate_logits.masked_fill(~safe_mask, torch.finfo(gate_logits.dtype).min)
         weights = torch.softmax(gate_logits.float(), dim=-1).to(gate_logits.dtype)
         fused = (weights[:, :, :, None] * masked_projected).sum(dim=2)
-        return fused.masked_fill(~valid_mask[:, :, None], 0.0)
+        return (
+            fused.masked_fill(~valid_mask[:, :, None], 0.0),
+            masked_projected.masked_fill(~valid_mask[:, :, None, None], 0.0),
+        )
 
     def forward(
         self,
@@ -528,13 +628,33 @@ class CausalMultimodalBackbone(nn.Module):
             query_indices=query_indices,
         )
 
-        tokens = self._fuse_modalities(
+        tokens, projected_modalities = self._fuse_modalities(
             text_features,
             audio_features,
             video_features,
             modality_mask,
             valid_mask,
         )
+        relation_output = None
+        if self.affect_relation is not None:
+            relation_output = self.affect_relation(
+                projected_modalities,
+                valid_mask=valid_mask,
+                history_mask=effective_history,
+                turn_ids=turn_ids,
+                query_indices=query_indices,
+                modality_mask=modality_mask,
+            )
+            if not torch.equal(
+                relation_output.effective_history_mask, effective_history
+            ):
+                raise AssertionError("affect relation changed the causal history mask")
+            batch_indices = torch.arange(tokens.shape[0], device=tokens.device)
+            tokens = tokens.clone()
+            tokens[batch_indices, query_indices] = (
+                tokens[batch_indices, query_indices]
+                + relation_output.relation_residual
+            )
         # Padding rows may use arbitrary sentinels; clamp them before lookup.
         # Valid rows were range-checked above, so this never alters real data.
         safe_speaker_ids = speaker_ids.clamp(min=0, max=self.config.num_speakers - 1)
@@ -555,7 +675,16 @@ class CausalMultimodalBackbone(nn.Module):
         current = self.output_norm(tokens[batch_indices, query_indices])
         logits = self.classifier(current)
         probabilities = torch.softmax(logits.float(), dim=-1)
-        return BackboneOutput(logits, probabilities, effective_history)
+        return BackboneOutput(
+            logits,
+            probabilities,
+            effective_history,
+            (
+                None
+                if relation_output is None or self.config.auxiliary_vad_weight == 0.0
+                else relation_output.query_vad
+            ),
+        )
 
     def forward_contexts(
         self,
@@ -613,4 +742,9 @@ class CausalMultimodalBackbone(nn.Module):
             logits=output.logits.reshape(batch, contexts, self.config.num_classes),
             probabilities=output.probabilities.reshape(batch, contexts, self.config.num_classes),
             effective_history_mask=output.effective_history_mask.reshape(batch, contexts, length),
+            query_vad=(
+                None
+                if output.query_vad is None
+                else output.query_vad.reshape(batch, contexts, 3)
+            ),
         )

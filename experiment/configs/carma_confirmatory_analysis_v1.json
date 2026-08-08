@@ -118,6 +118,19 @@
     "absolute_mean_regret_vs_current_ci95_upper_must_not_exceed": 0.0,
     "mean_regret_difference_vs_frozen_reference_ci95_upper_must_not_exceed": 0.0,
     "minimum_relative_history_harm_rate_reduction": 0.05,
+    "history_harm_rate_reduction": {
+      "candidate": "carma_bidirectional_full",
+      "reference": "strongest_history_using_admissible_baseline_frozen_on_model_selection",
+      "reference_candidates": [
+        "all_history",
+        "coverage_matched_recency",
+        "forward_only_utility",
+        "backward_only_utility"
+      ],
+      "reference_selection_rule": "highest_five_seed_mean_model_selection_macro_f1_then_highest_accuracy_then_lowest_mean_regret_then_lexicographic_model_id",
+      "minimum_relative_reduction": 0.05,
+      "zero_reference_harm_rate_action": "fail_closed_not_estimable"
+    },
     "accuracy_no_harm": {
       "gate_id": "carma_confirmatory_accuracy_no_harm_v1",
       "required_references": [
@@ -142,6 +155,21 @@
     },
     "required_datasets_passing": 2,
     "required_seed_successes_per_dataset": 4,
+    "per_seed_success": {
+      "candidate": "carma_bidirectional_full",
+      "reference": "strongest_admissible_baseline_frozen_on_model_selection",
+      "seed_count": 5,
+      "required_successes": 4,
+      "same_seed_for_all_conditions": true,
+      "success_requires_all": [
+        "macro_f1_candidate_strictly_greater_than_reference",
+        "mean_regret_vs_current_non_positive"
+      ],
+      "thresholds": {
+        "macro_f1_difference_strictly_greater_than": 0.0,
+        "mean_regret_vs_current_must_not_exceed": 0.0
+      }
+    },
     "success_quantifier": "all_required_datasets_at_the_single_primary_operating_point",
     "classification_and_safety_must_both_pass": true,
     "classification_safety_and_accuracy_no_harm_must_all_pass": true

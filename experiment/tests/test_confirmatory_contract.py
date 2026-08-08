@@ -197,3 +197,94 @@ def test_primary_reference_must_include_all_strong_admissible_baselines() -> Non
     ] = "carma_bidirectional_vs_frozen_strongest_single_direction"
     with pytest.raises(ConfirmatoryContractError, match="strongest admissible"):
         validate_confirmatory_analysis(analysis, manifest)
+
+
+@pytest.mark.parametrize("mutation", ["add_current_only", "remove_history_baseline"])
+def test_history_harm_reference_is_history_using_and_complete(mutation: str) -> None:
+    manifest, analysis = frozen_contracts()
+    candidates = analysis["effect_and_safety_gates"]["history_harm_rate_reduction"][
+        "reference_candidates"
+    ]
+    if mutation == "add_current_only":
+        candidates.insert(0, "current_only")
+    else:
+        candidates.remove("coverage_matched_recency")
+
+    with pytest.raises(ConfirmatoryContractError, match="four admissible history-using"):
+        validate_confirmatory_analysis(analysis, manifest)
+
+
+def test_history_harm_reference_selection_rule_is_frozen() -> None:
+    manifest, analysis = frozen_contracts()
+    analysis["effect_and_safety_gates"]["history_harm_rate_reduction"][
+        "reference_selection_rule"
+    ] = "highest_single_seed_macro_f1"
+
+    with pytest.raises(ConfirmatoryContractError, match="deterministic model-selection"):
+        validate_confirmatory_analysis(analysis, manifest)
+
+
+@pytest.mark.parametrize("unsafe_action", ["epsilon_denominator", "skip_gate"])
+def test_zero_reference_history_harm_rate_fails_closed(unsafe_action: str) -> None:
+    manifest, analysis = frozen_contracts()
+    analysis["effect_and_safety_gates"]["history_harm_rate_reduction"][
+        "zero_reference_harm_rate_action"
+    ] = unsafe_action
+
+    with pytest.raises(ConfirmatoryContractError, match="fail closed"):
+        validate_confirmatory_analysis(analysis, manifest)
+
+
+def test_per_seed_predicate_requires_conditions_on_the_same_seed() -> None:
+    manifest, analysis = frozen_contracts()
+    analysis["effect_and_safety_gates"]["per_seed_success"][
+        "same_seed_for_all_conditions"
+    ] = False
+
+    with pytest.raises(ConfirmatoryContractError, match="same seed"):
+        validate_confirmatory_analysis(analysis, manifest)
+
+
+@pytest.mark.parametrize("mutation", ["remove_regret", "replace_macro_f1"])
+def test_per_seed_predicate_requires_both_frozen_conditions(mutation: str) -> None:
+    manifest, analysis = frozen_contracts()
+    conditions = analysis["effect_and_safety_gates"]["per_seed_success"][
+        "success_requires_all"
+    ]
+    if mutation == "remove_regret":
+        conditions.remove("mean_regret_vs_current_non_positive")
+    else:
+        conditions[0] = "macro_f1_candidate_not_lower_than_reference"
+
+    with pytest.raises(ConfirmatoryContractError, match="both strict Macro-F1"):
+        validate_confirmatory_analysis(analysis, manifest)
+
+
+@pytest.mark.parametrize(
+    ("target", "unsafe_value", "message"),
+    [
+        ("macro_threshold", -0.001, "Macro-F1 difference"),
+        ("regret_threshold", 0.001, "mean regret"),
+        ("required_successes", 3, "exactly four of five"),
+        ("legacy_required_successes", 5, "exactly four of five"),
+    ],
+)
+def test_per_seed_thresholds_and_four_of_five_requirement_are_frozen(
+    target: str, unsafe_value: float | int, message: str
+) -> None:
+    manifest, analysis = frozen_contracts()
+    gates = analysis["effect_and_safety_gates"]
+    per_seed = gates["per_seed_success"]
+    if target == "macro_threshold":
+        per_seed["thresholds"][
+            "macro_f1_difference_strictly_greater_than"
+        ] = unsafe_value
+    elif target == "regret_threshold":
+        per_seed["thresholds"]["mean_regret_vs_current_must_not_exceed"] = unsafe_value
+    elif target == "required_successes":
+        per_seed["required_successes"] = unsafe_value
+    else:
+        gates["required_seed_successes_per_dataset"] = unsafe_value
+
+    with pytest.raises(ConfirmatoryContractError, match=message):
+        validate_confirmatory_analysis(analysis, manifest)

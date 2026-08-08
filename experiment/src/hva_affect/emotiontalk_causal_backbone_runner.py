@@ -655,6 +655,13 @@ class VerifiedCorpusProvenance:
             raise ContractError("dataset label order does not match model classes")
         if len(set(self.label_order)) != len(self.label_order):
             raise ContractError("dataset label order contains duplicate classes")
+        if (
+            model_config.auxiliary_vad_weight > 0.0
+            and tuple(model_config.emotion_label_order) != tuple(self.label_order)
+        ):
+            raise ContractError(
+                "VAD supervision label order differs from the verified dataset order"
+            )
         observed_rows = {role: int(np.sum(corpus.roles.astype(str) == role)) for role in OPEN_ROLES}
         if dict(self.role_rows) != observed_rows:
             raise ContractError("provenance role rows differ from materialised corpus")
@@ -880,6 +887,7 @@ def _internal_code_hashes() -> dict[str, str]:
     names = (
         "emotiontalk_causal_backbone_runner.py",
         "causal_multimodal_backbone.py",
+        "causal_affect_relation.py",
         "bidirectional_emotion_utility.py",
         "meld_text_pilot.py",
         "emotiontalk_role_sidecar.py",
@@ -1400,8 +1408,33 @@ def train_one_fold_seed(
                 )
                 target = torch.from_numpy(corpus.labels[query]).to(device)
                 repeated_target = target[:, None].expand(-1, len(ENDPOINT_CONTEXT_NAMES)).reshape(-1)
-                loss = loss_function(
+                classification_loss = loss_function(
                     output.logits.reshape(-1, model_config.num_classes), repeated_target
+                )
+                if model_config.auxiliary_vad_weight > 0.0:
+                    if output.query_vad is None or model.vad_label_table.shape != (
+                        model_config.num_classes,
+                        3,
+                    ):
+                        raise ContractError(
+                            "enabled affect relation did not expose its frozen VAD contract"
+                        )
+                    repeated_vad_target = model.vad_label_table[target][:, None, :].expand(
+                        -1, len(ENDPOINT_CONTEXT_NAMES), -1
+                    )
+                    vad_loss = torch.nn.functional.mse_loss(
+                        output.query_vad,
+                        repeated_vad_target.to(dtype=output.query_vad.dtype),
+                    )
+                else:
+                    if output.query_vad is not None:
+                        raise ContractError(
+                            "disabled VAD supervision unexpectedly emitted a VAD state"
+                        )
+                    vad_loss = classification_loss.new_zeros(())
+                loss = (
+                    classification_loss
+                    + model_config.auxiliary_vad_weight * vad_loss
                 ) / run_config.gradient_accumulation_steps
             scaler.scale(loss).backward()
             should_step = (
@@ -2231,6 +2264,10 @@ def validate_open_role_backbone_payload(payload: Mapping[str, object]) -> None:
     runtime = payload.get("runtime_contract")
     if not isinstance(runtime, Mapping):
         raise ContractError("backbone configuration lacks runtime_contract")
+    if runtime.get("staged_execution_required") is True:
+        raise ContractError(
+            "staged-only backbone configuration cannot use the monolithic runner"
+        )
     if runtime.get("sealed_test_labels_must_remain_unopened") is not True:
         raise ContractError("backbone configuration does not require sealed test labels to remain unopened")
     if "sealed_test_labels_required" in runtime:

@@ -17,8 +17,23 @@ Phase 1 — 预注册与 benchmark 冻结（in_progress）
 - [x] 完整预声明 Holm family 与 accuracy no-harm/non-inferiority gate
 - [x] aggregate-only exact public whitelist 与 EmotionTalk+MELD hash-bound index
 - [x] synthetic/相关/full regression、compileall 与 diff check
-- [ ] 实现独立 current-only artifact producer/CLI 与实际策略概率 bridge
-- [ ] 通过新的独立只读审计后，才决定是否授权正式 open-role 长跑
+- [x] 实现独立 current-only artifact producer/CLI 与 selection-feature-only 概率 cache
+- [x] 消除 current-only fit 的完整 history producer 冷启动依赖：fit-lineage/fit-map 可在 selection feature/label 均物理缺失时完成
+- [x] 修复第一轮 complete-selection High：不访问 selection label、绑定 preflight config/code、绑定 feature-sidecar cluster 分区
+- [x] 修复第二轮 production High：processor/model/identity strict-load、live lineage、固定 trainer、仓库外 private root 与原子 no-clobber writer
+- [x] 将 history producer 拆出 fit-only 与 selection-feature-only；独立 evaluate 仍待后续接线
+- [x] 通过新的独立只读审计后，才决定是否授权正式 open-role 长跑
+
+### N2 Affect-Relation Causal Backbone（2026-08-08）
+
+- [x] 接入严格过去 3×3 当前/历史模态关系与固定 VAD 辅助表示
+- [x] 冻结 EmotionTalk/MELD 的 full、同容量 current-only、no-VAD、no-3×3 共八份可执行配置
+- [x] no-VAD 禁止携带 VAD 标签顺序/辅助损失；VAD 标签顺序必须与已验证数据清单逐项一致
+- [x] 四变体参数量严格一致：EmotionTalk 1,540,191；MELD 1,838,815，均小于 2M
+- [x] 实现 versioned immutable source snapshot：clean detached worktree、commit/tree、递归 source set、repository-external write-once manifest
+- [x] 关闭 source-key consumer High、单数据集 verifier performance-gate High 与双数据集 joint freeze，并完成全仓独立审计
+- [x] 完成 history production CLI 第二轮修复、current-only 对称审计、全仓回归与最终独立只读 N2 审计
+- [ ] 只在新 freeze commit 推送后运行 fit-only OOF gate
 
 ### Selector repair 关闭记录（2026-08-08）
 
@@ -26,7 +41,14 @@ Phase 1 — 预注册与 benchmark 冻结（in_progress）
 - [x] Repair 2 class-balanced：NO-GO
 - [x] Repair 3 emotion/VAD/3×3：fit-only gate NO-GO（0/5 utility seeds；未打开 model-selection）
 - [x] 按“三种不同修复后停止”规则终止该 selector 模型族，不再进行 Repair 4 或结果驱动调参
-- [ ] 提交并推送 Repair 3 aggregate-only、write-once 结果与审计记录
+- [x] 提交并推送 Repair 3 aggregate-only、write-once 结果与审计记录（commit `f61aaa0`）
+
+### GPT baseline gate（2026-08-08）
+
+- [x] 真实受限数据云 GPT：NO-GO（无凭据、外传授权、DPA/ZDR 与冻结 adapter）
+- [x] 本地 7B+/gpt-oss：NO-GO（8GB 显存、内存与磁盘预算不足以支撑可重复长历史实验）
+- [x] 实现并测试 synthetic-only、零网络、write-once 的 GPT adapter 合同（仅未来接口，不是性能实验）
+- [ ] 在未来授权齐备前，只运行等信息 TF-IDF/SVD 与小型 causal backbone 离线基线
 
 ## Task-local best_skill card（2026-08-08）
 
@@ -43,7 +65,7 @@ reject_if: candidate fails to improve query Macro-F1 without positive excess NLL
 
 ## Next Step
 
-Repair 3 已在不可变 freeze commit `fddcda7` 上唯一运行一次并以 fit-only gate NO-GO 结束：0/5 utility seeds 通过，model-selection 预测与评分均未生成，65–79 payload 未打开。当前唯一下一动作是完成 aggregate artifact 的 schema/privacy/hash 审计后强制纳入版本控制并推送，同时完成 Causal Stage-B 的独立 current-only producer/CLI 与策略概率 bridge；随后仅在新的只读审计 GO 后运行真实 fit-only 生产。selector 三修复路线已经正式停止，不得 Repair 4、不得删除结果重跑、不得以封存角色调参。
+Repair 3 已以 0/5 永久 NO-GO 结束且不得重跑。N2 的 source snapshot、history/current/strategy/evaluator、单数据集 performance gate 与双数据集 joint freeze 已关闭全部已知 P0/P1；根任务全仓回归为 504 passed，最终独立 N2 审计为 167 passed。当前唯一下一动作是完成隐私/大文件/禁用文件审计并推送新 freeze；随后从该 commit 创建 clean detached worktree、仓库外 source manifest，并先做不读取真实标签的最大形状 CUDA smoke。只有 smoke 证明 batch=64 可行后才创建跨盘全新 write-once roots并启动真实 N2 open-role 训练；若 OOM，只能在任何性能结果可见前冻结等价 batch=32 应急配置并重新走完整 freeze。真实性能失败必须保留并进入 underpowered/否证路线，不得据结果修改 N2 结构、参考或阈值。
 
 ## Confirmatory Evidence Gate
 
@@ -138,6 +160,7 @@ Status: pending
 |---|---:|---|
 | 当前 Windows PowerShell 的 `ConvertFrom-Json` 不支持 `-Depth` 参数 | 1 | 未修改任何文件；改用 `python -m json.tool` 与无 `-Depth` 的定向字段读取，不重复该参数 |
 | 首次组合 planning patch 使用了错误的 findings/progress 标题锚点 | 1 | `apply_patch` 原子拒绝且无部分写入；读取真实 UTF-8 标题后分文件重试 |
+| 并行 `rg --files`/缺失 config 探测中有一个只读子命令以“无匹配”退出 1，使组合工具被标记失败 | 1 | 无文件修改；改用 `rg --files | Select-String` 与精确文件名只读定位，显式允许空结果 |
 | 初始仓库缺少持续计划文件 | 1 | 创建 task_plan.md、findings.md、progress.md |
 | PowerShell 默认编码导致中文 Markdown 乱码 | 1 | 后续读取显式使用 UTF-8，不把乱码误判为文件损坏 |
 | `System.IO.Path.GetRelativePath` 在当前 PowerShell/.NET 不可用 | 1 | 使用字符串前缀裁剪或 Python 只读枚举，不重复原命令 |
@@ -172,6 +195,15 @@ Status: pending
 | 从仓库根目录直接运行新增专项测试时未设置 `PYTHONPATH=experiment/src`，导致 `ModuleNotFoundError: hva_affect` | 1 | 未产生训练或结果；改为解析同级冻结 `.venv` 的相对路径，并显式设置仓库 `experiment/src` 为 `PYTHONPATH` 后再运行 |
 | 首次冻结暂存后的 `git diff --cached --check` 检出 6 个新增文件 EOF 多余空行 | 1 | 未提交、未推送、未运行真实 gate；对稳定文件用 `apply_patch` 去除多余空行，等待并行 Stage-B 收尾后重新暂存并全量复核 |
 | 用 `Measure-Object -Property` 直接传脚本块统计 staged numstat 时 PowerShell 拒绝 Hashtable property | 1 | 文件大小与禁用扩展名审计已完成且未修改文件；后续先将 numstat 映射成数值对象再求和，不重复该语法 |
+| 只读检索误写不存在的 `causal_backbone_stage_b.py` 文件名 | 1 | 无文件修改；通过 `rg --files` 定位实际文件为 `causal_backbone_evidence_stage_b.py`，后续使用精确路径 |
+| DLL 元数据审计末尾的 `git check-ignore` 因两个文件未被忽略而返回 exit 1 | 1 | 前置只读元数据/散列输出完整且无文件修改；单独复核确认它们是指向 Aha IPC 临时目录的运行时符号链接，后续显式排除暂存，不把“未忽略”重复当命令错误 |
+| 再次尝试跨三份 planning 文件组合补丁，因 `findings.md` 标题误写导致整体拒绝 | 1 | 确认无部分写入后按真实 UTF-8 标题逐文件应用；后续 planning 更新严格执行单文件补丁 |
+| 新增并发 public-writer 测试时只注册了 1 个 Holm 假设，而合同要求至少 2 个 | 1 | 未写科研结果；补齐第二个预声明 mean-regret 假设后，同一并发 writer 测试与 fit-receipt 并发测试均通过（`2 passed`） |
+| 再次误用 PowerShell 内联 `foreach {...} |` 枚举八份配置，触发 empty-pipe parser error | 3 | 无文件/结果修改；立即改为 `$rows = foreach (...) {...}; $rows | ...` 并成功只读。后续配置枚举只使用该两阶段写法或 Python，不再使用内联 foreach-pipe |
+| 再次把 `carma_affect_relation_*_v1.json` 作为 `rg` 字面路径，随后修正的检索又因零命中退出 1 | 2 | 两次均为只读且无状态变化；后续可能零命中的配置检索固定用 `Get-ChildItem ... | Select-String`，不再向 `rg` 传 Windows 通配路径，也不把零命中当错误 |
+| 合并磁盘与 `Win32_VideoController` CIM 查询超过默认 10 秒 | 1 | 无状态变化；拆为轻量 `Get-PSDrive` 与 `nvidia-smi --query-gpu` 后成功，不重复慢 CIM 路径 |
+| 已登记禁止的 Windows `rg` 路径通配符写法被再次误用，测试文件搜索返回路径语法错误 | 2 | 只读失败且无状态变化；立即改为目录参数加 `rg -g 'test_*.py'` 并成功，后续审计固定使用该形式 |
+| 将 CLI `--help` 直接管道到 `Select-Object -First` 导致消费端提前关闭、并行检查整体返回失败 | 1 | 无文件修改；改为完整捕获 help 文本后再取首行，compileall、JSON、diff 与 isolated CLI 四项均重新独立通过 |
 
 ## Decisions Made
 
@@ -189,3 +221,5 @@ Status: pending
 | 2026-08-08 | repair 2/3 class-balanced 判定 NO-GO，不再调参 | 虽把 true Macro-F1 从 0.52723 修到 0.54000并胜过current，但accuracy下降，且落后all-history/recency/backward；严格三参考联合门仅2/5 |
 | 2026-08-08 | repair 3/3 固定为情感概率3×3关系＋VAD特征增强，full为预声明primary | 前两条修复只改变效用目标/类平衡，尚未真实实现老师要求的情感理论与六流关系；复用repair2 policy可把增量归因于新特征而非再次换目标 |
 | 2026-08-08 | repair 1/3 distributional query-level 判定 NO-GO，不再调参 | true excess NLL显著改善但Macro-F1未高于current且比同coverage recency低0.01729，0/5过预注册门；forward/backward各4/5不能转化为双向成功 |
+| 2026-08-08 | 下一独立模型族预选 Affect-Relation Causal Backbone（N2），plain causal/quantile selector（N1）作强基线 | N2 最直接落实情感理论、当前/历史3×3关系和双向效用；必须先冻结同参数control、no-VAD/no-3×3消融与fit-only nested gate，不能依据selection结果调结构 |
+| 2026-08-09 | N2 production 工程与统计链单项 GO，但性能结论仍未知 | source/joint/CLI 独立审计与最终 N2 审计均无 P0/P1；504 项全仓回归通过。只有新 freeze、detached snapshot 与 CUDA smoke 后才授权真实训练，且 model-selection 前不得改结构/阈值 |

@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import inspect
 import json
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 from hva_affect.causal_backbone_evidence_runner import (
     EXPECTED_SEEDS,
@@ -16,10 +19,13 @@ from hva_affect.causal_backbone_evidence_runner import (
 from hva_affect.causal_backbone_evidence_stage_b import (
     CurrentOnlyFoldOutput,
     UtilityOOFSeedOutput,
+    _atomic_json_once,
+    _atomic_savez_once,
     produce_independent_current_only_fit_oof,
     produce_utility_oof_scores,
     validate_current_only_fit_files,
     validate_utility_oof_files,
+    write_fit_only_lineage,
     write_fit_protocol_map,
 )
 from test_causal_backbone_evidence_runner import (
@@ -51,6 +57,13 @@ def _stage_b_fixture(tmp_path: Path):
         expected_receipt_sha256=preflight.receipt_sha256,
         output_path=tmp_path / "fit-map.npz",
     )
+    lineage = write_fit_only_lineage(
+        preflight.fit,
+        fit_map=fit_map,
+        receipt_path=receipt_path,
+        expected_receipt_sha256=preflight.receipt_sha256,
+        output_path=tmp_path / "fit-lineage.npz",
+    )
 
     values = _producer_mapping(selection_poison=True)
     # The four fit protocol rows occupy the producer's registered fit positions.
@@ -80,7 +93,42 @@ def _stage_b_fixture(tmp_path: Path):
     producer_path = tmp_path / "producer.npz"
     _write_npz(producer_path, values)
     producer = load_fit_only_producer_view(producer_path)
-    return preflight, receipt_path, fit_map, producer_path, producer
+    return preflight, receipt_path, fit_map, lineage, producer_path, producer
+
+
+@pytest.mark.parametrize("kind", ["json", "npz"])
+def test_stage_b_write_once_publication_is_race_safe(
+    tmp_path: Path, kind: str
+) -> None:
+    destination = tmp_path / ("receipt.json" if kind == "json" else "artifact.npz")
+    barrier = threading.Barrier(2)
+
+    def write(index: int):
+        barrier.wait()
+        try:
+            if kind == "json":
+                digest = _atomic_json_once(destination, {"winner": index})
+            else:
+                digest = _atomic_savez_once(
+                    destination,
+                    {"winner": np.asarray(index, dtype=np.int64)},
+                )
+            return ("won", index, digest)
+        except FileExistsError:
+            return ("lost", index, None)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        outcomes = list(executor.map(write, (0, 1)))
+    assert sorted(value[0] for value in outcomes) == ["lost", "won"]
+    winner = next(value[1] for value in outcomes if value[0] == "won")
+    if kind == "json":
+        assert json.loads(destination.read_text(encoding="utf-8")) == {
+            "winner": winner
+        }
+    else:
+        with np.load(destination, allow_pickle=False) as archive:
+            assert int(np.asarray(archive["winner"]).reshape(())) == winner
+    assert not list(tmp_path.glob(f".{destination.name}.*.tmp"))
 
 
 def _write_fold_checkpoint(request: object) -> None:
@@ -114,7 +162,7 @@ def _assert_public_receipt_is_aggregate_only(path: Path, private_root: Path) -> 
 
 
 def test_stage_b_happy_path_hides_heldout_labels_and_targets(tmp_path: Path) -> None:
-    preflight, receipt_path, fit_map, producer_path, producer = _stage_b_fixture(
+    preflight, receipt_path, fit_map, lineage, producer_path, producer = _stage_b_fixture(
         tmp_path
     )
     current_requests = []
@@ -124,6 +172,7 @@ def test_stage_b_happy_path_hides_heldout_labels_and_targets(tmp_path: Path) -> 
         assert request.heldout_labels_materialized is False
         assert not hasattr(request, "labels")
         assert not hasattr(request, "heldout_labels")
+        assert request.fit_lineage_source_identity_sha256 == lineage.source_identity_sha256
         assert all(not history for history in request.train_histories)
         assert all(not history for history in request.heldout_histories)
         assert len(request.train_labels) == len(request.train_indices)
@@ -144,7 +193,7 @@ def test_stage_b_happy_path_hides_heldout_labels_and_targets(tmp_path: Path) -> 
     produced_current = produce_independent_current_only_fit_oof(
         fit=preflight.fit,
         fit_map=fit_map,
-        producer=producer,
+        lineage=lineage,
         fit_preflight_receipt_path=receipt_path,
         expected_fit_preflight_receipt_sha256=preflight.receipt_sha256,
         fold_by_seed_row=fold_by_seed_row,
@@ -154,6 +203,8 @@ def test_stage_b_happy_path_hides_heldout_labels_and_targets(tmp_path: Path) -> 
         producer_receipt_path=current_receipt,
         model_config_sha256=_sha("current-model"),
         run_config_sha256=_sha("current-run"),
+        model_config_semantic_sha256=_sha("current-model-semantic"),
+        run_config_semantic_sha256=_sha("current-run-semantic"),
         source_code_sha256=_sha("current-code"),
         runtime_environment_sha256=_sha("current-runtime"),
         fold_callback=current_callback,
@@ -161,7 +212,11 @@ def test_stage_b_happy_path_hides_heldout_labels_and_targets(tmp_path: Path) -> 
     assert len(current_requests) == len(EXPECTED_SEEDS) * 2
     current_summary = validate_current_only_fit_files(
         artifact_path=current_artifact,
-        producer_path=producer_path,
+        fit=preflight.fit,
+        fit_map=fit_map,
+        lineage=lineage,
+        fit_preflight_receipt_path=receipt_path,
+        expected_fit_preflight_receipt_sha256=preflight.receipt_sha256,
         checkpoint_root=checkpoint_root,
         outer_folds=2,
     )

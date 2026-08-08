@@ -1,5 +1,104 @@
 # CARMA-Affect Research Findings
 
+## N2 production 最终审计与运行授权边界（2026-08-09）
+
+- source snapshot 的创建期隐藏改写、ignored native/bytecode shadow、`experiment/src` sibling shadow、symlink/junction 逃逸与 joint 未绑定执行源码等 P1 已全部关闭。正式 source root 必须精确只含普通 `hva_affect` 目录，包树只允许普通 `.py`；CLI 在首次 `hva_affect` import 前关闭 bytecode、移除 scripts/CWD import path 并做纯标准库 closed-tree 扫描。
+- joint freeze 现以 receipt 作为最后 commit marker，发布顺序为 private artifact→public report→private receipt；verifier 绑定 decode 时的原始字节 SHA、要求 exact typed upstream/source attestations，并把 source manifest SHA、commit、tree 与 code-bundle 写入私有 artifact/receipt。public report 仍不暴露源码或上游 outcome hashes。
+- 单数据集 verifier 从 hash-bound aggregate artifact 重算七个性能/安全门并要求 H1/H2 Holm 拒绝；joint 只有在 EmotionTalk 与 MELD 各自 performance gate 和 prospective power 均通过时，才授权另建 calibration workflow。本层永不授权 calibration outcome、holdout、test 或 confirmatory success。
+- 根任务在项目 venv、`PYTHONDONTWRITEBYTECODE=1` 与仓库外 pycache prefix 下完成全仓回归：`504 passed, 175 warnings in 159.13s`。warning 仅来自合成 SVD 零方差、合成 MLP 未收敛和 PyTorch AMP deprecation；compileall、48 份 JSON、diff-check、isolated CLI 与 closed source tree 均通过。
+- Windows 系统 Git 的全局 `core.autocrlf=true` 会让新 detached checkout 把未声明的 JSON/Python 从 LF 改成 CRLF，从而破坏 confirmatory config 的字节 SHA。freeze 前已在 `.gitattributes` 固定 `.gitattributes`、`*.py`、`*.json`、`*.md` 为 LF；必须在真实 detached worktree 再核验 config SHA 后才能创建 source snapshot。
+- 最终独立 N2 production 审计为 P0=0、P1=0；模型/配置/loader/lineage 与 staged production 共 `167 passed`，104 个 Python 文件 compile-to-memory 通过。审计确认严格过去、fit→selection feature→selection label 顺序、checkpoint strict-load/resume、四变体同参数及共享 full-current anchor 均闭环。
+- 三项 P2 不改变当前科研判定：硬中断可能留下无 receipt 的孤立 write-once 文件，需换新 root 重试；正式 accumulation=1 不受末尾不足组缩放问题影响；唯一运行前实际风险是 MELD 4096D video、batch=64 在 8GB GPU 尚无最大形状 backward smoke。必须在任何真实性能可见前先做 synthetic CUDA smoke；若 OOM，冻结 batch=32 等价应急配置并重新提交/snapshot，不能看到结果后改 batch。
+- 正式调用统一使用项目 venv的 `python -I`，不依赖 `PYTHONPATH`；CLI 自行插入并验证 detached worktree 的 closed `experiment/src`。两个根目录 DLL 是 Aha IPC 临时符号链接，继续严禁暂存或提交。
+
+## Immutable source snapshot 集成审计（2026-08-09，High 已闭环）
+
+- `ProductionSourceSnapshotAttestation.stable_code_paths()` 按冻结合同返回 repository-relative POSIX source keys；现有 evidence/history/strategy consumers 仍把所有 named paths 限制为 basename token，因此把 snapshot mapping 直接传入 production CLI 会在真实第一步以 unsafe name 拒绝。
+- 修复必须区分两类命名合同：config/普通 artifact name 继续使用无斜杠 token；source mapping 只允许 canonical repository-relative POSIX key，并精确限制为 required CLI 与 `experiment/src/hva_affect/**/*.py`，拒绝绝对路径、反斜杠、空段、`.`、`..` 和范围外文件。不能为通过测试而放宽成任意 slash path。
+- snapshot 模块专项当前 `16 passed`；旧 fit-lineage CLI 测试的 8 个失败来自新增三个必填 snapshot 参数后 fixture 未同步，不是 snapshot verifier 本身失败。真实训练继续 NO-GO，直到 consumers 与测试闭环。
+
+## 双数据集 joint model-selection freeze 的冻结边界（2026-08-09）
+
+- joint 层只能消费 EmotionTalk 与 MELD 各自经 `verify_model_selection_reference_freeze_receipt(...)` 验证的 aggregate attestation，必须精确绑定同一 confirmatory config SHA、两个不同 dataset identity、各自冻结 reference IDs 与上游 source snapshot；它本身不得获得任何 label capability 或重载概率/标签数组。
+- calibration 的唯一解封条件应为：两数据集单独的全部预注册 model-selection gate 均通过，且两数据集针对预注册 Macro-F1 增益 `0.005` 的 prospective sensitivity 均达到 `power >= 0.80`。观察到的效应、单个数据集的高功效或跨数据集平均功效都不能替代该逐数据集门。
+- joint 工件必须 aggregate-only、repository-external、write-once/no-clobber，并明确只授权下一阶段 calibration workflow；不得在 model-selection 阶段生成 confirmatory method-success claim、授权 holdout/test 或把 5 个 seed 当成独立样本。
+- 单数据集 receipt verifier 的 fail-open 缺口已关闭：它现在从 hash-bound 私有 aggregate artifact 逐项重算七个 performance/safety gates，重建完整 H1–H5 Holm 校正并要求 H1/H2 拒绝，返回 typed `model_selection_gate_passed`；receipt 自报布尔只作一致性核对，不能作为信任源。专项 `26 passed`，evaluator+confirmatory+strategy+evidence 联合 `85 passed`。
+
+## N2 model-selection evaluator 与资源冻结前审计（2026-08-08）
+
+- 单数据集 evaluator 必须在任何 model-selection 标签访问前同时证明 `full`、`no_vad`、`no_history_3x3`、`capacity_control` 四份 strategy completion，且四者共享同一套由 `full` 锚定的 independent current-only、精确 query/task/history/seed/fold/class/cluster 对齐及 live config/code/runtime lineage；variant 必须由实际 `CausalBackboneConfig` 与 `experimental_contract` 推导，调用方名称不能覆盖真实配置。
+- confirmatory 合同原有两处结果前歧义：5% history-harm 相对降幅未指定参考，且 4/5 seed 未定义同一 seed 的成功谓词。冻结修复方向为：harm-rate 只相对最强 history-using admissible baseline（all-history、coverage-matched recency、forward、backward）并在零分母时 fail closed；同一 seed 至少同时要求 full 的 Macro-F1 高于冻结参考且 mean regret 不大于 0。aggregate 的 Macro-F1 `0.005`、regret CI、harm、accuracy 与 Holm 门保持独立，不能用 4/5 seed 取代。
+- 功效步骤固定为设计敏感性而非 observed post-hoc power：假定效应始终是预注册的 Macro-F1 `0.005`，用聚类重采样误差和 whole-cluster randomization 临界值估计 power；低于 `0.80` 时继续封存 calibration/holdout/test。
+- 内存序列化估算显示完整 AdamW checkpoint 约为 EmotionTalk `17.73 MiB`、MELD `21.15 MiB`；TF-IDF/SVD 已使用 float32，单 processor 的 50k×256 components 理论主体上界约 `48.83 MiB`。250 个 history/current fold-seed 模型连同 processor 的保守主体预算约 17–21 GiB，可跨 C/D/E 三盘分布，无需为存储改变模型。正式 root 仍须在新 freeze 后创建并保留 write-once 余量。
+- 本轮审计与估算没有打开真实 model-selection/calibration/holdout/validation/test 标签，也没有启动真实训练。
+
+## History completion 下游生产证明结论（2026-08-08）
+
+- `verify_history_completion_production_attestation` 现可在 outcome-free 阶段验证 completion receipt 的 expected SHA、精确 schema、production 状态，以及 history complete artifact 的身份、概率哈希和完整 lineage。
+- 证明链继续追溯到 fit artifact/receipt、immutable production claim、checkpoint manifest、source/config/code/runtime，并要求全部位于同一个仓库外 canonical private root；验证前后重复散列，降低检查后替换风险。
+- 对抗测试确认错误 expected SHA、synthetic receipt、complete artifact/checkpoint/claim 篡改，以及同步改写 SHA 后的 fit-receipt claim 漂移都会 fail closed；验证过程不打开原始 selection feature 或 selection label。
+- 该闭环只解决 history completion 的可证明来源；在 CLI 将它置于 selection feature 首次访问之前、current-only/strategy/evaluate 都消费其 attested view 之前，真实长跑仍为 NO-GO。
+
+## 四变体共同基线与统计功效口径（2026-08-08，结果不可见时冻结）
+
+- 每个数据集只训练一套由 `full` history producer 锚定的 independent current-only；full/no-VAD/no-3×3/capacity-control 四个 history 变体各自产生策略概率，但在 joint evaluator 中共同引用这套相同基线。否则四套不同 current-only 会把消融效应与基线训练差异混在一起。
+- full 的 all-history、coverage-matched recency、forward-only 与 backward-only 构成可冻结的强参考候选；三个消融用于 H3/H4/容量反证，不得以各自更弱的参考夸大 full 增益。
+- 五个训练 seed 是算法稳定性维度，不是五个独立受试样本；区间仍采用 seed×共享整簇 crossed bootstrap，原始 p 值采用整簇配对 randomization，并经 Holm 校正。
+- `0.005` Macro-F1 是预先定义的最小有意义/可检测增益。model-selection 评估后、任何 calibration/holdout/test 解封前，必须基于 fit+model-selection 的聚类重采样误差做设计敏感性/功效审计；不得用观察到的效应计算循环的 post-hoc power。功效低于 0.80 时按合同报告 underpowered 并保持后续角色封存。
+
+## Freeze 前 history production 独立审计（2026-08-08，待修）
+
+- 根任务的新一轮 provenance 复核发现正式 CLI 的 `PRODUCTION_CODE_NAMES` 尚未覆盖训练 runner 的全部本地执行依赖；至少 `meld_text_pilot.py` 的 `true_class_loss`/NLL floor 和 `meld_causal_backbone_loader.py` 位于现有 runner 自身的 internal hash 集却不在 preflight/live exact code mapping 中，`data_contract.py` 等直接导入也未绑定。真实 freeze 前必须把实际本地依赖闭包纳入 canonical mapping 并用缺失/替换测试 fail closed，不能只依赖顶层模块哈希。
+- Windows 并发 publish 的实际竞态根因已定位并关闭：竞争输家在 `os.fdopen` 已关闭 descriptor 后再次 `os.close(descriptor)`，descriptor 数值可能已被 OS 复用于赢家的 SHA 读取句柄，造成 `Bad file descriptor`；NPZ/JSON writer 现不再二次关闭 stale descriptor，专项并发测试及完整 history+lineage `37 passed`。
+- execution runtime 已与 preflight runtime 分离：preflight 继续核对既有 receipt 的基础环境，正式 fit/resume/materialize/complete 则绑定含 torch/CUDA/cuDNN、设备、determinism、SciPy/sklearn 与 installed-packages hash 的执行环境。tiny valid-VAD/no-VAD 真实训练恢复链已通过，但仍需 current-only 对称审计、全仓回归和最终独立审计后才能改变真实运行 NO-GO。
+- 最新 N2/history/current/lineage 联合回归为 `68 passed`，但测试通过只证明现有合成合同，不授权真实运行。
+- history staged 独立只读审计为 **NO-GO**：selection feature 打开前的 checkpoint 验证仍是浅层 schema/type 检查，未把 processor、fold/source/config/split identity 与可 strict-load 的模型状态真正绑定；空 state dict 与任意 processor bytes 的测试 fixture 仍可通过。
+- 正式 history CLI、canonical production code 绑定、live config/code/runtime 的 completion 前后复验、仓库外同一全新 private root、原子 no-clobber write-once 与 production-only 固定 trainer 尚需闭环。
+- 还需重算 fit texts/audio/video/labels/speakers 的 live array contract，拒绝零 utility tasks，并补 valid-VAD/no-VAD 的 tiny real train→restore→selection inference 端到端测试。
+- 同类风险可能存在于 current-only：共享 Stage-B writer 仍是 `exists()` + predictable `.tmp` + `os.replace()`，checkpoint pre-gate 也尚未证明 processor/identity/model strict-load；因此 freeze 前必须做一次独立 current-only production 审计并统一修复，不能只修 history。
+- 本轮未启动 GPU、未打开真实 sidecar payload 或任何 selection/calibration/holdout/validation/test 标签；GPT 真实数据路线仍因无凭据与外传许可保持 NO-GO。
+- canonical-input 审计新增 MELD v2 硬阻断：`evidence_runner._validate_manifest_contract` 错把 manifest 的 `roles` 强制为仅 fit+selection，而正式 MELD v2 合法包含 calibration/internal-holdout 的封存元数据，导致 fit-only hash 入口在打开任何 payload 前即拒绝。修复必须只放宽“manifest 可描述封存角色”，不能让 fit-only/selection-feature capability resolve、stat、hash 或打开这些封存文件；MELD v1 继续禁止。
+- 上述 MELD v2 阻断已定向修复：manifest 对 MELD 精确要求 fit/selection/calibration/internal-holdout 四份元数据，全部做 exact-schema/count/hash/filename 校验；实际 capability 仍只把 fit 或 selection feature 文件名解析成路径。封存 fixture 文件故意不存在且 guard 未触发，runner 专项 `11 passed`。
+- 正式 MELD v2 fit-only 字节核验现通过：6,606 行、679 dialogues；feature SHA-256 `a095297e9033dd2ddb4c5bfb6646d2175a29a88f810a08249d88893dac9b70e1`，label SHA-256 `0e9a20b29a503d322ef595bb5b45c461dc285b60b86c21962965c7414aa86258`，与公开 manifest 一致。该核验未访问 selection/calibration/internal-holdout payload，也不是性能实验。
+- canonical-input 独立审计确认数据/config 单项 GO：EmotionTalk 9,549行/368组/最大严格历史41/13个fit speaker token；MELD 6,606行/679 dialogues/最大严格历史15/188个fit speaker token；均低于 max-history 128 与 speaker 容量，bucket、VAD order 和特征维度匹配。八配置哈希与 utility config hash 已登记，MELD v1 继续禁用。
+- 存储是现实阻断：每变体 25 folds，保守估计 1.8–2.5 GiB；八变体约14–20 GiB，加原子临时文件需至少25 GiB。D盘10.56 GiB不足；正式根目录拟放仓库外 C盘私有位置，但当前 C盘21.39 GiB也低于25 GiB安全预算。启动全八变体前必须降低可证明的存储上界、增加空间或分布到多个仍可保留的仓库外根，禁止删除正式工件后重跑。
+
+## N2 与 staged completion 的最新证据边界（2026-08-08）
+
+- Affect-Relation branch 只在推理输入中接收投影后的文本/音频/视频、严格过去 mask、turn/position 与 modality mask；不接受 label/target/gold 参数。VAD gold 仅能在 fit-train 辅助损失中由已验证的七类 label order 映射。
+- no-VAD 必须同时满足 `use_vad_features=false`、auxiliary weight=0、label order 为空；否则 fail closed。full、no-3×3 与 current-only capacity control 固定使用同一 VAD loss 和相同参数量，避免把额外容量误写为关系信息增益。
+- 八份配置的四变体参数严格相同；因此后续 full-vs-control/no-VAD/no-3×3 可以解释信息来源，但仍必须使用同一 split、seed、训练预算和 write-once 评估，不能依据 model-selection 结果选择结构。
+- current-only fit-lineage 已解决冷启动依赖环的 fit 部分，但“feature-only completion”仍不安全：字节哈希 selection label 也属于打开标签文件；只有在任何 selection feature 访问前验证 checkpoint 内容为 complete，并把实际 config/code 与 preflight freeze 逐项绑定，才能进入下一阶段。
+- 现有 completion 测试曾只拦 `np.load` label，遗漏 `rb` 哈希访问，并用任意 bytes 模拟 complete checkpoint；后续对抗测试必须覆盖文件完全不存在、partial checkpoint 先于 selection 访问失败、未冻结 config/code 拒绝、cluster 分区替换拒绝。
+
+## 下一模型族的预结果头脑风暴（2026-08-08；proposal，不是发现）
+
+**焦点问题。** 在不读取 selection 标签、8GB 显存、<2M 参数和严格过去历史约束下，哪个新模型族最有机会同时落实老师的“情感理论＋六流/3×3关系＋双向边际效用”，并与已停止的 MLP selector 三修复路线实质区分？
+
+**独立候选。**
+
+- `N1`：保持现有 causal multimodal backbone，仅用概率关系特征训练保守双向 quantile/tree selector。假设是新 backbone 已足以提高 utility 可学性；预测为 fit-OOF 的 forward/backward 保守分位分数能胜过 recency；反证是仍被 recency/all-history 支配。优点是最可行，缺点是情感理论与 3×3 创新弱。
+- `N2`：Affect-Relation Causal Backbone。对当前三模态投影与“可见历史按模态聚合”显式计算 3×3 的 cosine/L2/signed-delta 关系，并加入固定 PAD/VAD 锚点的辅助情感状态头；再以不同集合双向 utility 做可逆选择。预测为 full 相对等参数、无历史关系信息的 control 在 fit 内 nested gate 上提高 Macro-F1/NLL 且 accuracy 不受损；若只改善 surrogate utility 或只靠更多参数，则否证核心机制。该候选最直接对应老师第2/3点，但实现和消融成本最高。
+- `N3`：六个 current/history modality experts 的可逆 mixture-of-experts gate。假设负迁移来自模态特异冲突；预测为缺失/噪声模态压力下仍能定位有害历史。反证是普通 late-fusion/attention 等参数对照同样有效。它与已有 multimodal MoE/interaction 文献重叠较高，且 8GB 下训练不稳定风险更大。
+- `N4`：冻结 GPT 情感教师/critic。假设语言模型提供额外情感常识；反证为不胜等信息 TF-IDF/XLM-EMO 或不可固定快照。该候选受数据外传许可、DPA/ZDR、凭据和 snapshot 全部阻断，当前不进入实证。
+
+**预先评价标准（方向均为越高越好，1–5 的不确定区间）。** 教师要求契合度、与失败模型族的独立性、8GB 可行性、无泄漏可审计性、顶会方法新意、失败结果的信息价值。综合判断：`N1` 约 3–4/5（工程强、方法弱）；`N2` 约 4–5/5（最契合、风险可控）；`N3` 约 2–4/5（重叠与训练风险大）；`N4` 当前被合规 veto，不评分选优。
+
+**对抗审查。** `N2` 的 3×3、VAD 和 causal attention 单项都不是首创；只能主张它们与“不同集合双向效用＋可逆安全回退”的完整闭环。新增参数、VAD 辅助损失权重、历史覆盖和优化几何都可能伪装成关系增益，因此必须在见到 selection 结果前冻结：同参数无历史关系 control、no-VAD、no-3×3、plain causal、current/all/等基数 recency 对照；fit 内 nested gate；同 seed 同 fold；accuracy no-harm；失败即记录，不为 selection 调 λ 或结构。
+
+**决策。** `N2` 作为下一独立模型族的 primary proposal，`N1` 作为低成本强基线与应急 benchmark 路线；先完成分阶段 producer，使任何候选都能在相同访问合同上运行。只有在代码/消融/容量 control 冻结并通过合成审计后才允许真实 fit-only 运行。
+
+**N2 Part 0 合成实现。** 新增 outcome-free `CausalAffectRelation`：输入为投影后的当前/历史 text-audio-video 表示、mask、turn 与 query index；内部再次执行 `(turn, position)` 严格过去过滤，计算 9 个有序模态对的 cosine/L2/signed-delta（27D），并拼接 query VAD 与 query−history VAD（6D）。同参数 control 用当前模态的固定循环视图替换历史汇总，参数完全相同但不含历史关系信息；无历史时两者 residual 都严格为零。VAD gold 只由独立 fit-train-only loss helper 接收，forward API 不接受 label/target。当前仅是可接入模块，不是完整 backbone 或性能结果。
+
+## Causal Stage-B 真实启动依赖环审计（2026-08-08）
+
+- 当前 `current-only-fit` 真实入口为 **NO-GO**：CLI 强制接收 `--producer`，而 `load_fit_only_producer_view()` 只接受完整 `carma_causal_backbone_open_role_private_v2` 工件；工作区目前没有该真实工件。
+- 唯一能生成该完整 producer 的 `execute_crossfit_backbone()` 会同时构造 selection tasks、用 `corpus.labels` 计算 selection utility，并汇总 selection endpoint/utility；EmotionTalk/MELD 现有 corpus loader 又会同时载入 fit 与 selection label sidecars。因而“先生成 producer 再跑 current-only-fit”会提前使用 selection labels，违反三阶段访问隔离。
+- 现有合成测试使用伪造完整 producer，因此即使全部通过也没有覆盖上述真实冷启动依赖环。真实 GPU 长跑继续禁止。
+- 最小闭环必须包括：以 Stage-A fit receipt + 私有 fit protocol map 建立 outcome-free fit lineage，使 current-only fit 不依赖完整 producer；为 fit-map 提供正式 write/validate CLI；把 history backbone 拆成 fit-only checkpoint/OOF、selection-feature-only inference、最后 evaluate 才加载 selection labels。
+- 当前代码已能仅由 fit groups 生成 label-blind outer-fold assignment，且 current-only fold callback 不接收 heldout labels；阻断位于 artifact lineage/CLI 与 history producer 分阶段，而不是 history-stripped 模型本身。
+- 对科研工作区与 `D:/HVA-Affect_data` 的只读文件名扫描未发现可复用的 causal/history/current-only producer 或 checkpoint；D 盘只有 v2 sidecars 等输入目录。因此不能通过“找回旧完整 producer”绕过冷启动修复，必须真正实现分阶段生产链。
+
 ## Repair 3 唯一真实运行的冻结终判（2026-08-08）
 
 - 聚合工件：`experiment/artifacts/emotiontalk_emotion_relation_vad_repair_v1_open_role.json`；SHA-256 为 `cbdb69b81db27195c86f032cdd263c17718ad5842b363c6b0f4afaee69a45504`。
@@ -11,6 +110,30 @@
 - primary 五 seed 平均 history coverage 为 0.529869，59D 为 0.568490，rank-59 capacity control 为 0.579212；平均差为 -0.038621/-0.049344。部分 NLL/accuracy 改善伴随更保守的历史使用，不能归因成 relation/VAD 特征优势。
 - 该文件默认被 `.gitignore` 的 `experiment/artifacts/` 规则忽略且当前未跟踪；需在审计完成后仅对这一 aggregate-only 文件使用 `git add -f`。不得删除后重跑。
 - 科研含义：三种 selector repair 已耗尽，不能继续围绕同一模型族调参。下一条可审计路线是 benchmark/否证论文与 Causal Stage-B 的真实 independent current-only、utility OOF、selected/recency bridge 和跨数据集联合推断。
+
+## Causal Stage-B 真实 sidecar 可用性复核（2026-08-08）
+
+- 受限数据边界内已定位 EmotionTalk v2 fit feature sidecar（81,967,929 bytes）与 MELD v2 fit feature sidecar（97,409,244 bytes）；对应公开 manifest 的行数、维度和 SHA 已存在于仓库。
+- MELD 历史 v1 sidecar 同时存在，但公开运行合同明确禁止用于正式 v2 pipeline；后续只允许使用新 v2 目录。
+- 现有公开 runner 的 `current_only` 是同一 history-aware 模型上的空历史干预，不是独立训练的 history-stripped baseline。它适合生成干预概率，却不能单独满足论文所需的独立 current-only 对照。
+- 因此下一实现必须把 independent current-only fit、selection-feature-only fold ensemble 与供 causal evaluator 消费的完整 probability cache 分成明确阶段；selection labels 与 evaluate API 在这一阶段仍不可见。
+- EmotionTalk v2 目录含且仅含 fit/selection 的四个 feature/label sidecar；MELD v2 目录还物理包含 calibration/internal-holdout 的独立 sidecar，但本轮只列文件名和大小，未打开或反序列化它们。
+- 当前 RTX 4070 Laptop 可用显存约 7.84 GiB；C/D/E 剩余约 24.86/10.56/9.84 GiB。足够运行小于 2M 参数的五 seed cross-fit，但 checkpoint/cache 必须 write-once 并控制体积，不适合临时下载 7B+ 模型。
+- 冻结 production 配置为 5 seeds × 5 outer folds，即每个数据集最多训练 25 个独立 fold 模型；单模型最多 32 epochs、patience 5、batch 64、AMP、显存上限 7,800 MiB。真实运行应依赖原子 checkpoint 续跑，不能因中断改变 seed、fold 或超参。
+
+## GPT/外部 LLM 可行性审计（2026-08-08）
+
+- 当前未检测到 OpenAI/Azure OpenAI 凭据，仓库也没有 GPT adapter、冻结 prompt/schema 或私有 write-once cache 合同；未调用任何付费 API。
+- 冻结 split manifest 明确禁止把 raw/row-level restricted dataset content 发送到 external LLM API。即使未来获得 key，在逐数据集书面外传授权、机构 DPA 与项目级 ZDR/MAM 证据齐备并以新 protocol id 修订前，EmotionTalk/MELD 真实文本仍为 NO-GO。
+- OpenAI 官方数据控制文档说明：API 数据默认不用于训练，但 abuse monitoring logs 通常可保留最多 30 天；Zero Data Retention/Modified Abuse Monitoring 需要预先获批。故未来云端实验只允许 stateless、`store:false`、禁用 tools/web/files 的受控调用，并把模型、prompt、schema、重试、成本与响应缓存完全冻结。
+- 本机 8GB Ada GPU 与约 10GB 级剩余数据盘不适合本地 GPT 级开放权重模型；不下载 7B+/20B 权重。当前可执行替代是 synthetic-only adapter 合同与小型多语冻结编码器/TF-IDF 等信息基线。
+- GPT 若未来解除 NO-GO，只能作为文本零样本基线、冻结特征或 fit-only 教师；必须在同一行集、同一历史可见范围与同一下游头下胜过最强非 GPT 等信息基线，否则 STOP，不能充当核心方法或补齐音频/视频证据。
+- 官方核对来源（访问于 2026-08-08）：[Data controls](https://developers.openai.com/api/docs/guides/your-data)、[latest model guide](https://developers.openai.com/api/docs/guides/latest-model.md)、[gpt-5.6-terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra.md)、[gpt-oss hardware guide](https://developers.openai.com/cookbook/articles/gpt-oss/run-transformers#pick-your-model)。
+- 第一版 synthetic-only adapter 虽然 20 项测试通过且没有任何网络/API 路径，但独立对抗审计判定 BLOCK：隐藏的 caller-supplied repository root 可绕过“私有文件在仓库外”检查；任意真实文本也可通过自我声明和 `[SYNTHETIC]` 前缀伪装。
+- 修复门：仓库根必须从模块位置固定推导且不可由 CLI/调用者覆盖；只允许与代码内冻结 fixture 完全相同并匹配冻结 SHA 的输入；公开 receipt 必须做嵌套 exact-schema 校验并绑定 split manifest/config/protocol；通过新对抗测试前不得提交为安全合同。
+- 上述 synthetic-only High 已闭环：repo root 由模块物理位置固定，canonical fixture 必须 deep-equal 且命中冻结 SHA allowlist；任意自行添加 `[SYNTHETIC]`、PII、URL、Windows/Unix 路径、受限数据集名或 MELD 祖先路径均拒绝。
+- receipt 现对所有嵌套字段做 exact schema/type/value/hash 校验，并把 config、完整 split manifest、manifest id/schema/status、split protocol、analysis id 绑定进 HMAC、私有 cache 与公开 receipt；AST 门禁止网络/API、子进程、动态导入及动态执行逃逸。
+- synthetic/confirmatory 联合验证由实现任务报告为 `67 passed`（49+18），但模型快照诚实标记为 `current_alias_unpinned_no_execution`，production 仍因许可、DPA/ZDR、固定 snapshot、API 项目/预算与真实 adapter 缺失而硬拒绝。该合同只能保留为未来接口，不是实验数据。
 
 ## Causal Stage-B Part 1 合成合同结论（2026-08-08）
 

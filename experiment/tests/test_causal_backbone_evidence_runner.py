@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
@@ -287,6 +288,23 @@ def _make_meld_sidecars(root: Path, *, poison_selection: bool = False) -> Path:
             "label_sha256": _file_sha(label_path),
             "row_alignment_sha256": alignment,
         }
+    # The production MELD v2 manifest records the sealed roles as public
+    # aggregate metadata.  Their files deliberately do not exist in this
+    # fixture: open-role capabilities must validate the metadata without ever
+    # resolving or touching the corresponding payload paths.
+    for role in ("calibration", "internal_holdout"):
+        roles[role] = {
+            "feature_filename": f"features_{role}.npz",
+            "label_filename": f"labels_{role}.npz",
+            "rows": 4,
+            "dialogues": 2,
+            "history_eligible_rows": 2,
+            "audio_dimension": 3,
+            "video_dimension": 2,
+            "feature_sha256": _sha(f"MELD-{role}-feature"),
+            "label_sha256": _sha(f"MELD-{role}-label"),
+            "row_alignment_sha256": _sha(f"MELD-{role}-alignment"),
+        }
     manifest = {
         "schema_version": MELD_MANIFEST_SCHEMA,
         "protocol": MELD_PROTOCOL,
@@ -346,7 +364,11 @@ def _lineage_files(root: Path) -> tuple[dict[str, Path], dict[str, Path]]:
     code = root / "frozen-code.py"
     config.write_text('{"frozen": true}\n', encoding="utf-8")
     code.write_text("FROZEN = True\n", encoding="utf-8")
-    return {"frozen_config": config}, {"runner_code": code}
+    return {
+        "frozen_config": config
+    }, {
+        "experiment/src/hva_affect/frozen_code.py": code
+    }
 
 
 ENVIRONMENT = {"python": "synthetic", "numpy": "synthetic", "platform": "synthetic"}
@@ -394,6 +416,41 @@ def test_fit_preflight_never_np_loads_selection_payloads(
     assert access["training_run"] is False  # type: ignore[index]
     assert access["performance_metric_computed"] is False  # type: ignore[index]
     validate_fit_receipt(result.receipt)
+
+
+def test_meld_open_role_capabilities_never_touch_sealed_role_payloads(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manifest = _make_meld_sidecars(tmp_path)
+    sealed_names = {
+        f"{kind}_{role}.npz"
+        for kind in ("features", "labels")
+        for role in ("calibration", "internal_holdout")
+    }
+    assert all(not (tmp_path / name).exists() for name in sealed_names)
+    touched: list[str] = []
+    original = runner._file_sha256
+
+    def guarded_hash(path: Path) -> str:
+        if path.name in sealed_names:
+            raise AssertionError("sealed MELD payload was touched")
+        touched.append(path.name)
+        return original(path)
+
+    monkeypatch.setattr(runner, "_file_sha256", guarded_hash)
+    fit_only = runner.hash_fit_role_sidecars_only(
+        dataset="MELD",
+        sidecar_dir=tmp_path,
+        manifest_path=manifest,
+    )
+    assert fit_only.fit.rows == 4
+    selection_feature = runner.hash_fit_and_selection_feature_sidecars_only(
+        dataset="MELD",
+        sidecar_dir=tmp_path,
+        manifest_path=manifest,
+    )
+    assert selection_feature.selection.rows == 4
+    assert sealed_names.isdisjoint(touched)
 
 
 @pytest.mark.parametrize("dataset", ["EmotionTalk", "MELD"])
@@ -500,6 +557,34 @@ def test_fit_receipt_is_write_once_and_aggregate_only(tmp_path: Path) -> None:
             code_paths=code,
             environment=ENVIRONMENT,
         )
+
+
+def test_fit_receipt_never_clobbers_a_concurrent_winner(tmp_path: Path) -> None:
+    manifest = _make_emotiontalk_sidecars(tmp_path)
+    configs, code = _lineage_files(tmp_path)
+    receipt = tmp_path / "concurrent-fit-receipt.json"
+
+    def attempt(_: int) -> str:
+        try:
+            run_fit_preflight(
+                dataset="EmotionTalk",
+                sidecar_dir=tmp_path,
+                manifest_path=manifest,
+                receipt_path=receipt,
+                config_paths=configs,
+                code_paths=code,
+                environment=ENVIRONMENT,
+            )
+        except FileExistsError:
+            return "exists"
+        return "written"
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        outcomes = list(pool.map(attempt, range(8)))
+    assert outcomes.count("written") == 1
+    assert outcomes.count("exists") == 7
+    validate_fit_receipt(json.loads(receipt.read_text(encoding="utf-8")))
+    assert not list(tmp_path.glob(".concurrent-fit-receipt.json.*.tmp"))
 
 
 def _uniform(shape: tuple[int, ...]) -> np.ndarray:

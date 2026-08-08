@@ -1,0 +1,113 @@
+{
+  "schema_version": "carma_affect_relation_emotiontalk_full_v1",
+  "status": "frozen_open_role_production_contract_not_performance_evidence",
+  "experimental_contract": {
+    "model_family": "affect_relation_causal_backbone_v1",
+    "dataset_id": "EmotionTalk",
+    "variant": "full",
+    "primary_variant": "full",
+    "historical_information": "strict-past 3x3 current-history modality relations plus learned VAD transition",
+    "same_nominal_parameter_count_across_variants": true,
+    "same_training_protocol_across_variants": true,
+    "model_selection_may_choose_variant": false,
+    "fit_labels_may_train_classifier": true,
+    "fit_labels_may_train_fixed_vad_auxiliary": true,
+    "selection_labels_available_only_in_independent_evaluate_stage": true
+  },
+  "runtime_contract": {
+    "download_pretrained_models": false,
+    "sealed_test_labels_must_remain_unopened": true,
+    "staged_execution_required": true,
+    "causal_order": "lexicographic(turn_id, sequence_index)",
+    "history_mask_semantics": "hard visible-key subset; query is always added; future is always removed",
+    "utility_context_order": [
+      "current",
+      "S",
+      "S_plus_h",
+      "T",
+      "T_minus_h"
+    ]
+  },
+  "feature_contract": {
+    "text": {
+      "dim": 256,
+      "source": "fold-local text matrix followed by TruncatedSVD",
+      "fit_scope": "inner_train_fold_only",
+      "frozen_input": true
+    },
+    "audio": {
+      "dim": 1536,
+      "source": "precomputed WavLM mean-and-standard-deviation embedding",
+      "encoder_frozen": true
+    },
+    "video": {
+      "dim": 768,
+      "source": "precomputed DINO embedding",
+      "encoder_frozen": true
+    }
+  },
+  "model": {
+    "d_model": 128,
+    "num_heads": 4,
+    "num_layers": 4,
+    "ffn_dim": 384,
+    "num_speakers": 64,
+    "max_turns": 2048,
+    "max_relative_turn": 128,
+    "num_classes": 7,
+    "dropout": 0.1,
+    "layer_scale_init": 0.001,
+    "parameter_limit": 2000000,
+    "affect_relation_mode": "primary_history_relation",
+    "affect_relation_hidden_dim": 128,
+    "affect_relation_use_vad_features": true,
+    "auxiliary_vad_weight": 0.1,
+    "emotion_label_order": [
+      "neutral",
+      "happy",
+      "sad",
+      "angry",
+      "surprised",
+      "disgusted",
+      "fearful"
+    ]
+  },
+  "training_interface": {
+    "random_subset_dropout": true,
+    "default_subset_dropout_probability": 0.2,
+    "amp_compatible": true,
+    "loss": "seven_class_cross_entropy_plus_0.1_fit_train_only_fixed_vad_mse"
+  },
+  "training_runner": {
+    "outer_folds": 5,
+    "inner_validation_fraction": 0.15,
+    "max_epochs": 32,
+    "early_stopping_patience": 5,
+    "early_stopping_min_delta": 0.0001,
+    "batch_size": 64,
+    "inference_batch_size": 128,
+    "gradient_accumulation_steps": 1,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1,
+    "label_smoothing": 0.05,
+    "subset_dropout_probability": 0.2,
+    "max_history_items": 128,
+    "history_overflow_policy": "fail_closed_no_silent_truncation",
+    "use_amp": true,
+    "max_cuda_memory_mib": 7800,
+    "checkpoint_policy": "atomic_resume_identity_bound_private_artifact",
+    "text_encoder": {
+      "analyzer": "char",
+      "ngram_min": 2,
+      "ngram_max": 5,
+      "min_df": 2,
+      "max_df": 0.995,
+      "max_features": 50000,
+      "sublinear_tf": true,
+      "svd_n_iter": 7,
+      "fit_scope": "inner_train_groups_only",
+      "output_dimension": 256
+    }
+  }
+}

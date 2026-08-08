@@ -30,6 +30,20 @@ ADMISSIBLE_REFERENCE_CANDIDATES = {
     "forward_only_utility",
     "backward_only_utility",
 }
+HISTORY_HARM_REFERENCE_CANDIDATES = (
+    "all_history",
+    "coverage_matched_recency",
+    "forward_only_utility",
+    "backward_only_utility",
+)
+REFERENCE_SELECTION_RULE = (
+    "highest_five_seed_mean_model_selection_macro_f1_then_highest_accuracy_"
+    "then_lowest_mean_regret_then_lexicographic_model_id"
+)
+PER_SEED_SUCCESS_CONDITIONS = (
+    "macro_f1_candidate_strictly_greater_than_reference",
+    "mean_regret_vs_current_non_positive",
+)
 BOOTSTRAP_DESIGN = "five_training_seeds_crossed_with_shared_whole_cluster_draw"
 ACCURACY_NO_HARM_POINT_MINIMUM = 0.0
 ACCURACY_NO_HARM_CI95_LOWER_MINIMUM = -0.005
@@ -467,6 +481,140 @@ def _validate_effect_gates(analysis: Mapping[str, Any]) -> None:
         <= 0.0,
         "mean regret versus the frozen reference must have a non-positive CI upper bound",
     )
+
+    legacy_harm_reduction = _number(
+        gates.get("minimum_relative_history_harm_rate_reduction"),
+        "effect_and_safety_gates.minimum_relative_history_harm_rate_reduction",
+    )
+    _require(
+        legacy_harm_reduction == 0.05,
+        "the relative history-harm reduction gate is frozen at 0.05",
+    )
+    harm_gate = _mapping(
+        gates.get("history_harm_rate_reduction"),
+        "effect_and_safety_gates.history_harm_rate_reduction",
+    )
+    _require(
+        set(harm_gate)
+        == {
+            "candidate",
+            "reference",
+            "reference_candidates",
+            "reference_selection_rule",
+            "minimum_relative_reduction",
+            "zero_reference_harm_rate_action",
+        },
+        "history-harm reduction must use the complete frozen gate schema",
+    )
+    _require(
+        harm_gate.get("candidate") == "carma_bidirectional_full"
+        and harm_gate.get("reference")
+        == "strongest_history_using_admissible_baseline_frozen_on_model_selection",
+        "history-harm reduction must compare CARMA against the frozen strongest history-using baseline",
+    )
+    harm_reference_candidates = list(
+        _sequence(
+            harm_gate.get("reference_candidates"),
+            "effect_and_safety_gates.history_harm_rate_reduction.reference_candidates",
+        )
+    )
+    _require(
+        harm_reference_candidates == list(HISTORY_HARM_REFERENCE_CANDIDATES)
+        and "current_only" not in harm_reference_candidates,
+        "history-harm reference candidates must be exactly the four admissible history-using baselines",
+    )
+    _require(
+        harm_gate.get("reference_selection_rule") == REFERENCE_SELECTION_RULE,
+        "history-harm baseline selection must use the frozen deterministic model-selection rule",
+    )
+    harm_reduction = _number(
+        harm_gate.get("minimum_relative_reduction"),
+        "effect_and_safety_gates.history_harm_rate_reduction.minimum_relative_reduction",
+    )
+    _require(
+        harm_reduction == 0.05 and harm_reduction == legacy_harm_reduction,
+        "history-harm reduction thresholds must agree and remain frozen at 0.05",
+    )
+    _require(
+        harm_gate.get("zero_reference_harm_rate_action")
+        == "fail_closed_not_estimable",
+        "zero reference history-harm rate must fail closed as not estimable",
+    )
+
+    _require(
+        gates.get("required_seed_successes_per_dataset") == 4,
+        "exactly four of five seeds must succeed per dataset",
+    )
+    per_seed = _mapping(
+        gates.get("per_seed_success"),
+        "effect_and_safety_gates.per_seed_success",
+    )
+    _require(
+        set(per_seed)
+        == {
+            "candidate",
+            "reference",
+            "seed_count",
+            "required_successes",
+            "same_seed_for_all_conditions",
+            "success_requires_all",
+            "thresholds",
+        },
+        "per-seed success must use the complete frozen predicate schema",
+    )
+    _require(
+        per_seed.get("candidate") == "carma_bidirectional_full"
+        and per_seed.get("reference")
+        == "strongest_admissible_baseline_frozen_on_model_selection",
+        "per-seed success must compare CARMA with the frozen strongest admissible baseline",
+    )
+    _require(
+        per_seed.get("seed_count") == 5
+        and per_seed.get("required_successes") == 4
+        and per_seed.get("required_successes")
+        == gates.get("required_seed_successes_per_dataset"),
+        "per-seed success must require exactly four of five seeds to succeed",
+    )
+    _require(
+        per_seed.get("same_seed_for_all_conditions") is True,
+        "classification and regret conditions must hold on the same seed",
+    )
+    _require(
+        list(
+            _sequence(
+                per_seed.get("success_requires_all"),
+                "effect_and_safety_gates.per_seed_success.success_requires_all",
+            )
+        )
+        == list(PER_SEED_SUCCESS_CONDITIONS),
+        "each successful seed must satisfy both strict Macro-F1 gain and non-positive regret",
+    )
+    per_seed_thresholds = _mapping(
+        per_seed.get("thresholds"),
+        "effect_and_safety_gates.per_seed_success.thresholds",
+    )
+    _require(
+        set(per_seed_thresholds)
+        == {
+            "macro_f1_difference_strictly_greater_than",
+            "mean_regret_vs_current_must_not_exceed",
+        },
+        "per-seed thresholds must contain exactly the frozen classification and regret limits",
+    )
+    _require(
+        _number(
+            per_seed_thresholds.get("macro_f1_difference_strictly_greater_than"),
+            "per_seed_success.thresholds.macro_f1_difference_strictly_greater_than",
+        )
+        == 0.0
+        and _number(
+            per_seed_thresholds.get("mean_regret_vs_current_must_not_exceed"),
+            "per_seed_success.thresholds.mean_regret_vs_current_must_not_exceed",
+        )
+        == 0.0,
+        "per-seed success requires Macro-F1 difference > 0 and mean regret versus current <= 0",
+    )
+
     accuracy_gate = _mapping(
         gates.get("accuracy_no_harm"), "effect_and_safety_gates.accuracy_no_harm"
     )
@@ -549,10 +697,6 @@ def _validate_effect_gates(analysis: Mapping[str, Any]) -> None:
     _require(
         gates.get("required_datasets_passing") == len(required_datasets),
         "every required confirmatory dataset must pass",
-    )
-    _require(
-        gates.get("required_seed_successes_per_dataset") >= 4,
-        "at least four of five seeds must succeed per dataset",
     )
     _require(
         gates.get("success_quantifier")

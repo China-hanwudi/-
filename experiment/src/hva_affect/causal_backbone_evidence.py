@@ -22,6 +22,7 @@ import json
 import math
 import os
 import re
+import tempfile
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -618,6 +619,7 @@ def independent_current_only_source_identity(
     model_config: CausalBackboneConfig,
     run_config: BackboneRunConfig,
     rows: int,
+    data_contract_sha256: str | None = None,
 ) -> str:
     """Derive a namespace that cannot resume a history-trained checkpoint."""
 
@@ -625,18 +627,21 @@ def independent_current_only_source_identity(
         producer_source_identity_sha256, "producer_source_identity_sha256"
     )
     baseline_config = replace(run_config, subset_dropout_probability=0.0)
-    return _canonical_sha256(
-        {
-            "training_protocol": INDEPENDENT_CURRENT_ONLY_PROTOCOL,
-            "producer_source_identity_sha256": producer_identity,
-            "model_config": asdict(model_config),
-            "run_config": asdict(baseline_config),
-            "row_count": int(rows),
-            "history_training_items_consumed": 0,
-            "history_inference_items_consumed": 0,
-            "empty_history_contract_sha256": _canonical_sha256([[] for _ in range(int(rows))]),
-        }
-    )
+    payload: dict[str, object] = {
+        "training_protocol": INDEPENDENT_CURRENT_ONLY_PROTOCOL,
+        "producer_source_identity_sha256": producer_identity,
+        "model_config": asdict(model_config),
+        "run_config": asdict(baseline_config),
+        "row_count": int(rows),
+        "history_training_items_consumed": 0,
+        "history_inference_items_consumed": 0,
+        "empty_history_contract_sha256": _canonical_sha256([[] for _ in range(int(rows))]),
+    }
+    if data_contract_sha256 is not None:
+        payload["data_contract_sha256"] = _require_sha256(
+            data_contract_sha256, "data_contract_sha256"
+        )
+    return _canonical_sha256(payload)
 
 
 @dataclass(frozen=True)
@@ -657,6 +662,8 @@ def train_independent_current_only_fold_seed(
     checkpoint_root: Path,
     device: torch.device,
     test_interrupt_after_epoch: int | None = None,
+    data_contract_sha256: str | None = None,
+    require_complete_checkpoint: bool = False,
 ) -> IndependentCurrentOnlyFold:
     """Train a new checkpoint after physically stripping every history list."""
 
@@ -668,6 +675,7 @@ def train_independent_current_only_fold_seed(
         model_config=model_config,
         run_config=baseline_config,
         rows=len(stripped.keys),
+        data_contract_sha256=data_contract_sha256,
     )
     if identity == str(producer_source_identity_sha256).lower():
         raise EvidenceContractError("current-only and history source identities collided")
@@ -681,6 +689,7 @@ def train_independent_current_only_fold_seed(
         checkpoint_root=checkpoint_root,
         device=device,
         test_interrupt_after_epoch=test_interrupt_after_epoch,
+        require_complete_checkpoint=bool(require_complete_checkpoint),
     )
     return IndependentCurrentOnlyFold(trained=trained, source_identity_sha256=identity)
 
@@ -2605,15 +2614,42 @@ def write_aggregate_public_report(
     output = Path(path)
     if output.suffix.lower() != ".json":
         raise EvidenceContractError("public evidence artifact must be JSON")
-    if output.exists():
-        raise FileExistsError(f"public evidence artifact already exists: {output.name}")
     output.parent.mkdir(parents=True, exist_ok=True)
-    temporary = output.with_name(output.name + ".tmp")
-    temporary.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
+    encoded = (
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode("utf-8")
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=output.parent,
+        prefix=f".{output.name}.",
+        suffix=".tmp",
     )
-    os.replace(temporary, output)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(encoded)
+            handle.flush()
+            os.fsync(handle.fileno())
+        try:
+            # A same-directory hard link gives destination O_EXCL semantics on
+            # NTFS and POSIX; unlike exists()+os.replace(), concurrent writers
+            # can never overwrite the winner.
+            os.link(temporary, output)
+        except FileExistsError:
+            raise FileExistsError(
+                f"public evidence artifact already exists: {output.name}"
+            ) from None
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
 
 
 def evaluate_open_role_evidence(

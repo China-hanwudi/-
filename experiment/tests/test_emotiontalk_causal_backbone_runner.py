@@ -140,7 +140,11 @@ def synthetic_corpus() -> OpenRoleCorpus:
     return corpus
 
 
-def synthetic_provenance(corpus: OpenRoleCorpus):
+def synthetic_provenance(
+    corpus: OpenRoleCorpus,
+    *,
+    label_order: tuple[str, ...] | None = None,
+):
     manifest_sha = "a" * 64
     return create_verified_corpus_provenance(
         dataset_id="SyntheticEmotion",
@@ -151,7 +155,11 @@ def synthetic_provenance(corpus: OpenRoleCorpus):
             "sidecar_manifest": manifest_sha,
             "synthetic_input": "b" * 64,
         },
-        label_order=tuple(f"label_{index}" for index in range(tiny_model_config().num_classes)),
+        label_order=(
+            tuple(f"label_{index}" for index in range(tiny_model_config().num_classes))
+            if label_order is None
+            else label_order
+        ),
         role_rows={
             FIT_ROLE: int(len(corpus.role_indices(FIT_ROLE))),
             SELECTION_ROLE: int(len(corpus.role_indices(SELECTION_ROLE))),
@@ -163,6 +171,83 @@ def synthetic_provenance(corpus: OpenRoleCorpus):
         corpus_contract_sha256=_corpus_contract_sha256(corpus),
         verification_origin="synthetic_contract_test",
     )
+
+
+def test_vad_label_order_must_match_verified_dataset_order() -> None:
+    corpus = synthetic_corpus()
+    emotiontalk_order = (
+        "neutral",
+        "happy",
+        "sad",
+        "angry",
+        "surprised",
+        "disgusted",
+        "fearful",
+    )
+    meld_order = (
+        "neutral",
+        "surprise",
+        "fear",
+        "sadness",
+        "joy",
+        "disgust",
+        "anger",
+    )
+    model_config = replace(
+        tiny_model_config(),
+        affect_relation_mode="primary_history_relation",
+        affect_relation_use_vad_features=True,
+        auxiliary_vad_weight=0.1,
+        emotion_label_order=emotiontalk_order,
+    )
+    provenance = synthetic_provenance(corpus, label_order=meld_order)
+    with pytest.raises(ContractError, match="VAD supervision label order"):
+        provenance.validate(corpus, model_config)
+
+
+def test_vad_and_no_vad_variants_each_complete_one_tiny_training_fold(
+    tmp_path: Path,
+) -> None:
+    corpus = synthetic_corpus()
+    split = make_crossfit_splits(
+        corpus, outer_folds=2, validation_fraction=0.25, seed=17
+    )[0]
+    emotiontalk_order = (
+        "neutral",
+        "happy",
+        "sad",
+        "angry",
+        "surprised",
+        "disgusted",
+        "fearful",
+    )
+    full = replace(
+        tiny_model_config(),
+        affect_relation_mode="primary_history_relation",
+        affect_relation_hidden_dim=16,
+        affect_relation_use_vad_features=True,
+        auxiliary_vad_weight=0.1,
+        emotion_label_order=emotiontalk_order,
+    )
+    no_vad = replace(
+        full,
+        affect_relation_use_vad_features=False,
+        auxiliary_vad_weight=0.0,
+        emotion_label_order=(),
+    )
+    for name, model_config in (("full", full), ("no_vad", no_vad)):
+        trained = train_one_fold_seed(
+            corpus,
+            split,
+            model_config=model_config,
+            run_config=tiny_run_config(),
+            seed=17,
+            source_identity=("a" if name == "full" else "b") * 64,
+            checkpoint_root=tmp_path / name,
+            device=torch.device("cpu"),
+        )
+        assert trained.summary["resumed_complete_checkpoint"] is False
+        assert trained.checkpoint_path.is_file()
 
 
 def test_crossfit_is_group_disjoint_and_model_selection_is_inference_only() -> None:

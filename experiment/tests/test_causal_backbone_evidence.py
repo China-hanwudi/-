@@ -4,6 +4,7 @@ import hashlib
 import json
 import inspect
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Sequence
 
@@ -1034,3 +1035,63 @@ def test_public_report_writer_is_validated_atomic_and_write_once(tmp_path: Path)
     assert json.loads(output.read_text(encoding="utf-8")) == payload
     with pytest.raises(FileExistsError, match="already exists"):
         write_aggregate_public_report(payload, output)
+
+
+def test_public_report_writer_never_clobbers_a_concurrent_winner(
+    tmp_path: Path,
+) -> None:
+    bundle = make_effect_bundle()
+    family = predeclare_holm_family(
+        family_id="concurrent_writer_family",
+        alpha=0.05,
+        hypotheses=(
+            HolmHypothesis(
+                "H1",
+                "carma_bidirectional_full",
+                "coverage_matched_recency",
+                "macro_f1",
+                "greater",
+            ),
+            HolmHypothesis(
+                "H2",
+                "carma_bidirectional_full",
+                "coverage_matched_recency",
+                "mean_regret",
+                "less",
+            ),
+        ),
+        analysis_config_sha256="c" * 64,
+    )
+    accuracy_gate = predeclare_accuracy_no_harm_gate(
+        gate_id="concurrent_writer_accuracy",
+        contrasts=(
+            AccuracyNoHarmContrast(
+                "A1",
+                "carma_bidirectional_full",
+                "coverage_matched_recency",
+            ),
+        ),
+        analysis_config_sha256="c" * 64,
+    )
+    payload = evaluate_open_role_evidence(
+        bundle,
+        family,
+        accuracy_gate,
+        replicates=100,
+        bootstrap_seed=31,
+    )
+    output = tmp_path / "concurrent-evidence.json"
+
+    def attempt(_: int) -> str:
+        try:
+            write_aggregate_public_report(payload, output)
+        except FileExistsError:
+            return "exists"
+        return "written"
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        outcomes = list(pool.map(attempt, range(8)))
+    assert outcomes.count("written") == 1
+    assert outcomes.count("exists") == 7
+    assert json.loads(output.read_text(encoding="utf-8")) == payload
+    assert not list(tmp_path.glob(".concurrent-evidence.json.*.tmp"))

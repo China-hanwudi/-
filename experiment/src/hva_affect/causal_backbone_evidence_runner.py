@@ -6,8 +6,10 @@ label archives, hashes the model-selection feature and label archives as opaque
 bytes, and writes an aggregate, write-once receipt.  No model is trained here.
 
 The same receipt is the capability required by Stage B.  Selection features
-may be materialised only after every byte/config/code/environment hash in the
-receipt is reverified.  Selection labels have no Stage-B API in this module.
+may be materialised only after the manifest, fit bytes, selection-feature bytes,
+configuration, code, and environment are reverified.  The already committed
+selection-label metadata is compared without resolving or touching its file;
+selection labels have no Stage-B API in this module.
 """
 
 from __future__ import annotations
@@ -18,8 +20,9 @@ import os
 import platform
 import re
 import sys
+import tempfile
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Callable, Mapping, Sequence
 
 import numpy as np
@@ -29,6 +32,7 @@ import numpy as np
 # schema tests protect these copies from drifting from the registered v2 files.
 FIT_ROLE = "base_and_utility_fit"
 SELECTION_ROLE = "model_selection"
+MELD_SEALED_ROLES = ("calibration", "internal_holdout")
 PRODUCER_CACHE_SCHEMA = "carma_causal_backbone_open_role_private_v2"
 INDEPENDENT_CURRENT_ONLY_PROTOCOL = (
     "independently_trained_same_architecture_history_stripped_all_masks_empty_v1"
@@ -59,6 +63,8 @@ CHECKPOINT_MANIFEST_SCHEMA = "carma_current_only_checkpoint_manifest_v1"
 
 _SAFE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
+_PRODUCTION_CLI_SOURCE = "experiment/scripts/run_causal_backbone_evidence.py"
+_PRODUCTION_PACKAGE_SOURCE_PREFIX = "experiment/src/hva_affect/"
 
 
 class StageAContractError(ValueError):
@@ -133,14 +139,53 @@ def _probability(value: np.ndarray, field: str, shape: tuple[int, ...]) -> np.nd
     return result
 
 
+def _canonical_production_source_key(value: object) -> str:
+    """Validate one source-snapshot key without widening config-name syntax."""
+
+    if not isinstance(value, str) or not value or "\\" in value:
+        raise StageAContractError(
+            "production source key must be a repository-relative POSIX path"
+        )
+    path = PurePosixPath(value)
+    if (
+        path.is_absolute()
+        or str(path) != value
+        or any(part in {"", ".", ".."} for part in path.parts)
+    ):
+        raise StageAContractError(
+            "production source key must be canonical and traversal-free"
+        )
+    if value == _PRODUCTION_CLI_SOURCE:
+        return value
+    if (
+        not value.startswith(_PRODUCTION_PACKAGE_SOURCE_PREFIX)
+        or not value.endswith(".py")
+    ):
+        raise StageAContractError(
+            "production source key is outside the frozen CLI/package Python tree"
+        )
+    return value
+
+
 def _safe_named_paths(values: Mapping[str, str | Path], field: str) -> dict[str, Path]:
     if not values:
         raise StageAContractError(f"{field} must not be empty")
     result: dict[str, Path] = {}
-    for raw_name, raw_path in sorted(values.items()):
-        name = str(raw_name)
-        if _SAFE_NAME.fullmatch(name) is None or name in result:
+    casefolded: set[str] = set()
+    source_keys = field == "code_paths"
+    for raw_name, raw_path in sorted(values.items(), key=lambda item: str(item[0])):
+        name = (
+            _canonical_production_source_key(raw_name)
+            if source_keys
+            else str(raw_name)
+        )
+        if (
+            (not source_keys and _SAFE_NAME.fullmatch(name) is None)
+            or name in result
+            or name.casefold() in casefolded
+        ):
             raise StageAContractError(f"{field} contains an unsafe or duplicate name")
+        casefolded.add(name.casefold())
         path = Path(raw_path)
         if not path.is_file():
             raise StageAContractError(f"{field}.{name} is not a file")
@@ -313,6 +358,52 @@ class HashedSidecarSet:
     selection: SidecarRecord
 
 
+@dataclass(frozen=True)
+class FitOnlyHashedSidecarSet:
+    """Byte-verified fit sidecars with no selection-payload filesystem access.
+
+    The public manifest and the already frozen fit-preflight receipt still
+    commit to the complete open-role split.  This narrower view deliberately
+    has no ``selection`` attribute, so downstream fit-only code cannot obtain a
+    selection path through the loader result.
+    """
+
+    dataset: str
+    spec: DatasetSpec
+    manifest_path: Path
+    manifest_sha256: str
+    manifest: Mapping[str, object]
+    fit: SidecarRecord
+
+
+@dataclass(frozen=True)
+class SelectionFeatureRecord:
+    """Verified model-selection feature metadata with no label-path capability."""
+
+    role: str
+    feature_path: Path
+    feature_sha256: str
+    row_alignment_sha256: str
+    rows: int
+    groups: int
+    history_eligible_rows: int
+    audio_dimension: int
+    video_dimension: int
+
+
+@dataclass(frozen=True)
+class SelectionFeatureHashedSidecarSet:
+    """Fit files plus one verified selection-feature file; no selection label path."""
+
+    dataset: str
+    spec: DatasetSpec
+    manifest_path: Path
+    manifest_sha256: str
+    manifest: Mapping[str, object]
+    fit: SidecarRecord
+    selection: SelectionFeatureRecord
+
+
 def _read_manifest_json(path: Path) -> dict[str, object]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -347,8 +438,43 @@ def _validate_manifest_contract(manifest: Mapping[str, object], spec: DatasetSpe
         raise StageAContractError("sidecar label order changed")
     _require_sha256(manifest.get("config_sha256"), "manifest.config_sha256")
     roles = manifest.get("roles")
-    if not isinstance(roles, Mapping) or set(roles) != {FIT_ROLE, SELECTION_ROLE}:
-        raise StageAContractError("manifest must expose exactly the two open roles")
+    expected_roles = {FIT_ROLE, SELECTION_ROLE}
+    if spec.dataset == "MELD":
+        expected_roles.update(MELD_SEALED_ROLES)
+    if not isinstance(roles, Mapping) or set(roles) != expected_roles:
+        raise StageAContractError("manifest role registry changed")
+    # Validate every public metadata record without resolving any filename to a
+    # filesystem path.  MELD is allowed to describe its sealed calibration and
+    # internal-holdout files, but fit/selection capabilities below must never
+    # stat, hash, open, or deserialize those payloads.
+    for role in sorted(expected_roles):
+        raw = roles[role]
+        if not isinstance(raw, Mapping) or set(raw) != set(spec.role_record_fields):
+            raise StageAContractError(f"manifest role record changed: {role}")
+        _plain_npz_filename(
+            raw.get("feature_filename"), f"features_{role}.npz", f"{role}.feature"
+        )
+        _plain_npz_filename(
+            raw.get("label_filename"), f"labels_{role}.npz", f"{role}.label"
+        )
+        rows = int(raw.get("rows", -1))
+        groups = int(raw.get(spec.group_count_field, -1))
+        history_eligible = int(raw.get("history_eligible_rows", -1))
+        audio_dim = int(raw.get("audio_dimension", -1))
+        video_dim = int(raw.get("video_dimension", -1))
+        if (
+            rows < 1
+            or groups < 1
+            or groups > rows
+            or history_eligible < 0
+            or history_eligible > rows
+            or audio_dim < 1
+            or video_dim < 1
+        ):
+            raise StageAContractError(f"{role} manifest counts/dimensions are invalid")
+        _require_sha256(raw.get("feature_sha256"), f"{role}.feature_sha256")
+        _require_sha256(raw.get("label_sha256"), f"{role}.label_sha256")
+        _require_sha256(raw.get("row_alignment_sha256"), f"{role}.row_alignment_sha256")
 
     public_audit = manifest.get("public_content_audit")
     expected_public_fields = (
@@ -471,7 +597,10 @@ def hash_open_role_sidecars(
     spec = _SPECS[dataset]
     directory = Path(sidecar_dir)
     manifest_file = Path(manifest_path)
+    manifest_sha = _file_sha256(manifest_file)
     manifest = _read_manifest_json(manifest_file)
+    if _file_sha256(manifest_file) != manifest_sha:
+        raise StageAContractError("sidecar manifest changed while opening fit inputs")
     _validate_manifest_contract(manifest, spec)
     roles = manifest["roles"]
     assert isinstance(roles, Mapping)
@@ -530,10 +659,179 @@ def hash_open_role_sidecars(
         dataset=dataset,
         spec=spec,
         manifest_path=manifest_file,
-        manifest_sha256=_file_sha256(manifest_file),
+        manifest_sha256=manifest_sha,
         manifest=manifest,
         fit=records[FIT_ROLE],
         selection=records[SELECTION_ROLE],
+    )
+
+
+def hash_fit_role_sidecars_only(
+    *,
+    dataset: str,
+    sidecar_dir: str | Path,
+    manifest_path: str | Path,
+) -> FitOnlyHashedSidecarSet:
+    """Verify only the two fit-role files; never stat or hash selection files.
+
+    This is the cross-process loader boundary used after a fit-preflight receipt
+    has already been frozen.  Selection metadata remains part of the public
+    manifest schema, but neither selection filename is resolved to a filesystem
+    path and neither payload is opened, stat'ed, hashed, or deserialised.
+    """
+
+    if dataset not in _SPECS:
+        raise StageAContractError("dataset must be EmotionTalk or MELD")
+    spec = _SPECS[dataset]
+    directory = Path(sidecar_dir)
+    manifest_file = Path(manifest_path)
+    manifest_sha = _file_sha256(manifest_file)
+    manifest = _read_manifest_json(manifest_file)
+    if _file_sha256(manifest_file) != manifest_sha:
+        raise StageAContractError("sidecar manifest changed while opening fit inputs")
+    _validate_manifest_contract(manifest, spec)
+    roles = manifest["roles"]
+    assert isinstance(roles, Mapping)
+
+    # Validate both public role records exactly, but do not turn the selection
+    # filenames into paths.  The fit-only capability can therefore be audited
+    # by guarding filesystem access to both selection archives.
+    for role in (FIT_ROLE, SELECTION_ROLE):
+        raw = roles[role]
+        if not isinstance(raw, Mapping) or set(raw) != set(spec.role_record_fields):
+            raise StageAContractError(f"manifest role record changed: {role}")
+        _plain_npz_filename(
+            raw.get("feature_filename"), f"features_{role}.npz", f"{role}.feature"
+        )
+        _plain_npz_filename(
+            raw.get("label_filename"), f"labels_{role}.npz", f"{role}.label"
+        )
+        rows = int(raw.get("rows", -1))
+        groups = int(raw.get(spec.group_count_field, -1))
+        history_eligible = int(raw.get("history_eligible_rows", -1))
+        audio_dim = int(raw.get("audio_dimension", -1))
+        video_dim = int(raw.get("video_dimension", -1))
+        if (
+            rows < 1
+            or groups < 1
+            or groups > rows
+            or history_eligible < 0
+            or history_eligible > rows
+            or audio_dim < 1
+            or video_dim < 1
+        ):
+            raise StageAContractError(f"{role} manifest counts/dimensions are invalid")
+        _require_sha256(raw.get("feature_sha256"), f"{role}.feature_sha256")
+        _require_sha256(raw.get("label_sha256"), f"{role}.label_sha256")
+        _require_sha256(raw.get("row_alignment_sha256"), f"{role}.row_alignment_sha256")
+
+    fit_raw = roles[FIT_ROLE]
+    assert isinstance(fit_raw, Mapping)
+    fit_feature_name = _plain_npz_filename(
+        fit_raw.get("feature_filename"),
+        f"features_{FIT_ROLE}.npz",
+        f"{FIT_ROLE}.feature",
+    )
+    fit_label_name = _plain_npz_filename(
+        fit_raw.get("label_filename"),
+        f"labels_{FIT_ROLE}.npz",
+        f"{FIT_ROLE}.label",
+    )
+    fit_feature_path = directory / fit_feature_name
+    fit_label_path = directory / fit_label_name
+    observed_feature = _file_sha256(fit_feature_path)
+    observed_label = _file_sha256(fit_label_path)
+    declared_feature = _require_sha256(
+        fit_raw.get("feature_sha256"), f"{FIT_ROLE}.feature_sha256"
+    )
+    declared_label = _require_sha256(
+        fit_raw.get("label_sha256"), f"{FIT_ROLE}.label_sha256"
+    )
+    if observed_feature != declared_feature or observed_label != declared_label:
+        raise StageAContractError("fit sidecar byte hash differs from manifest")
+    return FitOnlyHashedSidecarSet(
+        dataset=dataset,
+        spec=spec,
+        manifest_path=manifest_file,
+        manifest_sha256=manifest_sha,
+        manifest=manifest,
+        fit=SidecarRecord(
+            role=FIT_ROLE,
+            feature_path=fit_feature_path,
+            label_path=fit_label_path,
+            feature_sha256=observed_feature,
+            label_sha256=observed_label,
+            row_alignment_sha256=_require_sha256(
+                fit_raw.get("row_alignment_sha256"),
+                f"{FIT_ROLE}.row_alignment_sha256",
+            ),
+            rows=int(fit_raw["rows"]),
+            groups=int(fit_raw[spec.group_count_field]),
+            history_eligible_rows=int(fit_raw["history_eligible_rows"]),
+            audio_dimension=int(fit_raw["audio_dimension"]),
+            video_dimension=int(fit_raw["video_dimension"]),
+        ),
+    )
+
+
+def hash_fit_and_selection_feature_sidecars_only(
+    *,
+    dataset: str,
+    sidecar_dir: str | Path,
+    manifest_path: str | Path,
+) -> SelectionFeatureHashedSidecarSet:
+    """Verify fit payloads and the selection feature without touching its label file.
+
+    The public manifest still commits to the selection-label filename and digest,
+    but this capability never resolves that filename against ``sidecar_dir`` and
+    never stats, hashes, opens, or deserialises the label payload.
+    """
+
+    fit_only = hash_fit_role_sidecars_only(
+        dataset=dataset,
+        sidecar_dir=sidecar_dir,
+        manifest_path=manifest_path,
+    )
+    roles = fit_only.manifest["roles"]
+    assert isinstance(roles, Mapping)
+    raw = roles[SELECTION_ROLE]
+    assert isinstance(raw, Mapping)
+    # ``hash_fit_role_sidecars_only`` already validated the exact public role
+    # schema, including the declared label digest, without constructing a label
+    # path.  Only the feature filename is resolved in this narrower capability.
+    feature_name = _plain_npz_filename(
+        raw.get("feature_filename"),
+        f"features_{SELECTION_ROLE}.npz",
+        f"{SELECTION_ROLE}.feature",
+    )
+    feature_path = Path(sidecar_dir) / feature_name
+    observed_feature = _file_sha256(feature_path)
+    declared_feature = _require_sha256(
+        raw.get("feature_sha256"), f"{SELECTION_ROLE}.feature_sha256"
+    )
+    if observed_feature != declared_feature:
+        raise StageAContractError("model-selection feature byte hash differs from manifest")
+    return SelectionFeatureHashedSidecarSet(
+        dataset=fit_only.dataset,
+        spec=fit_only.spec,
+        manifest_path=fit_only.manifest_path,
+        manifest_sha256=fit_only.manifest_sha256,
+        manifest=fit_only.manifest,
+        fit=fit_only.fit,
+        selection=SelectionFeatureRecord(
+            role=SELECTION_ROLE,
+            feature_path=feature_path,
+            feature_sha256=observed_feature,
+            row_alignment_sha256=_require_sha256(
+                raw.get("row_alignment_sha256"),
+                f"{SELECTION_ROLE}.row_alignment_sha256",
+            ),
+            rows=int(raw["rows"]),
+            groups=int(raw[fit_only.spec.group_count_field]),
+            history_eligible_rows=int(raw["history_eligible_rows"]),
+            audio_dimension=int(raw["audio_dimension"]),
+            video_dimension=int(raw["video_dimension"]),
+        ),
     )
 
 
@@ -643,7 +941,9 @@ def _validate_normalized_rows(
             raise StageAContractError("labels must be a row-aligned integer array")
 
 
-def _materialize_fit_role(sidecars: HashedSidecarSet) -> FitRoleView:
+def _materialize_fit_role(
+    sidecars: HashedSidecarSet | FitOnlyHashedSidecarSet,
+) -> FitRoleView:
     """Open exactly the fit feature and fit label payloads."""
 
     spec = sidecars.spec
@@ -1095,10 +1395,20 @@ def validate_fit_receipt(payload: Mapping[str, object]) -> None:
         hashes = lineage.get(field)
         if not isinstance(hashes, Mapping) or not hashes:
             raise StageAContractError(f"fit receipt {field} is empty")
+        casefolded: set[str] = set()
         for name, digest in hashes.items():
-            if _SAFE_NAME.fullmatch(str(name)) is None:
+            token = (
+                _canonical_production_source_key(name)
+                if field == "code_sha256"
+                else str(name)
+            )
+            if (
+                (field == "config_sha256" and _SAFE_NAME.fullmatch(token) is None)
+                or token.casefold() in casefolded
+            ):
                 raise StageAContractError(f"fit receipt {field} name is unsafe")
-            _require_sha256(digest, f"lineage.{field}.{name}")
+            casefolded.add(token.casefold())
+            _require_sha256(digest, f"lineage.{field}.{token}")
     public = payload.get("public_artifact_policy")
     expected_public = {
         "aggregate_only": True,
@@ -1134,16 +1444,39 @@ def _write_json_once(payload: Mapping[str, object], path: Path) -> str:
     validate_fit_receipt(payload)
     if path.suffix.lower() != ".json":
         raise StageAContractError("fit receipt must be a JSON file")
-    if path.exists():
-        raise FileExistsError(f"fit receipt already exists: {path.name}")
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".tmp")
-    temporary.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True, allow_nan=False)
-        + "\n",
-        encoding="utf-8",
+    encoded = (
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode("utf-8")
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".{path.name}.",
+        suffix=".tmp",
     )
-    os.replace(temporary, path)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(encoded)
+            handle.flush()
+            os.fsync(handle.fileno())
+        try:
+            # Destination creation is atomic and exclusive.  This closes the
+            # exists()+os.replace() race that could overwrite a peer receipt.
+            os.link(temporary, path)
+        except FileExistsError:
+            raise FileExistsError(f"fit receipt already exists: {path.name}") from None
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
     return _file_sha256(path)
 
 
@@ -1257,7 +1590,151 @@ def verify_fit_receipt_inputs(
     return receipt, sidecars
 
 
-def _materialize_selection_feature(sidecars: HashedSidecarSet) -> SelectionFeatureView:
+def verify_fit_only_receipt_inputs(
+    *,
+    receipt_path: str | Path,
+    expected_receipt_sha256: str,
+    dataset: str,
+    sidecar_dir: str | Path,
+    manifest_path: str | Path,
+    config_paths: Mapping[str, str | Path],
+    code_paths: Mapping[str, str | Path],
+    environment: Mapping[str, object] | None = None,
+) -> tuple[dict[str, object], FitOnlyHashedSidecarSet]:
+    """Reverify fit inputs without any selection-payload filesystem access.
+
+    The immutable receipt itself was created only after the original four-file
+    preflight.  A later fit process needs to prove that its receipt, manifest,
+    fit arrays, configuration, code, and runtime still match; it does not need
+    to reopen either selection archive.  Keeping this as a separate API makes
+    that reduced capability visible and testable.
+    """
+
+    receipt_file = Path(receipt_path)
+    receipt_sha = _require_sha256(
+        expected_receipt_sha256, "expected_receipt_sha256"
+    )
+    if _file_sha256(receipt_file) != receipt_sha:
+        raise StageAContractError("fit receipt file hash changed")
+    receipt = _load_receipt(receipt_file)
+    sidecars = hash_fit_role_sidecars_only(
+        dataset=dataset,
+        sidecar_dir=sidecar_dir,
+        manifest_path=manifest_path,
+    )
+    runtime = dict(capture_runtime_environment() if environment is None else environment)
+    sidecar_receipt = receipt["sidecars"]
+    lineage = receipt["lineage"]
+    manifest_receipt = receipt["manifest"]
+    assert isinstance(sidecar_receipt, Mapping)
+    assert isinstance(lineage, Mapping)
+    assert isinstance(manifest_receipt, Mapping)
+    fit_receipt = sidecar_receipt.get("fit")
+    if not isinstance(fit_receipt, Mapping):
+        raise StageAContractError("fit receipt sidecar role is malformed")
+    expected = {
+        "dataset": dataset,
+        "manifest_sha256": sidecars.manifest_sha256,
+        "fit_feature_sha256": sidecars.fit.feature_sha256,
+        "fit_label_sha256": sidecars.fit.label_sha256,
+        "config_sha256": _named_file_hashes(config_paths, "config_paths"),
+        "code_sha256": _named_file_hashes(code_paths, "code_paths"),
+        "runtime_environment_sha256": _canonical_sha256(runtime),
+    }
+    observed = {
+        "dataset": receipt.get("dataset"),
+        "manifest_sha256": manifest_receipt.get("sha256"),
+        "fit_feature_sha256": fit_receipt.get("feature_sha256"),
+        "fit_label_sha256": fit_receipt.get("label_sha256"),
+        "config_sha256": lineage.get("config_sha256"),
+        "code_sha256": lineage.get("code_sha256"),
+        "runtime_environment_sha256": lineage.get("runtime_environment_sha256"),
+    }
+    if observed != expected:
+        changed = sorted(name for name in expected if observed.get(name) != expected[name])
+        raise StageAContractError(
+            f"fit-only receipt input lineage changed: {changed}"
+        )
+    return receipt, sidecars
+
+
+def verify_selection_feature_receipt_inputs(
+    *,
+    receipt_path: str | Path,
+    expected_receipt_sha256: str,
+    dataset: str,
+    sidecar_dir: str | Path,
+    manifest_path: str | Path,
+    config_paths: Mapping[str, str | Path],
+    code_paths: Mapping[str, str | Path],
+    environment: Mapping[str, object] | None = None,
+) -> tuple[dict[str, object], SelectionFeatureHashedSidecarSet]:
+    """Reverify completion inputs without selection-label filesystem access."""
+
+    receipt_file = Path(receipt_path)
+    receipt_sha = _require_sha256(
+        expected_receipt_sha256, "expected_receipt_sha256"
+    )
+    if _file_sha256(receipt_file) != receipt_sha:
+        raise StageAContractError("fit receipt file hash changed")
+    receipt = _load_receipt(receipt_file)
+    sidecars = hash_fit_and_selection_feature_sidecars_only(
+        dataset=dataset,
+        sidecar_dir=sidecar_dir,
+        manifest_path=manifest_path,
+    )
+    runtime = dict(capture_runtime_environment() if environment is None else environment)
+    sidecar_receipt = receipt["sidecars"]
+    lineage = receipt["lineage"]
+    manifest_receipt = receipt["manifest"]
+    assert isinstance(sidecar_receipt, Mapping)
+    assert isinstance(lineage, Mapping)
+    assert isinstance(manifest_receipt, Mapping)
+    fit_receipt = sidecar_receipt.get("fit")
+    selection_receipt = sidecar_receipt.get(SELECTION_ROLE)
+    if not isinstance(fit_receipt, Mapping) or not isinstance(
+        selection_receipt, Mapping
+    ):
+        raise StageAContractError("fit receipt sidecar roles are malformed")
+    expected = {
+        "dataset": dataset,
+        "manifest_sha256": sidecars.manifest_sha256,
+        "fit_feature_sha256": sidecars.fit.feature_sha256,
+        "fit_label_sha256": sidecars.fit.label_sha256,
+        "selection_feature_sha256": sidecars.selection.feature_sha256,
+        "config_sha256": _named_file_hashes(config_paths, "config_paths"),
+        "code_sha256": _named_file_hashes(code_paths, "code_paths"),
+        "runtime_environment_sha256": _canonical_sha256(runtime),
+    }
+    observed = {
+        "dataset": receipt.get("dataset"),
+        "manifest_sha256": manifest_receipt.get("sha256"),
+        "fit_feature_sha256": fit_receipt.get("feature_sha256"),
+        "fit_label_sha256": fit_receipt.get("label_sha256"),
+        "selection_feature_sha256": selection_receipt.get("feature_sha256"),
+        "config_sha256": lineage.get("config_sha256"),
+        "code_sha256": lineage.get("code_sha256"),
+        "runtime_environment_sha256": lineage.get("runtime_environment_sha256"),
+    }
+    if observed != expected:
+        changed = sorted(name for name in expected if observed.get(name) != expected[name])
+        raise StageAContractError(
+            f"selection-feature receipt input lineage changed: {changed}"
+        )
+    # The receipt and immutable manifest commit to the selection-label metadata.
+    # Comparing those public digests does not resolve or touch the label file.
+    roles = sidecars.manifest["roles"]
+    assert isinstance(roles, Mapping)
+    selection_manifest = roles[SELECTION_ROLE]
+    assert isinstance(selection_manifest, Mapping)
+    if selection_receipt.get("label_sha256") != selection_manifest.get("label_sha256"):
+        raise StageAContractError("selection-label metadata differs from frozen manifest")
+    return receipt, sidecars
+
+
+def _materialize_selection_feature(
+    sidecars: HashedSidecarSet | SelectionFeatureHashedSidecarSet,
+) -> SelectionFeatureView:
     spec = sidecars.spec
     record = sidecars.selection
     feature = _load_npz_exact(record.feature_path, spec.feature_fields)
@@ -1332,9 +1809,9 @@ def materialize_selection_features_after_receipt(
     code_paths: Mapping[str, str | Path],
     environment: Mapping[str, object] | None = None,
 ) -> SelectionFeatureView:
-    """Stage-B gate: verify receipt first, then open selection features only."""
+    """Stage-B gate: verify fit plus selection features, never selection labels."""
 
-    _, sidecars = verify_fit_receipt_inputs(
+    _, sidecars = verify_selection_feature_receipt_inputs(
         receipt_path=receipt_path,
         expected_receipt_sha256=expected_receipt_sha256,
         dataset=dataset,
