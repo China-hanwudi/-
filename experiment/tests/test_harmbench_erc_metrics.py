@@ -19,6 +19,8 @@ from hva_affect.harmbench_erc_metrics import (  # noqa: E402
     evaluate_frozen_thresholds,
     hybrid_probability,
     paired_true_class_regret,
+    regret_sign_severity_profile,
+    top_label_expected_calibration_error,
     validated_probability,
 )
 
@@ -50,6 +52,48 @@ def test_empirical_cvar_handles_zero_mass_at_quantile_exactly() -> None:
     values = np.asarray([0.0] * 95 + [1.0, 2.0, 3.0, 4.0, 5.0])
     assert empirical_upper_cvar(values, alpha=0.90) == pytest.approx(1.5)
     assert empirical_upper_cvar(np.asarray([1.0, 2.0, 3.0]), alpha=0.90) == 3.0
+
+
+def test_top_label_ece_uses_frozen_equal_width_bins_and_final_closed_boundary() -> None:
+    labels = np.asarray([0, 1, 1, 0, 1], dtype=np.int64)
+    probability = np.asarray(
+        [
+            [0.9, 0.1],
+            [0.2, 0.8],
+            [0.7, 0.3],
+            [0.4, 0.6],
+            [0.0, 1.0],
+        ],
+        dtype=np.float64,
+    )
+    expected = (0.1 + 0.2 + 0.7 + 0.6 + 0.0) / 5.0
+    assert top_label_expected_calibration_error(labels, probability) == pytest.approx(
+        expected
+    )
+
+
+def test_top_label_ece_ties_follow_frozen_class_order_and_bins_cannot_change() -> None:
+    labels = np.asarray([1], dtype=np.int64)
+    probability = np.asarray([[0.5, 0.5]], dtype=np.float64)
+    assert top_label_expected_calibration_error(labels, probability) == 0.5
+    with pytest.raises(HarmBenchMetricError, match="frozen at 15"):
+        top_label_expected_calibration_error(labels, probability, bins=10)
+
+
+def test_regret_sign_severity_has_frozen_mutually_exhaustive_boundaries() -> None:
+    report = regret_sign_severity_profile(
+        np.asarray([-0.1, -0.05, -0.01, 0.0, 0.01, 0.05, 0.1])
+    )
+    assert report["counts"] == {
+        "substantial_benefit": 1,
+        "small_benefit": 2,
+        "exact_zero_including_fallback": 1,
+        "small_harm": 2,
+        "substantial_harm": 1,
+    }
+    assert sum(report["rates"].values()) == pytest.approx(1.0)
+    with pytest.raises(HarmBenchMetricError, match="frozen at 0.05"):
+        regret_sign_severity_profile(np.asarray([0.0]), practical_threshold=0.1)
 
 
 def test_hybrid_probability_uses_candidate_only_where_selected() -> None:

@@ -1,12 +1,35 @@
-# CARMA-Affect 顶会证据推进计划
+# CARMA-Affect N3 候选方案顶会证据推进计划
 
 ## Goal
 
-在不访问当前/未来标签、不泄漏人物或时间信息的前提下，建立并验证“个体历史何时造成情感预测负迁移、如何预测这种伤害并安全回退”的可复现研究证据；最终交付满足顶会审稿标准的多数据集结果，或形成有充分否定证据支撑的 benchmark/问题论文路线。
+在不访问当前/未来评估标签、不泄漏人物或时间信息的前提下，建立并验证 N3 候选方案：利用情感领域模型分别表示当前与历史的文本、音频和视频，通过共享参数的 3×3 当前—历史交互、模态级与联合级真实双向边际效用以及两级安全门控，选择能够真正提高当前情感分类性能的历史信息。最终结论必须来自冻结协议后的未观察数据角色或预注册外部确认数据；HarmBench 只保留为辅助 benchmark/备选论文路线。
+
+## Highest-priority override（2026-08-09）
+
+- 最高研究依据：用户提供的四条连贯研究要求及仓库内冻结协议。
+- 正向方法唯一主线正式命名为 **N3 候选方案**；老师前三条要求作为待检验的方法贡献，第四条作为不可绕过的真实情感分类成功门。
+- HarmBench 仅保留为：历史负迁移评价工具、旧 N2 失败原因分析、N3 辅助 benchmark，以及正向方法失败时的备选论文路线；不得替代 N3。
+- 已结束的 10,000 次 bootstrap / 100,000 次 randomization 只封存一次；禁止重复运行，禁止继续扩展 HarmBench 真实实验。
+- 既有 N2、HarmBench、selector repair 与负结果证据全部保留，不删除、不覆盖、不改写。
+- IEMOCAP 预注册为 N3 的第三个独立外部确认数据集，只能在 N3 结构、超参数、效用阈值和统计合同冻结后运行，不得用于模型选择或调参，结果无论正负均报告。
+- IEMOCAP 若因授权或预注册六路协议不可满足而失败，替代顺序固定为 `CPED → M3ED`；只按预先定义的许可/数据可行性门切换，禁止按结果选数据集。
+- 在新的 protocol ID、模型、指标、效应阈值、统计方法和公开模板完全冻结前，MELD/EmotionTalk official test、validation、calibration、internal holdout 与任何未观察标签继续封存；真实受限数据禁止发送给 GPT/API/外部服务。
 
 ## Current Phase
 
-Phase 1 — 预注册与 benchmark 冻结（in_progress）
+N3 Phase 0 — 主线纠偏、协议/许可审计与预注册冻结（in_progress）
+
+### N3 立即执行门
+
+- [x] 确认 10k bootstrap / 100k randomization 已自然结束且当前无相关统计进程；不重跑。
+- [ ] 完成“老师四条要求—当前 N2 实现—缺口—N3 修改方案”逐项对照。
+- [ ] 完成情感领域编码器的 checkpoint、代码/权重/训练数据许可、数据适配、8GB VRAM/16GB RAM/约 53.5 GiB 磁盘预算与可复现性审计。
+- [ ] 完成 IEMOCAP 的官方授权、数据结构、标签协议、session 级说话人隔离和六路模态可用性审计；同时审计 CPED、M3ED 的固定替代条件。
+- [ ] 冻结 N3 protocol ID、六路接口、情感理论变量、共享 3×3 交互、模态级/联合级双向效用、两级门控、损失、超参数、阈值、15 项基线/消融、指标、统计合同、成功门和公开模板。
+- [ ] 仅在 synthetic contract 与 fit 角色实现、测试和审计 N3；不得读取任何封存评估标签。
+- [ ] 完成正式运行 readiness 审计后停止；没有单独授权不得解封任何未观察标签。
+
+### 历史 N2/HarmBench 记录（保留，不再作为当前主线）
 
 ### Causal evidence gate 子任务（2026-08-08）
 
@@ -100,7 +123,16 @@ reject_if: candidate fails to improve query Macro-F1 without positive excess NLL
 
 ## Next Step
 
-`harmbench_erc_v1` 的 exact development contract、production inference、probability/alignment receipts、public writer 与 synthetic-only E2E 已完成。当前唯一下一动作是实现并冻结开放角色的数据能力分离、strict-past context roster，以及 `hb_linear_pool_v1`、`hb_deepsets_pool_v1`、`hb_causal_gru_v1` 三个实质不同且各自独立 current-only 的模型家族；先以合成 corpus 验证泄漏、seed、row-order、checkpoint 与 probability-panel 合同，再训练 EmotionTalk/MELD 的 fit 角色并仅生成 selection prediction-only 工件。calibration、internal holdout、validation 与 official test 继续封存；禁止 Repair 4、禁止按结果修改 N2 后重看同一 selection，真实受限数据继续禁止发送给 GPT/API。
+严格按以下顺序推进且不并行解封评估角色：
+
+1. 封存 HarmBench 已结束统计与中断工程审计；不实现 label access ticket，不接 terminal evaluator，不重跑统计或真实实验。
+2. 完成老师四条要求对照表，并把 N3 结构性缺口转成可测试合同。
+3. 完成情感领域编码器与 IEMOCAP/CPED/M3ED 许可、数据结构、标签和资源审计。
+4. 冻结 N3 protocol ID、结构、超参数、效用阈值、统计合同、15 项基线/消融与成功门。
+5. 只在 synthetic contract 与 fit 角色实现/测试；不打开 MELD/EmotionTalk 的任何封存角色，也不运行 IEMOCAP。
+6. 形成正式运行 readiness 报告并停止，等待对未观察数据角色的单独授权。
+
+HarmBench 现有工程证据保持封存：最终 protocol v2 pin=`58630569e7cb518b3b04fc9029bd5c78c56e409fee6ae2f36bc0a90143fc4f9a`，相邻回归分别有 `217 passed`、`81 passed`、`83 passed`、`122 passed`、`44 passed`、统计专项 `12 passed in 12.79s`，curator durability `26 passed in 0.89s -W error`。这些数字只证明合成/工程合同，不是模型性能或真实标签访问证据。中断的 prelabel/evaluator 文件保持原状并标记未完成。绝不暂存 `jzmq.dll` 或 `libzmq-mt-4_3_6.dll`。
 
 ## Confirmatory Evidence Gate
 
@@ -109,9 +141,9 @@ reject_if: candidate fails to improve query Macro-F1 without positive excess NLL
 1. 至少 2 个独立来源数据集完成确认实验，目标为 3 个（MELD、IEMOCAP、EmotionTalk；许可失败时使用预先声明的替代集）。
 2. 严格按对话/人物/时间协议切分；历史仅来自查询时刻之前；所有选择器监督由 out-of-fold/cross-fitting 产生。
 3. 与 current-only、all-history、强检索/记忆基线及校准回退基线公平比较。
-4. 锁定主指标：情感预测 Macro-F1、相对 current-only regret、历史伤害率、q90/worst-group regret、fallback coverage-risk、ECE/Brier。
+4. MELD 锁定 Weighted-F1 为主指标；同时报告 Macro-F1、Accuracy、NLL、Brier、ECE、历史负迁移率、CVaR 和风险—覆盖曲线。外部确认集需在冻结协议中预先指定与标签映射一致的主指标，不得看到结果后变更。
 5. 确认实验至少 5 个随机种子；报告均值、95% CI、配对效应量与 Holm 校正；按对话或人物做层级 bootstrap，禁止把 utterance 当作完全独立样本。
-6. 主方法必须在至少 2 个数据集上降低负迁移且 95% CI 不跨 0；同时不能以明显牺牲 Macro-F1 或最差群体为代价。
+6. 完整 N3 必须同时满足：Accuracy 高于 independent current-only；Weighted-F1 高于最强历史基线；Macro-F1 不明显下降；配对 95% CI 支持提升；至少 5 seeds 方向基本一致；双向效用伤害率低于单向效用；去情感编码器、双向效用、模态级效用或 3×3 后性能下降。增益必须来自真实情感分类，不能只来自效用 AUC/伤害率。
 7. 完成消融、标签置乱、未来历史注入检测、重复人物检测、时间反转、状态突变与恢复、模态缺失/噪声压力测试。
 8. 代码、配置、随机种子、环境、聚合结果与失败实验均可复现；未授权原始数据和派生受限特征不公开。
 
@@ -122,7 +154,49 @@ reject_if: candidate fails to improve query Macro-F1 without positive excess NLL
 - GPT 输出必须缓存并版本化；确认实验禁止根据测试结果改提示词。
 - 若没有可用 API 凭据或数据许可，先实现可离线运行的接口和 mock/开源替代基线，不伪造 GPT 实验数据。
 
-## Phases
+## N3 Mainline Phases
+
+### N3 Phase 0 — 纠偏、对照、许可与协议冻结
+
+Status: in_progress
+
+- 封存 HarmBench 收尾状态与中断文件，不再扩展。
+- 完成老师四条要求对照、情感编码器审计和 IEMOCAP/固定替代集审计。
+- 冻结 protocol、结构、超参数、阈值、统计与公开模板。
+
+### N3 Phase 1 — Synthetic contract 与 fit-only 实现
+
+Status: pending
+
+- 实现六路接口、情感变量、共享 3×3、模态/联合双向效用和两级门控。
+- 所有效用标签仅由 fit 内 group cross-fitting/OOF 生成。
+- 运行泄漏、集合反事实、模态归因、缺失模态、参数预算和确定性合同测试。
+
+### N3 Phase 2 — 冻结基线/消融与运行就绪审计
+
+Status: pending
+
+- 固定 15 项最低基线/消融、5 seeds、配对统计、效应阈值和 no-harm 门。
+- 核验模型权重许可、数据授权、磁盘/显存/时长预算与 write-once 输出路径。
+- 生成 readiness 报告；未获独立授权时在此停止。
+
+### N3 Phase 3 — 预注册外部确认（需单独授权）
+
+Status: pending
+
+- IEMOCAP 仅在冻结后作为第三独立外部确认集运行；不得调参，正负结果均报告。
+- IEMOCAP 授权/六路协议失败时，按 `CPED → M3ED` 固定顺序替代。
+- 不因任何中间性能改变模型、阈值、标签映射、统计或数据集顺序。
+
+### N3 Phase 4 — 多数据集结论、反证与论文证据包
+
+Status: pending
+
+- 只按冻结成功门综合 MELD、独立确认角色和预注册外部数据。
+- 完整报告负结果、缺失模态/噪声/转折恢复/跨模态冲突压力测试。
+- 若正向方法失败，才评估 HarmBench 备选论文路线；不得改写 N3 失败。
+
+## Historical N2/HarmBench Phases（preserved）
 
 ### Phase 0 — 复现实验与资产审计
 
@@ -193,6 +267,16 @@ Status: pending
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| curator 只读检索再次假定不存在的 `meld_causal_backbone.py`，并使并行读取整体退出 1 | 1 | 无文件/数据访问；用 `rg --files`/已有 import 定位真实 schema 在 `meld_causal_backbone_loader.py` 与 `meld_multimodal_sidecar.py`，后续 curator 检索只使用已验证精确路径 |
+| class-order SHA 的组合 `rg` 把带冒号的第二模式解析成 Windows 路径，返回非法文件名 | 1 | 无文件修改；改为读取已定位的 `_class_order_sha256` 精确行段，确认其 canonical JSON 绑定，后续多模式使用单一 `-e` 或分别检索 |
+| curator schema 并行只读审计假定存在 `meld_causal_backbone_runner.py`，`rg` 因该路径不存在退出 1 | 1 | 无文件修改；先用 `rg --files` 定位 MELD 实际模块，再只读精确文件，禁止重复假定文件名 |
+| 尝试给已完成 selection-label 代理追加 curator-ingest 子任务时并发槽已被 statistics 子代理占满，协作工具返回 `agent thread limit reached` | 1 | 未创建任务、无文件修改；保留 ingest 为后续动作，等待当前 prelabel/statistics 任务释放槽后再派发，不重复占槽 |
+| sign×severity key rename 的首个组合补丁把测试文件上下文误放在 metrics 文件更新块中，apply_patch 原子拒绝 | 1 | 无部分写入；先用 `rg -A/-B` 读取两个精确区段，再分别对源文件和测试文件做小补丁 |
+| Windows 上将 `harmbench_erc_*.py` 作为 `rg` 位置参数触发非法路径，导致并行只读源码审计在启动阶段退出 | 1 | 无文件修改；改用 `rg -g 'harmbench_erc_*.py'` 的 glob 过滤，禁止重复原命令 |
+| 联合模型回归在 typed roster 代理正处于 `make_fit_feature_capability` 签名迁移的中间状态触发，导致 18 failed/27 errors；根因是共享工作区并行编辑而非模型逻辑结论 | 1 | 停止基于中间 API 修补；要求该代理完成明确 synthetic helper 与所有相邻 fixture 迁移，待其最终报告后再复跑 |
+| 新 crossfit heldout-roster 攻击测试正确 fail-closed，但实际先在“query rows differ from derived partition”失败，测试只匹配 `context_role` 导致 1 项假阴性 | 1 | 保留更强的分区现场校验，将断言改为外层稳定错误 `invalid fit-train context roster` 后复跑 |
+| processor cache parent identity 首版把目录 `st_size` 纳入稳定身份；并发 writer 创建各自临时子目录会合法改变该值，使 4 线程测试出现 1 项假阳性失败 | 1 | 不重复用可变目录大小作身份；保留 `st_dev/st_ino/file_attributes` 作为父目录对象身份，再复跑并发与完整专项 |
+| 首次把 combined open-role capability 重构为 fit/selection 两阶段时，大补丁因函数返回上下文与当前文件不完全一致而被原子拒绝 | 1 | 无部分写入；改为先读取精确 dataclass/function 区段，再分成小补丁依次加入 typed capabilities、factory 与 loader，避免重复大范围替换 |
 | 恢复后首次用 Windows Store 系统 Python 运行 HarmBench 专项时缺少 `scikit-learn`，3 个测试模块在 collection 阶段失败 | 1 | 未执行测试主体、未修改结果；该环境此前已知只供轻量脚本，改为定位并使用旧实验已审计的独立 `.venv`，不在系统 Python 临时安装依赖 |
 | production probability seed-axis mutation 测试首版把同一 seed 概率复制 5 次，反转 seed 轴数值不变而未触发 SHA 差异 | 1 | 仅合成测试失败、无科研结果；把 fixture 改为五个可区分且仍满足 simplex 的概率面板后，query/seed/bit 三类 mutation 均被拒绝 |
 | row-order mutation 已正确 fail closed，但测试正则预期 `alignment changed`，实现统一报 `production binding changed` | 1 | 仅错误消息断言不匹配；保持更一般的实现错误，不放宽验证，测试改为匹配 `binding changed` 后通过 |
@@ -242,8 +326,8 @@ Status: pending
 | 再次误用 PowerShell 内联 `foreach {...} |` 枚举八份配置，触发 empty-pipe parser error | 3 | 无文件/结果修改；立即改为 `$rows = foreach (...) {...}; $rows | ...` 并成功只读。后续配置枚举只使用该两阶段写法或 Python，不再使用内联 foreach-pipe |
 | 再次把 `carma_affect_relation_*_v1.json` 作为 `rg` 字面路径，随后修正的检索又因零命中退出 1 | 2 | 两次均为只读且无状态变化；后续可能零命中的配置检索固定用 `Get-ChildItem ... | Select-String`，不再向 `rg` 传 Windows 通配路径，也不把零命中当错误 |
 | 合并磁盘与 `Win32_VideoController` CIM 查询超过默认 10 秒 | 1 | 无状态变化；拆为轻量 `Get-PSDrive` 与 `nvidia-smi --query-gpu` 后成功，不重复慢 CIM 路径 |
-| 已登记禁止的 Windows `rg` 路径通配符写法被再次误用，测试文件搜索返回路径语法错误 | 2 | 只读失败且无状态变化；立即改为目录参数加 `rg -g 'test_*.py'` 并成功，后续审计固定使用该形式 |
-| 将 CLI `--help` 直接管道到 `Select-Object -First` 导致消费端提前关闭、并行检查整体返回失败 | 1 | 无文件修改；改为完整捕获 help 文本后再取首行，compileall、JSON、diff 与 isolated CLI 四项均重新独立通过 |
+| 已登记禁止的 Windows `rg` 路径通配符写法被再次误用，测试文件搜索返回路径语法错误 | 3 | 三次均为只读失败且无状态变化；本轮已改用目录参数加 `rg --glob` 成功。达到 3-strike，后续所有 Windows `rg` 调用禁止任何路径通配符，只允许目录参数配 `--glob/-g`，命令模板必须直接复用而不再手写 glob 路径 |
+| 将长输出命令直接管道到 `Select-Object -First` 导致消费端提前关闭、整体返回失败 | 2 | 两次均为只读且前置输出可见、无文件修改；后续必须先完整捕获到 PowerShell 变量，再对变量执行 `Select-Object -First`，禁止把 `rg`/CLI 原生进程直接接到提前关闭的消费端 |
 | 首次八变体 `fit-lineage-validate` 把 shell 超时错误设为 1 秒，读验证进程被工具终止 | 1 | 验证入口只读且未修改任何产物；把 shell 内部超时调整为 300 秒后再运行，不改变科研参数或 write-once root |
 | 第二次 `fit-lineage-validate` 手工把保留名 `production_source_snapshot_v1` 重复加入 `--config` | 1 | CLI 在读取训练/性能数据前 fail closed；核对 `_bind_source_snapshot_config` 后移除重复参数，由三个显式 snapshot 参数自动绑定同一 manifest，再运行八项全部通过 |
 | 检查新日志路径时再次使用已禁止的 PowerShell 内联 `foreach {...} |` | 4 | 只读 parser error、无状态变化；立即改为先赋值 `$rows=foreach (...) {...}` 再单独管道。后续所有枚举检查改用该两阶段模板，不再手写内联 pipe |
@@ -257,6 +341,7 @@ Status: pending
 | 安全策略拒绝对 frozen `__pycache__` 做递归及逐文件删除 | 2 | 两次均未删除任何内容；改用经过绝对路径、内容类型和目标父目录验证的 `Move-Item`，把完整缓存可恢复地移入 run quarantine |
 | 对 0 字节 EmotionTalk stderr 调用 `[regex]::Matches($null, ...)` 触发只读 ArgumentNullException | 1 | stdout 与 stderr 元数据已完整读取、评估不受影响；以文件长度 0 作为空日志证据，后续正则统计前先把 null 归一为空字符串 |
 | 收口专项测试首次同时使用 `python -I` 与外部 `PYTHONPATH`，隔离模式按设计忽略该路径，导致两个模块在 collection 阶段 `ModuleNotFoundError` | 1 | 未执行测试主体、未修改科研代码或结果；对仓库工作副本改用普通解释器加显式 `PYTHONPATH=experiment/src`，同两份专项最终 `58 passed`。正式冻结入口仍保持 `python -I` |
+| S1 中间态 compile 命令把 JavaScript 局部变量误当作 PowerShell 环境变量 `$env:CARMA_PY` | 1 | shell 在解释器启动前失败、未修改代码或结果；改为显式引用冻结科研 `.venv` 的绝对解释器路径，同四模块 `py_compile` 通过，后续不跨脚本作用域假定环境变量存在 |
 
 ## Decisions Made
 

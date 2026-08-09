@@ -1,5 +1,94 @@
 # CARMA-Affect Research Findings
 
+## N3 主线纠偏与不可变边界（2026-08-09）
+
+- 最高研究依据已切换为用户提供的 `pasted-text.txt`；正式正向主线命名为 N3 候选方案。核心是“情感领域六路表示 × 共享 3×3 当前—历史交互 × 模态级/联合级真实双向边际效用 × 两级安全门控”，最终必须提高真实情感分类，而不是只改善 utility AUC 或历史伤害率。
+- N2 不是“没有双向目标”：其相关原型已有不同集合 forward/backward OOF，但主要是候选历史联合层，缺少逐模态受控反事实、联合协同/冲突残差和部分模态门控。N2 还采用 benefit-positive backward `ell(R-h)-ell(R)`；老师原式/N3 采用 deletion-risk-positive backward `ell(R)-ell(R-h)`。旧 N2 结果保持原符号，N3 若复用必须显式乘 `-1` 并绑定 provenance，不能静默混用。
+- N2 的 TF-IDF/SVD、通用 WavLM 和 DINOv2 只能作为输入、容量和预算匹配的通用编码器基线；固定 VAD 表不能冒充完整情感领域建模。N3 必须把离散情绪后验、VAD、惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量实际接入表示/交互/门控并做消融。
+- 已生成 `docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md`，包含老师四条逐项对照、六路接口、效用公式、两级门控、15 项最低基线/消融、合取成功门和 synthetic/fit-only 停止条件。当前仍为 PROVISIONAL，不构成性能结论或未观察标签解封授权。
+- IEMOCAP 已预注册为 N3 的第三个独立外部确认数据集：冻结前不得运行、不得模型选择/调参、正负都报告；若官方授权或预声明六路协议失败，只按 `CPED → M3ED` 固定顺序切换，禁止按结果挑集。
+
+## HarmBench S1 收尾只读审计（2026-08-09）
+
+- 系统中已无 Python/pytest/HarmBench 统计进程。10,000 次 shared seed×whole-cluster bootstrap 与 exact/100,000 次 paired randomization 已自然结束，既有纯内存 synthetic 专项记录为 `12 passed in 12.79s`；curator durability 为 `26 passed in 0.89s -W error`。二者均禁止重跑。
+- 10k/100k 专项没有独立结果 JSON；旧 `results/harmbench_erc_v1_synthetic_contract.json` 是 S0 的 500-replicate 产物，不能冒充本次统计证据。当前统计源码/测试后来又受 ticket 迁移影响，不能把当前文件 SHA 错绑到迁移前 12-pass 记录。
+- `selection_prelabel` 已出现 issue→consume-once ticket 状态机，`selection_labels` 改为 ticket-only activation，`selection_statistics` loader 绑定 attempt 与两份已消费 capability，`selection_evaluator` 有 two-ticket/final-write-once 草稿；但 evaluator 无专项测试或 CLI，最新 pytest cache 仍留有 labels/statistics 迁移相关失败记录，当前树没有 post-migration clean certification。
+- 因此只封存已通过的纯统计核心、curator 和此前工程合同证据；中断集成层按“未完成快照”原样保留，不继续实现、不重跑。HarmBench 仅作 N2 失败分析、历史负迁移评价、N3 辅助 benchmark 或正向失败时备选路线。
+
+## HarmBench freeze/run 缺口（2026-08-09）
+
+- 真实 evaluator CLI 不能仅接 36 个 prediction 文件路径：每个 loader 还必须获得对应 loader-sealed checkpoint manifest 与外部 expected receipt SHA。仓库目前没有一个 exact 36-entry、repo-external、路径可私有的运行 index；final evaluator core 完成后仍需单独冻结该 index schema/loader，且 CLI 必须在读取 index/任何输入前先检查输出 root 的 prelabel/marker/final terminal 状态。
+- 仓库已有经 N2 使用并测试的 `production_source_snapshot_v1.py`：可把 clean detached worktree 绑定到仓库外 write-once manifest，后续 HarmBench freeze 可复用该组件，不应重新实现一套较弱源码散列。
+- 当前 `experiment/scripts` 只有 HarmBench synthetic contract runner；尚无 S1 单折资源/context-response smoke、完整 18-artifact fit/prediction orchestrator 或 selection evaluator CLI。即使核心模块全部通过，也不能直接手工拼接真实长跑；freeze 后仍需新增严格 runner 与 restart ledger。
+- Git 状态再次确认两个 ZeroMQ DLL 只是既有 untracked，必须持续排除；S1 核心模块/测试尚未纳入 Git，因此 clean detached source snapshot 只能在完整审计、选择性 stage、commit 后创建。
+
+## Protocol v2 独立审计补洞（2026-08-09）
+
+- v2 初次回收已精确冻结 ECE、depth strata、whole-cluster randomization、Holm、最小实际效应与 no-harm 阈值，canonical SHA 为当时的 `b80a9040…`；专项独立复验 `41 passed`。
+- 但 `no_harm_gate` 要求 two-sided 95% CI，初版没有冻结 bootstrap 的重采样单位、重复数、seed、跨模型共享方式、双数据集组合、percentile 端点与有限比例。该自由度足以在观察结果后改变门禁，故初版 SHA 不作为最终 freeze。
+- 已要求最小 v2 补丁：10,000 次、seed 20260810、training-seed 与各数据集 whole-cluster crossed resampling、paired/shared draws、双数据集等权、2.5/97.5 percentile、finite fraction≥0.95 且无 caller override；完成后必须重新 pin SHA 和攻击测试。
+
+## Prediction v3 与 label-only 边界（2026-08-09）
+
+- prediction v3 已把 common `E_dialogue` 从策略 coverage 拆开：current-only 可以携带真实 common eligibility 而始终零 context；same-speaker 可在 common eligible 时为空。`EffectiveHistoryCurrentPair` 对空策略行精确复用同 family current-only 概率，并绑定 pair receipt。
+- 独立审计发现 pair builder 初版只要求每个 seed 内 5 folds 的 coverage mask 一致，仍允许 seed 间不同；但非空性由 outcome-free candidate scope 决定，必须对 25 个 seed×fold 值逐 query 全一致。已发回最小修复并要求 seed-only drift 攻击测试。
+- label-only manifest 仅含 dataset/role/rows/row-alignment/class-order/fixed filename/artifact SHA，不含 feature、group、speaker、history 或 outcome-derived strata。manifest loader 不触碰标签文件；activation hook 才首次 resolve/stat/hash/open NPZ，并返回 loader-sealed 只读 labels。极端崩溃可留下无 manifest 的孤立 NPZ，该状态不可加载且未来 evaluator 必须视为 terminal，不能清理后重跑。
+
+## 真实 selection 标签 curator 迁移需求（2026-08-09）
+
+- 当前通用 label capability 已冻结成固定文件名、manifest-only 元数据加载与 attempt-marker 后单句柄激活；legacy feature 读取则分别存在 EmotionTalk/MELD 专用 loader。curator 不能直接复用这些高层 loader，因为那会把 open-role/prediction 依赖面带入 outcome authority；应建立只依赖 stdlib+NumPy 的独立模块，精确解析两套 legacy schema，并把 feature sidecar仅作为 protocol-row identity 来源。
+- 通用 `class_order_sha256` 不是“类别字符串本身”的普通散列；checkpoint v1 把 dataset ID、fit-training capability SHA 与 ordered class tokens 一起做 canonical JSON SHA。curator 必须要求并核验该 fit-training capability 绑定，机械复算同一 digest；若只硬编码七类名称，label manifest 将无法与 36 个 prediction receipts 建立同一 provenance。
+- 现有两个数据集已经是物理 label-only NPZ，但 schema 不同：EmotionTalk v2 exact fields 为 `schema_version/dataset_id/role/split_protocol_id/row_alignment_sha256/labels/source_label_sha256`；MELD 为 `schema_version/role/row_alignment_sha256/labels`。二者都不含 protocol row IDs 或 class tokens，后者必须从同角色 feature sidecar/冻结 dataset label order取得。
+- 因此新通用 label-only artifact 不能仅靠复制旧 NPZ。需要一个与 prediction/model/metrics/evaluator 零 import 的 curator 进程：精确验签 legacy manifest 和 selection label sidecar，同时只读同角色 feature sidecar的 protocol row IDs（MELD/EmotionTalk）以建立行对齐，再写通用 labels+protocol_rows+class_tokens NPZ。它不得打开 fit/calibration/holdout 或任何预测工件，也不得输出标签统计。
+- 该 curator 是 evaluator 之外的 outcome-isolated data-preparation authority；对于未来 official test 应由独立数据管理员运行。当前两份 selection 已被旧 N2 观察，迁移只能支撑新的探索性 benchmark，不能恢复确认性。
+- 仓库公开 manifest 已足够预绑定 curator 输入而无需打开真实 NPZ：EmotionTalk selection 2,682 行、label SHA `20854541…`、feature SHA `91e37563…`、类序 neutral→fearful；MELD selection 1,419 行、label SHA `50eb1029…`、feature SHA `e42ecd75…`、类序 neutral→anger。真实运行仍必须用外部 manifest file SHA 重验完整文件，不能只信这些摘录。
+- curator 的 outcome-free pin 已从两份公开 JSON 精确复核：EmotionTalk manifest SHA `bbd843876fa051c5426d0d56870adc939cdf71e1e8eaf552880ab4f89d47f530`、selection alignment `197545f4d9882c0e280ba86dabccebf32f645174f9df0caf3a0a1bccf4b68224`；MELD manifest SHA `7b12632066d20dc252c0d0d58ecc72e2d1ceefe015972ac4d73c1d0570826f99`、selection alignment `e943bfa793633afb2e789df79213fe5864fc1f499a68a363218ccce426fcecbd`。两者固定文件名均为 `features_model_selection.npz` / `labels_model_selection.npz`，因此 ingest 无需也不得 glob 其他角色。
+- curator 与 evaluator attempt 的权限必须明确区分：通用 prelabel bundle 需要先验存在的 label-only manifest，故 legacy ingest 必然由独立 data-preparation custodian 在 evaluator attempt 之外完成；它可以读取 outcome，但不得返回 outcome/统计或与模型代码同进程协同。对于未来 untouched test，若无法提供这种独立授权边界，就不能声称“attempt marker 早于所有标签访问”；当前已观察 selection 只能标探索，不用工程仪式恢复确认性。
+- curator 模块已用独立 write-once claim 关闭自身时序：先验签公开 manifest 与 selection feature/protocol rows，随后 durable curator marker，之后才首次 resolve/stat/hash/open legacy label；任何 label 侧失败、并发或 artifact-only 半发布均保持 terminal。主代理以 `-W error` 独立联跑 curator+通用 label loader 为 `44 passed`；该结果仍是 synthetic contract，不是现实标签转换授权。
+- curator durability follow-up 已消除已知目录项残余：Windows 使用无覆盖 `MoveFileExW(MOVEFILE_WRITE_THROUGH)`，POSIX 在 hard-link 发布后 fsync 父目录；marker/artifact/manifest 各自 barrier，barrier 失败不回滚且 marker 保持 terminal。主代理独立专项 `26 passed -W error`；与 label 模块的联跑暂待其 attempt-ticket API 迁移完成后重跑。
+
+## Checkpoint restart 独立复核（2026-08-09）
+
+- restore 端不是直接信任已加载数组：消费时会重开 receipt/payload、重验 exact family/namespace parameter schema、feature dimension、class order、fold/seed 与 live fit/processor/processed/plan/context lineage；神经模型使用 `strict=True`、CPU `eval()`、冻结梯度，线性模型用 prediction-only 子类显式拒绝 `fit/partial_fit`。
+- current-only typed prediction 的公开签名不接收 context/history；内部仍现场构造并验证 all-empty independence roster，再仅切出 query 的 processed current feature。history typed prediction只接受 live-revalidated `StrictPastContextRoster`，query/context indices由 protocol-row ID内部映射。
+- 独立五模块回归为 `83 passed`。这证明同源码/同依赖下 prediction-only restart 合同，不证明跨任意 sklearn/torch 版本兼容、可续训、真实性能或真实 selection 安全；这些边界继续保留。
+
+## HarmBench selection evaluator 复用边界（2026-08-09）
+
+- outcome-free prelabel 状态机已完成主代理独立复验：exact 36 artifacts→15 hypotheses/30 dataset-pairs→两份 manifest-only label metadata→canonical bundle/receipt→durable attempt marker，四模块相邻回归 `122 passed`。marker 之前模块无 label NPZ loader/activation 路径；marker 后只通过私有 loader-sealed seam交给 evaluator。该结论只关闭工程状态门，不含任何真实性能或真实 roster 运行证据。
+- 统计审计的解释方向已固定：六项 Holm 是三模型各自的 same-speaker vs matching current 的 Macro-F1 差与 mean NLL regret，均做双侧零假设；“显著”还必须同时越过 0.005 F1 / 0.01 nat 实际效应门。另有逐 model×dataset no-harm 双侧 CI 门（mean-regret 上界≤0.01、Macro-F1 下界≥−0.005），所以 Holm 拒绝本身既不能宣称改善，也不能覆盖任何单数据集伤害。
+- evaluator temporal capability 新 P0：当前 label activation 私有函数只接 manifest metadata+expected alignment，不接/绑定 `AttemptStartedCapability`，因此包内调用者可在 marker 前激活；同一 metadata 还能重复激活并重复打开 NPZ。且协议把 `label_capability_created` 与 `single_handle_single_deserialization` 分成两个状态，而现实现把二者合并。集成前必须新增 marker/prelabel/manifest-bound 的 consume-once access ticket：marker 后一次性签发，随后每数据集一次性消费；并发/任一失败都永久 terminal。
+- 纯内存统计引擎已完成主代理专项复验：五策略共享 10,000 bootstrap 与 exact/100,000 whole-cluster randomization，same-speaker 六项 Holm，3×2 no-harm，ECE/CVaR/sign×severity/depth 与 aggregate privacy attacks 共 `12 passed in 12.79s`。非线性 Macro-F1 在每个整簇 resample/swap 后由 confusion matrices 重算；不是对预先计算的 F1 做线性平均。真实性能与真实规模资源仍未知。
+- 现有 `harmbench_erc_metrics.py` 已具备 paired NLL/Brier regret、fractional-boundary empirical CVaR、Macro-F1/accuracy 与 hybrid probability，但仍把公共分母参数命名为 `history_eligible`，且缺 ECE、worst-stratum 与 evaluator 级空上下文 current-only fallback 绑定；下一版不能直接把旧函数当完整 S2 evaluator。
+- 旧 N2 `causal_backbone_model_selection_evaluator.py` 可复用一次性 `allow_pickle=False` 标签装载、whole-cluster randomization、Holm、canonical write-once 与 aggregate-only 验证思路；但它没有 prelabel bundle→attempt marker fsync→label capability 的不可逆状态机，也绑定旧四变体/旧 strategy roster，因此只能作为实现参考，不能直接改名复用。
+- 新 evaluator 应与 label capability 分模块：先对 exact 18 prediction artifacts、protocol v2 与 feature alignment 建立 write-once prelabel bundle；attempt marker 必须在任何 label 文件 resolve/stat/hash/open 之前发布并 fsync。崩溃后同一 run root 永久 terminal，不能以“修复工程问题”为由重跑已观察 selection。
+
+## HarmBench S1 capability/transform 追加审计（2026-08-09）
+
+- 现有 `load_*_fit_role_capability` 会先哈希/加载 fit labels，再构造内嵌 `FitFeatureCapability`，且 feature capability 仍绑定完整 fit manifest SHA；因此它不能证明 preprocessing 阶段的 `any_label_archive_hashed=false`，也会让 feature capability 随标签 projection 变化。必须新增物理独立的 `load_*_fit_feature_capability`，只打开 feature-only manifest/projection；fit labels 只在后续监督训练 capability 组合阶段进入。
+- processor transform 当前的 expected source 参数实际只验证 processor 拟合时的 fit-feature capability；selection 等实际 transform source 只做自校验。生产 API 必须拆成 `expected_fit_feature_capability_sha256` 与 `expected_transform_source_capability_sha256` 两个必填锚，并在计算输出前把后者与本次 typed source capability 精确比较。
+- 最新五模块合成回归的 13 个失败中，12 个来自测试 fixture 仍调用旧 `(OutcomeFreeRoleFeatures, raw_indices)` API，剩余 1 个只是 open-role 异常文本正则漂移。这个结果说明迁移工作量集中在陈旧调用者，但不能替代完成后的联合回归或证明当前中间态可训练。
+
+## HarmBench S1 两阶段 capability 当前缺口（2026-08-09）
+
+- typed `FitRoleCapability` 与 `SelectionFeatureCapability` 已存在，前者结构上不含 selection feature，后者结构上不含 labels，并由 manifest/fit capability SHA 串联；但两个真实数据集的公开 loader 仍只有 combined convenience 入口，会在一次调用中打开 fit feature、fit label 与 selection feature。
+- 生产入口必须新增四个 split loader：EmotionTalk/MELD 各自的 fit-only 与 selection-feature-only。fit loader 不能 resolve、stat、hash 或打开 selection feature/label；selection loader 只能按 manifest 精确文件名打开 selection feature，不能 resolve、stat、hash 或打开 selection label，且不得枚举 MELD calibration/internal-holdout 文件。
+- 现有合成测试仍主要覆盖 combined convenience，尚未证明 fit capability 无 selection feature surface、selection capability 无 labels surface及文件系统 no-touch 顺序；需以路径访问 trap/monkeypatch 和真实只读 smoke 补齐。
+- 独立审计进一步把原始 full manifest 判为 P0/P1：EmotionTalk manifest 同时含 fit/selection 的 label filename+SHA，MELD 还含 calibration/internal-holdout 的 label/feature 元数据；若 capability 绑定 full manifest SHA，则 selection prediction 身份会随 outcome metadata 改变，即使实际 label NPZ 未打开也不够 outcome-free。
+- 最小可证明修复是四份物理 sanitized manifest：每数据集 fit-only manifest 只描述 fit feature+label；selection-feature-only manifest 只描述 selection feature且完全不含 `label*` 键。二者各有独立 canonical SHA；跨角色一致性由不含 outcome metadata 的单独 roster/protocol identity或显式 fit-capability SHA 完成，不能再绑定原 full manifest SHA。
+
+## HarmBench S1 processor/cache 对抗审计阻断（2026-08-09）
+
+- processor cache 当前从同目录未认证 receipt 读取 serialized payload SHA；对抗测试同时替换 joblib payload、更新 receipt 内 payload SHA 与自洽 binding 后，恶意 bytes 仍到达 `joblib.load`。hash-before-unpickle 不能替代外部信任锚。loader 必须要求由 writer/frozen roster 在目录外保存的 expected receipt SHA 与 payload SHA，receipt 用 duplicate-free canonical JSON 且同一打开句柄验字节，payload 同句柄先验 SHA 再反序列化；长期更优路线是不用可执行序列化格式。
+- processor/crossfit 对象的 NumPy 数组拥有自身存储，调用方可重新 `setflags(write=True)` 后在 stale SHA 下修改；当前 processor fit 还允许调用任意 rows、seed/fold，receipt 未绑定 crossfit plan SHA。生产 API 必须先 live-validate plan/capability/content，由固定 seed/fold roster 内部派生 train indices，绑定 plan SHA、seed/fold、ordered train protocol-row IDs，并让每个消费点重新验证；不能依赖调用方“记得先调用 validate”。
+
+## HarmBench S1 model/prediction artifact 独立审计阻断（2026-08-09）
+
+- 冻结科研 `.venv` 已确认 `torch 2.11.0+cu128` 且 CUDA 可用，模型＋artifact 专项 `36 passed`；但训练公共入口接受裸 `ProcessedRoleLike + labels`，合成 selection-shaped 对象也可训练。生产 runner 必须以 `FitRoleCapability` 为唯一标签入口，并在内部完成 transform/train，不能把 capability 再拆成无来源裸数组。
+- current-only 模型层已有独立 trainer/network/checkpoint/namespace且无 context 参数，但 prediction artifact 没有绑定 namespace/model identity，也允许 `strategy_id=current_only` 携带非零 context count。工件层必须强制 current-only 的 history/context consumption 为 0，并绑定 exact namespace/identity。
+- 现有 prediction artifact 的单个 opaque checkpoint SHA 不能证明五 seed×五折 checkpoint 笛卡尔 roster、每折 train-group 排除或 selection 的五折 ensemble。必须新增 exact 25-entry checkpoint manifest，逐项绑定 seed、fold、namespace、checkpoint SHA、crossfit plan SHA 与 ordered train/heldout group SHA。
+- `class_ids` 目前由 caller 任意提供，错误顺序仍可写入；必须从 dataset capability/protocol 的冻结 label order机械推导并绑定，禁止自由传入。loader 还应强制 out-of-band expected receipt SHA，并用同一文件句柄 hash→seek→decode/load；双文件发布若中断会留下孤儿 artifact，生产 root/重试协议需明确 fail-closed。
+
 ## HarmBench-ERC v1 当前验证状态（2026-08-09）
 
 - 新增核心与公开层首轮专项测试为 `38 passed`；独立审计随后复现 exact-freeze、可变 payload、production profile、概率错序和 public 跨字段一致性缺口。修复后的合同＋inference＋public 联合回归为 `66 passed`。这些结果只证明合同、数值和 schema 行为，不是模型性能证据。
@@ -676,3 +765,44 @@
 - 当前 HarmBench 四模块只覆盖协议、指标、共享 bootstrap/概率 panel 和 public writer；还没有将 `OpenRoleCorpus` 训练成五 seed probability panel 的模型 producer，这正是进入真实开放角色实验前的缺口。
 - `OpenRoleCorpus` 定义位于 `emotiontalk_causal_backbone_runner.py`，MELD loader 直接复用同一类型；因此三模型族可共享一个数据源无关的训练器，并由两个 dataset adapter 只负责受控加载与 provenance。
 - Windows Store 系统 Python 3.11 不含 scikit-learn；已重新定位到旧研究工程内此前审计过的独立 `.venv`，后续测试与训练统一使用该环境，避免临时修改系统环境造成不可复现差异。
+- EmotionTalk 与 MELD v2 sidecar 已经把每个角色的 feature/label 物理拆成独立 `allow_pickle=False` 文件，manifest 也分别绑定 feature/label SHA；能力分离无需重建数据，只需新增“fit 同时加载 feature+label、selection prediction 阶段只打开 feature”的严格 loader。
+- 现有 `load_emotiontalk_open_role_corpus` 与 `load_meld_open_role_corpus` 为 N2 方便而一次性打开 fit+selection 的四个文件，不适合作为 HarmBench prediction-only 入口；新模块应复用其 schema/散列规则但避免调用这两个耦合 loader。
+- MELD 已有 `_validate_feature_without_label_deserialization` 与 `_fit_only_corpus` 内部基础，可作为 HarmBench 能力分离参考；它会打开 selection feature、只对 selection label 文件做字节散列而不反序列化。EmotionTalk loader 目前缺少对应的公开 feature-only 数据对象，需要补齐统一 adapter。
+- MELD `_read_manifest` 已完整验证 manifest/source/feature/seal/role/public-audit exact schema，且本身不打开 sidecar；HarmBench 可复用这个只读 manifest verifier，再为两个数据集各实现 feature archive 映射，减少重复且保持 fail-closed。
+- 独立 readiness 审计裁决真实 open-role fit 目前仍为 STOP：必须先完成 capability/context/shared-processor/model/prediction/evaluator 合同、三个 model spec/hash、单折资源 smoke 与仓库外空间门；S0 synthetic 通过不能直接授权真实训练。
+- 主 context 应区分 `dialogue_all_past`（同对话所有说话人严格过去）与 `same_speaker_all_past`（同说话人严格过去）；统一 eligible population 建议定义为至少一个 dialogue strict-past item，speaker 无历史时回退 current-only。现有 `OpenRoleCorpus.histories` 只代表后者。
+- 标准私有输出冻结为 fit OOF `[5,Q_fit,7]`（每 seed/query 唯一外折预测）和 selection panel `[5,Q_selection,7]`（每 seed 对五外折 checkpoint ensemble），并绑定 context count/hash、alignment、processor/checkpoint/source receipts；selection prediction 阶段不得触碰 label archive。
+- 三主家族建议为 `SGDClassifier` 线性汇总、<1M DeepSets、<2M causal GRU；共享 fold-local char TF-IDF+SVD256 与媒体 scaler，但 current-only 必须独立 checkpoint namespace 且训练/推理 history consumption 均为 0。
+- 当前 C/D/E 可用空间约 11.3/5.2/5.82 GiB；复制每家族 processor 将达约 15.5 GiB，不安全。必须使用共享 processor-only cache，并在真实训练前确认仓库外至少约 15 GiB 安全空间或明确的跨盘 manifest。
+- 正确科研环境为 Python 3.11.9、numpy 2.3.1、scikit-learn 1.7.2、PyTorch 2.11+cu128；RTX 4070 Laptop 8GB 足够小模型单折 smoke，但不适合本地 7B+ LLM。GPT 真实数据继续硬 NO-GO。
+- 新 capability loader 已在两个真实 manifest 上只读通过：EmotionTalk 与 MELD 的 fit/selection 行数及 same-speaker history-eligible 数均与 manifest 一致，且 selection label archive 既未打开也未散列；这关闭了数据能力分离的首个工程门，但尚未授权训练。
+- 科学有效性复核要求把当前 selection 明确保留为“已观察的探索集”：它只能用于工程/阈值探索，不能通过一次性 prediction/evaluation 仪式恢复为确认数据；最终主张仍必须依赖未触碰 official test 或新的独立来源。
+- 多模型×多策略结果必须在 final freeze 前指定单一 primary family 并做 Holm 校正；其余固定 recency/similarity/modality 曲线均标为 secondary/descriptive，禁止从中挑最好者替换确认 operating point。
+- 单折 smoke 仅检查资源、数值与 context 响应，不可用其 Macro-F1/NLL 选择超参；全 fit OOF 也只提供探索性可行性与 prospective sensitivity，必须同时报告效应量、cluster CI 与宽度，不能把非显著解释成无效或把显著解释成实际重要。
+- 2026-08-09 S1 回收审计：sanitized role-manifest 已把 outcome-free roster、fit-feature、fit-training 与 selection-feature 四类权限物理拆开；selection capability 不再绑定 fit outcome，EmotionTalk fit-label migration 会删除全角色 `source_label_sha256`。代理联合合成回归为 185 passed，仍需主代理独立复验。
+- 2026-08-09 context 回收审计：`StrictPastContextRoster` 已绑定 typed source、processed output、processor receipt、crossfit plan、seed/fold、内部派生 train/heldout 与有序 protocol-row IDs；current-only 构建和验证均强制零历史。剩余 High 风险是 `crossfit.make_context_training_examples` 仍接受 caller-supplied `query_indices/allowed_indices`，必须删除该入口并在消费点现场复验 roster。
+- 2026-08-09 checkpoint manifest 审计：新模块已机械派生 class order 与每个 seed/fold 的 train/heldout group digest，并强制 seed-major/fold-minor exact 25 entries、history/current namespace 隔离、canonical write-once 和外部 manifest/file SHA。仍需在生产集成层保证每项 caller-supplied checkpoint/processor/context digest 来自对应的已验证生产 checkpoint，而不是任意 64 位字符串；尤其 current-only entry 必须绑定 `independent_current_only` 零消费 roster。
+- 2026-08-09 prediction 集成审计：读取侧的外部 receipt SHA 与同句柄 TOCTOU 已关闭，但写入 schema 仍是 v1 自由输入：caller 可传 `class_ids`、单个 `checkpoint_sha256`、`processor_sha256`，且没有 `model_namespace`。下一版必须从 externally-bound exact-25 `CheckpointManifest` 机械派生 seed/fold、class tokens、class-order SHA、checkpoint/processor roster lineage；current-only namespace 必须要求显式全零 `context_count` 与全 false `history_eligible`，不能省略。
+- 2026-08-09 production-fit 二次审计：labels/class order 的机械派生正确，重复 query 会从同一 fit row 取得相同标签；但 raw trainer/synthetic helper 曾列在 `__all__`，且 history core 曾收到含 heldout 的完整 processed bank。已将 raw 路径移出生产导出面，并在 facade 内先构造 train-only feature bank、再 remap query/context，防止未来加入 batch-dependent layer 后通过 heldout embedding 产生间接泄漏。
+- 2026-08-09 checkpoint 来源审计：exact-25 JSON 的 class/group/排序是 live-derived，但 `checkpoint_sha256`、`processor_receipt_sha256`、`context_roster_sha256` 仍只是 caller-supplied 格式合法字符串。真实训练前必须新增 actual checkpoint artifact publisher/loader，从模型字节与 typed production wrapper 机械产生这些 receipt；history 绑定 aggregate strategy roster+training examples，current-only 绑定 independence roster+零消费证明。
+- 2026-08-09 raw-fit 旁路复核与修复：生产 facade 的公开签名不接收 labels/num_classes，raw helpers 不在 `__all__`；facade 已进一步改为直接调用私有 array core，并以 AST/import/attribute/dynamic-name denylist 扫描两 facade 与 `experiment/scripts`，禁止生产入口调用 raw trainer/factory/synthetic helper。模块级兼容 wrapper 只服务 synthetic tests；研究完整性边界由冻结 source snapshot + AST 门禁共同提供，而不是仅依赖 Python `__all__`。
+- 2026-08-09 prediction 对齐新 P0：fit OOF writer 当前把 `fold_assignments` 限为 `[Q]`，而冻结 `SharedGroupCrossfitPlan` 是 seed-specific `[5,Q]`。若不升级为 typed `[seed,query]` 对齐，就无法证明每个 OOF 单元由 exact-25 manifest 中相应 seed 的唯一 heldout fold 产生；下一 schema 必须逐 seed/query 机械映射 checkpoint entry 并验证 group-disjoint heldout 归属。
+- 2026-08-09 GPT 路线复核：当前真实数据云 GPT 仍为硬 NO-GO；本地未发现 OpenAI/Azure API 凭据、科研 venv 无 API client，且 MELD 的公开可下载性不能替代第三方 API 处理许可、DPA/ZDR 与固定模型快照。行级文本、逐查询预测、embedding/HMAC、speaker/dialogue/history 等派生内容也不得以“脱敏”为由外传。synthetic-only 离线合同可继续作为工程门，但不能产生性能证据。
+- 资源优先级应是本地冻结情感 encoder（约 1.1GB 的 XLM-EMO 路线，四类输出只能作辅助特征/基线）或许可审计后固定 revision 的 1–4B 量化双语模型；当前机器没有文本 LLM 缓存/量化 runtime，7B+ 在 8GB VRAM/16GB RAM 长历史批量下继续 NO-GO。即使未来获得云许可，GPT 也只作为冻结文本 baseline/teacher，不充当方法创新。
+- 2026-08-09 科学有效性约束复核：正式结论必须同时报告原始效应量、cluster/seed 配对 95% CI 及其宽度、预声明 Holm family 与实际重要性门槛；`p>0.05` 不能解释为“无效”，`p<0.05` 也不能替代 Macro-F1 no-harm、tail/worst-group 与最小实际效应。所有预处理、特征选择、提示/策略选择继续严格限定在 fit/cross-fit，smoke 与已观察 selection 不得用于挑最优模型。
+- Prediction v2 不需要 caller 再提供自由 query/group roster：`OutcomeFreeRoleFeatures`/typed feature capability 已含 protocol row IDs、groups、row/content alignment，`ProcessedRoleEmbeddings` 又绑定同序 protocol row IDs；fit OOF 与 selection context roster也已区分角色。因此 writer/panel builder 应从 live-validated source+processed+roster 机械派生 query/group/context alignment，旧 `query_ids/group_ids/context_count/history_eligible` kwargs 均应删除。
+- 2026-08-09 资源复核：RTX 4070 Laptop GPU 当前仅占 49 MiB、可用约 7.9 GiB；无遗留 Python 训练进程。C/D/E/F 可用约 10.59/6.36/5.82/53.53 GiB，真实 smoke/25-fold 私有工件唯一合理目标是仓库外 F 盘；在 freeze 前不创建运行目录，freeze 后仍需以 exact absolute root、no-clobber claim 与预估空间门现场复验。
+- 2026-08-09 checkpoint restart P0：当前 loader 只返回经验证的参数数组，没有把 Linear/DeepSets/GRU 的 history/current 六类 checkpoint 恢复成可预测对象，也没有 publish→释放原对象→load→restore→prediction equality 测试。真实 selection 长跑会跨进程恢复 25 个折模型，因此在 smoke 前必须新增 typed restore 与 typed prediction；只能承诺同源码/依赖下 prediction-only restore，不能声称可续训。
+- Restore 必须逐家族验证 exact parameter keys/shape/dtype/classes/feature dimension/parameter budget，PyTorch `strict=True`、`eval()`、冻结梯度，并现场重验 fit capability、processor live state、processed output、plan、history rosters/examples 或 current-only 零消费 proof；生产 history 预测不得继续接裸 contexts/query indices。还需 artifact 文件/数组元素上限，避免虽合法 NPZ 造成资源攻击。
+- 顶会路线边界再次确认：老师的“按模态/历史处理、情感理论、双向上下文”分别已有 BrainyHGNN、SKAIG/SKSEC 与 PFA-ERC/AGHMN 等强重叠，不能单独包装为首创。当前可检验的贡献空间是 HarmBench-ERC：同一冻结预测器的逐查询 current↔history 配对伤害分布、sign×severity、p90/CVaR/coverage-risk 与 fail-closed 跨模型/跨数据集协议。它的原创性最终必须由 ERC 特定问题定义、强基线和两份 untouched test 实证支撑，而不是通用风险指标拼接。
+- Official-test 顺序不能颠倒：先冻结协议/代码/模型/指标与 prospective sensitivity，再生成 outcome-free feature/prediction artifact并验签，最后由独立 label-only evaluator 一次性打开 MELD/EmotionTalk test sidecar、只发布 aggregate；任何完整性门失败均不得在同一 test 上调整后重跑。
+- 2026-08-09 evaluator 审计：已观察 selection 的新结果无论 write-once/Holm 多严格都只能标为 `previously_observed_selection_exploratory`；工程重新冻结不能恢复统计上的未观察状态。安全状态机必须是 analysis freeze→prediction roster verified→prelabel bundle write-once→attempt marker fsync→label-only capability→同句柄一次打开→内存行级计算→aggregate publication→terminal exploratory，且崩溃后不得静默重跑。
+- 完整 selection benchmark roster 预期为 3 model families × 5 strict-past strategies 的 15 个 history artifacts，加每家族一个独立 current-only anchor（共18）。history/current 必须同家族、同seed/query/group/class顺序配对；regret先在同 seed/query 内计算，禁止先平均概率。当前 draft 与实现策略名不一致，必须在 evaluator 前冻结 exact语义映射，不能静默 alias。
+- 指标/统计尚缺 ECE、科学上合理的预声明 worst-group 轴、whole-cluster paired randomization 与 Holm family。对话 cluster不是人口公平 group；若没有 outcome-free strata（如 history-depth bins）则 worst-group必须输出不可估，不能结果后挑 subgroup。CVaR 必须继续用 fractional-boundary定义，避免 q90 ties扩大尾部质量。
+- evaluator 仍需物理 sanitized selection-label-only manifest/sidecar、loader-only verified prediction token、prelabel attempt/crash barrier和同句柄 label TOCTOU 防护。learned selector/coverage-risk 若要评价，还必须有标签能力产生前冻结的 risk-score/mask/threshold policy artifact；仅概率 artifact不足以证明策略事前固定。
+- 策略命名冲突已定位到 `experiment/configs/harmbench_erc_v1_draft.json` 的 `required_strategy_roster`：其中列出 `all_strictly_past_history/coverage_matched_recency/speaker_history/similarity_retrieval/frozen_learned_selector`，与实现五策略均非 exact token。该配置仍为 draft，必须在任何真实 smoke 前按语义重新冻结并提升 protocol/schema；尤其 coverage-matched recency 是评价对照而不是 `recent_k3` 的同义名，learned selector 也不能伪装成 `modality_balanced_top3`。
+- S2 protocol 仍有明确空洞：draft 的 `exact_model_identifiers` 与 `final_primary_family` 为空、prospective sensitivity 未计算、test authorization 为 false。三家已经在代码中冻结为 `hb_linear_pool_v1`、`hb_deepsets_pool_v1`、`hb_causal_gru_v1`；在单折 smoke 前应先把这些 outcome-free identity、精确策略 roster、主 Holm family 与最小实际效应阈值写入新版本合同，而不是由 smoke/selection 分数决定。
+- 2026-08-09 策略审计裁决：最终固定 history roster 应为 `dialogue_all_past`、`same_speaker_all_past`、`recent_k3`、`similarity_top3`、`modality_balanced_top3`，`independent_current_only` 单列 anchor。Primary 是 same-speaker vs current，dialogue-all 是范围控制，recent/similarity 是固定强基线，modality-balanced 是三模态机制诊断；learned selector 与 coverage-matched recency 均移到后续、需 policy receipt 的层，不能静默 alias。
+- 公共 eligibility 必须定义为 `E_dialogue`（同 source role/derived partition/group-dialogue 且严格过去至少一条）；五策略在同一分母比较。具体策略是否有可用上下文是另一变量 `strategy_context_nonempty`。当前 prediction v2 把 `context_count>0` 命名为 `history_eligible`，会混淆共同 population 与策略 coverage；current-only 可以在 `E_dialogue=true` 时仍零消费，same-speaker 也可能在 `E_dialogue=true` 时空上下文。schema 必须拆分这两个轴。
+- 空策略上下文的有效概率必须逐元素回退到同 family/seed/query 的独立 current-only anchor；不能把 history checkpoint 对空集合的输出当作安全 fallback。Raw history artifact 可保留模型输出，但 evaluator/policy pair builder 必须机械形成 hybrid，并把 fallback receipt绑定。
+- Strategy rule receipt 还应绑定 rule version/hash、candidate scope、top-k、ranking/tie、modality order、empty fallback 与 emission order；否则算法规则漂移但恰好输出同一 rows 时 receipt不变。旧 draft validator 当前甚至接受 nonsense roster/未来历史/结果后挑赢家，属于 smoke 前 P0；应新增 exact v2 合同而非静默改写已发布 S0。

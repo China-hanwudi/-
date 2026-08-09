@@ -1,5 +1,50 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-09 — N3 主线恢复、HarmBench 收尾与 IEMOCAP 预注册
+
+- 接收并采用最高优先级纠偏指令：N3 候选方案恢复为唯一正向方法主线；HarmBench 降级为历史负迁移评价、N2 失败分析、N3 辅助 benchmark 和备选论文路线。既有 N2/HarmBench/负结果保持不删除、不覆盖、不改写。
+- 只读进程审计确认系统中无 Python/pytest/HarmBench 统计任务；10k bootstrap/100k randomization 已自然结束，不重复运行。封存记录为 selection statistics `12 passed in 12.79s` 与 curator durability `26 passed in 0.89s -W error`；均为 synthetic/工程证据，没有真实性能结果或真实/封存标签访问。
+- 只读 Git/pytest cache 审计确认 consume-once ticket、label activation、statistics loader 和 final evaluator 的集成在中断时未完成；保留所有文件为未完成快照，不实现 evaluator/CLI，不再扩展 HarmBench。
+- 更新 `task_plan.md`：目标、当前阶段、唯一下一动作、成功门和阶段划分均切换到 N3；旧 N2/HarmBench 阶段保留为历史记录。两个 ZeroMQ DLL 继续明确禁止暂存。
+- 新增 `docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md`：完成老师四条要求对照、Task Contract、六路情感变量进入位置、共享 3×3、模态/联合真实双向效用、两级门控、训练目标、15 项基线/消融、合取成功门和停止条件。
+- 根据老师原始公式校正 N3 backward 符号：`ell(R)-ell(R-h)>0` 表示删除有益/保留有害；N2 既有 `ell(R-h)-ell(R)>0` 表示保留有益。旧证据不改写，任何 N3 复用必须显式取负并记录来源。
+- IEMOCAP 预注册为 N3 第三个独立外部确认集：只可在结构、超参数、效用阈值、统计合同、权重和源码全部冻结后运行，不用于模型选择/调参，正负结果均报告；授权/六路协议失败时固定按 CPED→M3ED 顺序替代。
+- 当前进行情感领域编码器及 IEMOCAP/CPED/M3ED 的许可、数据结构、标签、speaker/session 隔离、六路覆盖和 8GB 显存/16GB 内存/约 53.5 GiB 磁盘可行性审计。任何未观察标签继续封存，真实受限数据继续禁止发送 GPT/API。
+
+## 2026-08-09 — 会话恢复与 S1 三项 P0 回收
+
+- 按 `planning-with-files` 从实际研究仓库恢复三份账本；session catchup 检出上一轮 10 条未同步上下文，已与交接摘要和 `git diff --stat` 对齐。根工作区的旧计划不再作为当前路线依据。
+- 当前分支仍为 `codex/carma-affect-research-status-20260807`；S0 推送点为 `7f3bd6d`，S1 新模块大多仍未跟踪。两个 ZeroMQ DLL 保持明确排除。
+- 三个并行任务继续运行：统一 eligibility/fallback 语义、冻结 strategy protocol v2、实现六路 checkpoint restart restore。真实训练、单折 smoke、封存标签访问与真实数据 GPT/API 继续 STOP。
+- 六路 checkpoint restart 子任务已回收；主代理在冻结科研 `.venv` 独立复跑 restore+artifact+manifest+models+production 五模块，结果为 `83 passed in 35.05s`。该结果关闭 prediction-only restart 的合成工程门，但未授权真实训练或 selection outcome。
+- 基础统计层新增冻结的 15-bin top-label ECE（等宽左闭右开、末箱含 1.0、空箱零权重、argmax 按冻结类序首项打破平局），且不改变旧 `classification_metrics`/S0 schema；专项 `15 passed in 1.60s`。
+- 同层新增五个互斥完备的 sign×severity regret bins：`<-0.05`、`[-0.05,0)`、精确 `0`（含 fallback）、`(0,0.05]`、`>0.05`；阈值不可运行时覆盖。metrics 专项更新为 `16 passed in 1.45s`。
+- selection-label-only 模块由主代理以 `-W error` 独立复跑为 `23 passed in 0.74s`；manifest-only 阶段不触碰标签 NPZ，私有 activation 留给 attempt marker fsync 后调用，同句柄一次加载、双哈希、预算/路径/并发攻击均通过。
+- prediction v3 eligibility/fallback 回收后，主代理独立复跑 prediction+checkpoint artifact+manifest+restore+production 为 `80 passed in 55.76s`。schema 已拆分 `dialogue_history_eligible` 与 `strategy_context_nonempty`，loader-only seal 与 live reload 验证通过；另发现并要求补上 strategy nonempty 对 5 seeds×5 folds 的逐 query 全一致门。
+- protocol v2 最终补齐 exact 36-artifact roster、不可逆 attempt 状态、fold-first fallback、shared bootstrap 与 selection/confirmatory dataset 身份隔离，最终 pin=`58630569e…`；主代理独立复跑十模块为 `217 passed, 1 known synthetic SVD warning in 37.57s`。
+- prediction follow-up 已要求并验证 25 个 seed×fold coverage逐 query一致、逐 fold fallback后五折均值及等价性；主代理独立复跑五模块为 `81 passed in 86.25s`。
+- 启动 legacy→通用 selection-label curator 的隔离设计：只读核对两套旧 label/feature schema 与通用 label-only schema，确认 protocol row IDs 必须来自同角色 feature sidecar，`class_order_sha256` 还必须绑定 dataset、fit-training capability SHA 和冻结类别顺序。尚未打开真实标签或创建真实输出；实现将保持 stdlib+NumPy 独立依赖面。
+- 回收并独立复验 outcome-free prelabel/attempt 状态机：静态检查确认模块不含 `np.load` 或 label activation 调用，公开面只暴露 bundle load/write 与 attempt start，标签激活输入仅在 marker fsync 后经私有 sealed seam取得；冻结 `.venv` 四模块回归为 `122 passed in 43.65s`。真实 36-artifact roster 与 label NPZ 仍未运行/打开。
+- 回收 legacy→通用 selection-label curator：运行时 import 面仅 stdlib+NumPy，冻结两数据集公开 manifest/feature/label SHA 与类别顺序，自身 claim marker 先于 legacy label 的任何路径操作；崩溃、并发与半发布均不可重跑。主代理独立联跑 curator+label loader 为 `44 passed in 1.17s -W error`；未打开真实 NPZ、未创建真实输出。
+- curator durability follow-up 把 marker/artifact/manifest 三次发布分别升级为 Windows write-through / POSIX parent-directory fsync，并加入 root identity 与 barrier-failure terminal 攻击；主代理独立专项 `26 passed in 0.89s -W error`。label 联跑因 attempt-ticket 正在迁移而暂缓，不把中间 API 失败误判为 curator 回归。
+- 回收并独立复验 selection statistics：exact 5 strategies、10k shared seed×whole-cluster bootstrap、exact/100k shared randomization、六项 Holm、ECE/CVaR/sign×severity/depth 与 3×2 no-harm 均进入 aggregate-only schema；专项 `12 passed in 12.79s`。同时审计发现上游 raw metadata activation 未绑定 attempt 且可重复消费，已作为新 P0 交回修复；真实标签继续 STOP。
+
+## 2026-08-09 — HarmBench S1 续接与两阶段能力收口
+
+- 本次续接按 `planning-with-files` 完整恢复三份计划文件并运行 session catchup；无未同步上下文。长期 goal 保持 active，真实训练、Repair 4、封存角色与真实数据 GPT/API 路线继续 STOP。
+- 最新五模块合成回归为 `36 passed / 13 failed`：其中 12 项是 processor/cache 测试仍调用旧的裸 capability/raw-indices API，1 项只是 open-role 错误消息正则陈旧；当前没有观察到新的功能栈失败，但未完成 API 迁移前不能判 GO。
+- 新一轮只读审计补充两项必须在 freeze 前关闭的能力语义：crossfit/preprocessing 必须有只打开 feature-only projection 的独立 `FitFeatureCapability` loader，不能先加载 fit labels 或绑定含标签的 fit manifest；processor transform 必须分别校验 frozen fit-feature source 与实际 transform source，不能只校验前者。
+- 独立 S1 总审计终判真实单折 smoke 仍为 NO-GO：sanitized manifests/单句柄加载、receipt-bound context roster、plan-derived context examples、cache repository-root/source 认证与 processor 内部 TF-IDF 参数绑定尚未全部闭环；当前只允许继续纯合成合同测试。相关新增核心文件仍未跟踪，因此 `git diff` 不显示内容差异，后续审计必须直接读取文件并在暂存前做显式清单检查。
+- processor/cache 主线已迁移到 typed `FitFeatureCapability + SharedGroupCrossfitPlan`，旧 raw-indices fixture 全部删除；transform 现分别要求 fit-feature source 与本次 transform source 两个外部 SHA，内部 `_tfidf` transform 参数也进入 live state hash。cache 改为从模块物理位置固定 Git root、拒绝 symlink/reparse/broken target、写入/加载前完整 live-validate processor，并显式绑定 crossfit plan。专项现为 `24 passed`；唯一中间失败是把目录 `st_size` 误当稳定身份，已改为对象身份后通过。
+- 已恢复长期 active goal，按 UTF-8 完整重读 `task_plan.md`、`findings.md`、`progress.md` 并运行 session catchup；没有未同步会话。继续遵守 N2 双数据集 NO-GO、禁止 Repair 4、后续角色封存和真实受限数据禁传 GPT/API。
+- 回收 prediction artifact 子任务：固定五 seed×五折、fit OOF 分组隔离、selection prediction-only、仓库外 write-once 私有 NPZ 与 aggregate receipt 已实现，子任务专项 `14 passed`；当前仅为未提交合同代码，不是性能结果。
+- 当前主动作是把 open-role loader 拆为 fit-role 与 selection-feature 两个生产 capability，并用冻结科研 `.venv` 独立复核模型/预测工件；真实训练继续 STOP，直到 S1 联合审计、model spec/hash、空间和单折资源/响应 smoke 全部通过。
+- 已定位 combined loader 的精确调用链：EmotionTalk/MELD 都依次打开 fit feature、fit label、selection feature。新增 split API 将让 fit 路径只调用 fit feature+label helper，selection 路径只调用 selection feature helper，并保留 combined 函数为显式 smoke convenience；MELD manifest verifier 只读 JSON 元数据，不枚举或打开四个角色文件。
+- 独立审计否决了“仅拆函数”的充分性：旧 full manifest 和 EmotionTalk fit-label sidecar 仍携带跨角色 label SHA；selection capability 还通过 fit-capability SHA 间接依赖 fit labels。修复范围升级为物理 sanitized manifests、去跨角色来源 SHA 的 fit-label sidecar，以及 label-free roster SHA；在这些工件生成并验签前 split loader 仍视为未关闭。
+- processor/crossfit 代码复核确认 audit 反例成立：`fit_shared_processor` 接受 caller-supplied rows/任意非负 seed/fold，receipt 不含 plan SHA；plan 的 convenience index 方法不会自动 live-validate。正在把 API 改为只接 `FitRoleCapability + SharedGroupCrossfitPlan`，由内部派生固定五 seed×五折训练行并在每次消费前重验。
+- processor cache 的外部信任锚修复已回收：loader 现在强制 expected receipt/payload SHA，receipt 与 payload 均用同一打开句柄完成 hash→seek→parse/load，拒绝重复键与非 canonical JSON；新增自洽替换、缺失 expected 等测试，代理专项 `10 passed`。根任务仍需在新的 plan-bound ProcessorReceipt API 下联合复跑。
+- crossfit/processor 主体已开始收紧：plan 创建改为直接接收 live-validated `FitRoleCapability`，seed/fold indices 每次先验证 capability 与 deterministic plan；ProcessorReceipt 新增 source capability、plan SHA 与 train-group SHA，transform 改为只接 typed fit/selection capability，并新增 processor/output live hash validator。测试与所有消费者尚未同步，当前代码处于未通过回归的中间状态。
+
 ## 2026-08-09 — HarmBench 开放角色模型阶段启动
 
 - 已确认长期 goal 继续 active；沿用 N2 双数据集 NO-GO、后续角色封存、禁止 Repair 4 与真实受限数据云 GPT 的边界。
@@ -8,6 +53,15 @@
 - 冻结候选模型方向为线性池化、DeepSets 与 causal GRU，各家族必须独立训练 current-only；旧 N2 causal Transformer 仅作为冻结失败基线。
 - 已启动纯合成 strict-past context 合同实现；下一步先完成数据能力分离、context roster、三家族 probability producer 与泄漏/seed/row-order/checkpoint 测试，再运行真实 fit→selection prediction-only 链。
 - Windows Store Python 因缺少 scikit-learn 在 collection 阶段停止；切换到此前审计的科研 `.venv` 后，HarmBench contract/metrics/inference/public 四模块联合回归为 `79 passed in 67.04s`。
+- 独立运行准备度审计完成：真实 open-role fit 维持 STOP，直到 capability/context/shared-processor/三模型/prediction/evaluator 合同、model spec/hash、单折 smoke 与仓库外空间门全部关闭；审计未读取 sealed/test 标签或修改文件。
+- context 合同已按新审计区分 dialogue-all-past 与 same-speaker-all-past，并加入 recent/similarity/modality-balanced 三种 outcome-free 策略；当前纯合成专项 `14 passed`，等待联合回归。
+- context 模块完成后与原四模块联合回归为 `93 passed in 65.01s`；未读取任何真实 NPZ。
+- 新增 HarmBench open-role capability 模块与 5 项合成测试；selection 对象无 label API，fit labels 与 selection features 物理分离，数组/内容 SHA 深度绑定。capability+context 专项为 `19 passed in 11.51s`。
+- 两个真实开放角色只读 smoke 均通过：EmotionTalk 9,549/2,682 行、MELD 6,606/1,419 行，history-eligible 数与 manifest 精确一致；两次均明确 `selection_label_archive_opened=false`、`selection_label_archive_hashed=false`，未训练或计算 selection 性能。
+- 新增模型无关的五 seed×五折 whole-group crossfit plan 与 label-free context augmentation；fold assignment、group完整性、row/capability SHA 和确定性 plan SHA 全绑定，专项 `8 passed in 4.77s`。
+- 新增 outcome-free 共享 processor：fold-local char TF-IDF(2–5, 50k)+SVD256、audio/video scaler+128维确定性投影、512维融合，spec SHA `f88d0f49dd4cd6df9f81c8d8e4ceb1f6c9ffc917dd5d26ed0255722f3ea37512`；selection transform 不改变 fit state。
+- capability/context/crossfit/processor 四模块联合合成回归为 `37 passed in 4.47s`；所有 processor 输出为只读 float32、zero-safe L2，并绑定 seed/fold/train rows/source/spec/fit-state receipts。
+- 新增仓库外共享 processor cache：joblib payload 在反序列化前先验 SHA，receipt 绑定 protocol/source snapshot/capability/spec/fit-state，目录原子 write-once 且并发唯一赢家；专项 `6 passed in 10.67s`。
 
 ## 2026-08-09 — HarmBench-ERC v1 续接与合同收紧
 
@@ -232,7 +286,7 @@
 - synthetic GPT 合同完成对抗加固，实现任务报告 49 项专项 + 18 项 confirmatory 共 `67 passed`；未联网、未调用 API、未读取真实文本。production 仍硬拒绝，因此不把该合同计为模型实验或论文证据。
 - 主进程使用冻结科研 `.venv` 独立复跑 synthetic GPT + confirmatory 为 `67 passed in 1.49s`；模块/CLI `py_compile` 与冻结 JSON 解析均通过。
 - 只读扫描科研工作区与 `D:/HVA-Affect_data` 未找到现成 causal producer/checkpoint，可用正式输入仍是 EmotionTalk/MELD v2 sidecars；未打开任何 NPZ payload。
-- 仓库根出现两个未跟踪 DLL 名称，元数据确认均为 0-byte 符号链接，目标在 `AppData/Local/Temp/aha_ipc_native_*`，属于当前工具 IPC 运行时而非科研工件；不删除、不提交，后续暂存使用显式文件清单排除。
+- 仓库根出现两个未跟踪 DLL 名称，元数据确认均为指向本机临时 IPC 运行时的 0-byte 符号链接，不属于科研工件；不删除、不提交，后续暂存使用显式文件清单排除。
 - 按 scientific-brainstorming 流程在结果不可见时独立提出 N1–N4、预定义评价维度并做对抗审查；预选 N2 Affect-Relation Causal Backbone 为下一独立模型族，N1 plain causal/保守 selector 为强基线。任何真实运行前仍需冻结同参数 control、no-VAD/no-3×3 消融与 fit-only nested gate。
 - 新增 `causal_affect_relation.py` 与 8 项合成合同测试：严格未来屏蔽、同 turn 的 lexicographic past、3×3 history sensitivity、同参数 current-only control、无历史零 residual、缺失模态不消费、两数据集 VAD alias 与 fit-train-only auxiliary loss、<25k 参数均通过（`8 passed in 5.62s`）。尚未接入真实 backbone 或训练。
 
@@ -523,3 +577,21 @@
 - 修复后的 EmotionTalk/MELD aggregate benchmark 完成统计审计与隐私交叉核验，两个数据集均 PASS。
 - 发现符号—严重度目标错配：harm 概率排序与 mean utility 排序对伤害率和平均 regret 给出相反选择；已登记 H1–H3，待 train-only/holdout 反证。
 - MELD 独立重跑仍有真实 CPU 进展、无错误日志；长运行不影响其他 Phase 0 工作。
+- 2026-08-09：从压缩上下文恢复 active goal 与三份 planning 文件；未发现 session-catchup 的未同步输出。回收 sanitized-manifest 和 strict-past-context 两项实现，均未读取真实标签、未训练、未提交。
+- 2026-08-09：确认 S1 当前唯一直接 High 阻断为旧 `make_context_training_examples(contexts, query_indices, allowed_indices)`；开始重构为 receipt-bound roster 消费接口，并安排模型/checkpoint/prediction artifact 只读对抗审计。
+- 2026-08-09：crossfit/context/processor/cache 联合回归 `57 passed`；旧 caller-supplied query/allowed 行入口已删除，context training examples 现在绑定 capability、processor/output receipt、plan、seed/fold 与五策略 roster，并提供消费时 live rebuild validator。
+- 2026-08-09：模型审计识别四项 P0，已并行启动 typed roster、exact-25 checkpoint manifest、prediction same-handle loader 三项修复；主线新增只从 FitRoleCapability 派生 labels/class order 的生产训练 facade 与 current-only 零消费 checkpoint wrapper。第一次联合测试撞到 typed-roster 代理中间签名，判定为并行迁移假失败，等待最终 API 后重跑。
+- 2026-08-09：回收 exact-25 checkpoint manifest：仅新增模块与 13 项合成测试，专项通过；主审确认 25-entry/class/group/namespace/file-contract 已成立，但 caller-supplied checkpoint/processor/context digest 的生产来源验证仍是集成门，尚未授权真实训练。
+- 2026-08-09：恢复后修复 `class_order_sha256` 的不可达返回值：class-order receipt 现于自身函数内规范返回，aggregate-context roster 函数不再包含错误的第二个 return；尚待 typed-roster 与 checkpoint-artifact 并行迁移结束后统一回归。
+- 2026-08-09：局部导入验证得到稳定 64 位 class-order SHA。一次 Windows `rg` 路径 glob 因卷标语法失败（未修改文件），已改为 `rg --glob` 并完成旁路/自由 digest 搜索；确认 prediction writer 的自由 class/checkpoint 输入仍是下一集成门。
+- 2026-08-09：回收并独立复验 typed `CrossRoleFeatureRosterReceipt` 迁移；open-role/role-manifest/context/crossfit/processor/cache/production-fit/checkpoint-manifest 八模块联合合成回归 `92 passed`（仅 tiny SVD 已知 warning）。生产 loader 已删除自由 projection SHA，尚未授权真实训练。
+- 2026-08-09：回收 pickle-free actual checkpoint artifact publisher/loader 并由主代理独立复验 artifact+manifest+production-fit `32 passed`。确认新工件 receipt 已绑定完整 history/current lineage，但旧 manifest 仍压缩成三个裸摘要；已启动 manifest 只消费 25 个 `VerifiedCheckpointArtifact` 的 v2 集成，尚未授权真实训练。
+- 2026-08-09：完成无外传 GPT/开放权重可行性审计：真实云 GPT 继续 NO-GO；synthetic-only 仅可作接口证据；本地冻结情感 encoder 与 1–4B 量化路线为满足许可/权重 SHA/资源 smoke 后的条件 GO，7B+ 继续 NO-GO。未调用 API、未下载、未读封存标签。
+- 2026-08-09：完成 raw-training bypass P0：production facade 改为私有 array core，synthetic/raw factory 仅保留测试兼容包装，并新增 facade 与 `experiment/scripts` AST/import denylist；主代理独立复验 models+production-training `28 passed`。并行 manifest 删除 legacy adapter 造成的 artifact 中间 collection 失败未被误判为模型结论，也未恢复不安全入口。
+- 2026-08-09：完成 typed actual-checkpoint→exact-25 manifest 集成：删除 raw `CheckpointEntryBinding`/legacy adapter，v2 entry 完整绑定 artifact/processor/output/plan/row/class 与 namespace-specific context lineage，loader 返回 sealed `VerifiedCheckpointManifest`。主代理独立复验 artifact+manifest+production-training `38 passed`；下一门为 manifest-bound prediction v2。
+- 2026-08-09：在 prediction v2 并行开发期间，主代理对 S1 其余十模块做独立联合合成回归：`135 passed`（仅 tiny SVD 已知 warning）。这确认 typed roster→processor/context→private fit core→actual checkpoint→sealed manifest 的现有链没有相邻回归；仍未授权真实训练。
+- 2026-08-09：checkpoint restart 只读审计新增真实长跑 P0：artifact loader 当前只能恢复参数数组，尚无三家族×history/current 的 typed inference restore 与重启后预测等价证据。已登记在 smoke 前实现六路 restore、严格参数 schema/预算及 live lineage prediction 入口；未读取真实数据。
+- 2026-08-09：完成 selection-label-only evaluator 只读设计审计；确认当前 selection 永久为探索性，提出 prelabel/attempt/一次同句柄 label capability 状态机、18-artifact exact roster、cluster×seed 配对推断与 aggregate-only schema。新增阻断包括 sanitized label-only sidecar、策略名冻结、ECE/worst-group/randomization/Holm 与 crash/replay barrier；未触碰任何真实标签。
+- 2026-08-09：主代理独立复验 HarmBench 基础 contract/metrics/inference/public 四模块 `79 passed`；基础 shared-cluster bootstrap、概率绑定、regret/CVaR 与 synthetic aggregate writer 保持稳定。selection evaluator 仍需在其上补 ECE/randomization/Holm/worst-stratum，而非改写既有冻结统计定义。
+- 2026-08-09：完成策略 roster 只读审计，拒绝 draft→实现静默 alias；冻结候选改为 exact 五个 outcome-free context 策略，learned/coverage-matched 移至后续 policy 层。新增 P0：共同 `E_dialogue` eligibility 与 `strategy_context_nonempty` 必须拆分，空策略上下文必须回退同 family current-only；v1 draft validator未校验 roster/eligibility，需独立 v2 exact contract。
+- 2026-08-09：回收 manifest-bound prediction v2 并由主代理独立复验 prediction+checkpoint-artifact+manifest+production-training `51 passed`。writer/loader 已只消费 sealed manifest/panel，fit `[5,Q]` 与 selection `[5,5,Q,C]` provenance闭环；随后科学语义审计发现 eligibility/fallback轴仍需 v2 修正，故真实训练继续 STOP。

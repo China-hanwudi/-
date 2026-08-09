@@ -1,0 +1,508 @@
+{
+  "schema_version": "harmbench_erc_protocol_candidate_v2",
+  "protocol_id": "harmbench_erc_v2_candidate",
+  "status": "S2_candidate_no_official_test_authority",
+  "created_date": "2026-08-09",
+  "legacy_contract": {
+    "protocol_id": "harmbench_erc_v1",
+    "status": "legacy_unchanged",
+    "published_s0_artifacts_may_be_rewritten": false,
+    "v2_can_retroactively_authorize_v1": false
+  },
+  "authorization": {
+    "fit_training_authorized": false,
+    "selection_outcomes_authorized": false,
+    "official_test_features_authorized": false,
+    "official_test_predictions_authorized": false,
+    "official_test_labels_authorized": false,
+    "official_test_evaluation_authorized": false,
+    "prospective_sensitivity": "pending"
+  },
+  "confirmatory_datasets": [
+    "EmotionTalk_official_test",
+    "MELD_official_test"
+  ],
+  "training_contract": {
+    "training_seed_order": [
+      17,
+      29,
+      43,
+      71,
+      101
+    ],
+    "fold_count": 5,
+    "model_order": [
+      "hb_linear_pool_v1",
+      "hb_deepsets_pool_v1",
+      "hb_causal_gru_v1"
+    ],
+    "anchor_strategy_id": "independent_current_only",
+    "outcome_selected_model_roster_permitted": false
+  },
+  "context_strategy_contract": {
+    "strategy_rule_version": "harmbench_erc_context_strategy_rules_v2",
+    "anchor_strategy_id": "independent_current_only",
+    "history_strategy_order": [
+      "dialogue_all_past",
+      "same_speaker_all_past",
+      "recent_k3",
+      "similarity_top3",
+      "modality_balanced_top3"
+    ],
+    "context_roster_order": [
+      "independent_current_only",
+      "dialogue_all_past",
+      "same_speaker_all_past",
+      "recent_k3",
+      "similarity_top3",
+      "modality_balanced_top3"
+    ],
+    "strategy_contracts": [
+      {
+        "strategy_id": "independent_current_only",
+        "candidate_scope": "none",
+        "strict_past": false,
+        "top_k": 0,
+        "ranking": "none",
+        "ranking_tie": "not_applicable",
+        "zero_vector": "not_applicable",
+        "modality_order": [],
+        "duplicate_skip": "not_applicable_empty_candidate_pool",
+        "emission_order": "empty_tuple",
+        "empty_fallback": "empty_tuple"
+      },
+      {
+        "strategy_id": "dialogue_all_past",
+        "candidate_scope": "same_source_role_and_derived_partition_and_same_independent_group",
+        "strict_past": true,
+        "top_k": null,
+        "ranking": "ascending_turn_id_then_protocol_row_id",
+        "ranking_tie": "ascending_protocol_row_id",
+        "zero_vector": "not_applicable",
+        "modality_order": [],
+        "duplicate_skip": "not_applicable_unique_protocol_row_pool",
+        "emission_order": "ascending_turn_id_then_protocol_row_id",
+        "empty_fallback": "empty_tuple"
+      },
+      {
+        "strategy_id": "same_speaker_all_past",
+        "candidate_scope": "same_source_role_and_derived_partition_and_same_independent_group_and_exact_speaker_identity",
+        "strict_past": true,
+        "top_k": null,
+        "ranking": "ascending_turn_id_then_protocol_row_id_after_exact_speaker_filter",
+        "ranking_tie": "ascending_protocol_row_id",
+        "zero_vector": "not_applicable",
+        "modality_order": [],
+        "duplicate_skip": "not_applicable_unique_protocol_row_pool",
+        "emission_order": "ascending_turn_id_then_protocol_row_id",
+        "empty_fallback": "empty_tuple"
+      },
+      {
+        "strategy_id": "recent_k3",
+        "candidate_scope": "same_source_role_and_derived_partition_and_same_independent_group",
+        "strict_past": true,
+        "top_k": 3,
+        "ranking": "descending_turn_id",
+        "ranking_tie": "ascending_protocol_row_id",
+        "zero_vector": "not_applicable",
+        "modality_order": [],
+        "duplicate_skip": "not_applicable_unique_protocol_row_pool",
+        "emission_order": "ascending_turn_id_then_protocol_row_id",
+        "empty_fallback": "empty_tuple"
+      },
+      {
+        "strategy_id": "similarity_top3",
+        "candidate_scope": "same_source_role_and_derived_partition_and_same_independent_group",
+        "strict_past": true,
+        "top_k": 3,
+        "ranking": "descending_fusion_cosine_similarity",
+        "ranking_tie": "ascending_protocol_row_id",
+        "zero_vector": "cosine_score_zero_if_query_or_candidate_l2_norm_is_zero",
+        "modality_order": [],
+        "duplicate_skip": "not_applicable_unique_protocol_row_pool",
+        "emission_order": "ascending_turn_id_then_protocol_row_id",
+        "empty_fallback": "empty_tuple"
+      },
+      {
+        "strategy_id": "modality_balanced_top3",
+        "candidate_scope": "same_source_role_and_derived_partition_and_same_independent_group",
+        "strict_past": true,
+        "top_k": 3,
+        "ranking": "per_modality_descending_cosine_then_depth_first_round_robin",
+        "ranking_tie": "ascending_protocol_row_id",
+        "zero_vector": "cosine_score_zero_if_query_or_candidate_l2_norm_is_zero",
+        "modality_order": [
+          "text",
+          "audio",
+          "video"
+        ],
+        "duplicate_skip": "skip_already_selected_protocol_row_keep_first_modality_depth_occurrence",
+        "emission_order": "ascending_turn_id_then_protocol_row_id",
+        "empty_fallback": "empty_tuple"
+      }
+    ],
+    "learned_or_coverage_policy_ids_permitted": false
+  },
+  "eligibility_contract": {
+    "common_eligibility": {
+      "eligibility_id": "E_dialogue",
+      "query_population": "all_queries_in_the_live_derived_source_partition",
+      "candidate_source_role": "same_as_query",
+      "candidate_partition": "same_live_derived_partition_as_query",
+      "candidate_independent_group": "exactly_equal_to_query_independent_group",
+      "candidate_time_rule": "candidate.turn_id_strictly_less_than_query.turn_id",
+      "speaker_restriction": "none",
+      "strategy_output_restriction": "none",
+      "eligible_if": "at_least_one_candidate_satisfies_all_candidate_rules",
+      "outcomes_predictions_or_losses_used": false
+    },
+    "strategy_context_nonempty": {
+      "definition": "length_of_emitted_context_for_strategy_is_greater_than_zero",
+      "role": "strategy_specific_support_descriptor_only",
+      "may_replace_E_dialogue": false,
+      "outcomes_predictions_or_losses_used": false
+    },
+    "speaker_conditional": {
+      "eligibility_id": "E_speaker",
+      "definition": "E_dialogue_and_at_least_one_strict_past_candidate_with_exact_query_speaker_identity",
+      "role": "secondary_conditional_analysis_only",
+      "may_replace_primary_E_dialogue": false,
+      "outcomes_predictions_or_losses_used": false
+    },
+    "outcome_selected_eligibility_permitted": false
+  },
+  "primary_analysis_contract": {
+    "status": "S2_candidate_metric_implementation_and_prospective_sensitivity_pending",
+    "primary_model_scope": "all_three_predeclared_co_primary_no_winner",
+    "primary_contrast": {
+      "history_strategy_id": "same_speaker_all_past",
+      "anchor_strategy_id": "independent_current_only",
+      "matching": "exact_dataset_model_seed_and_query_after_exact_5_fold_probability_mean",
+      "population": "E_dialogue"
+    },
+    "scope_control": {
+      "strategy_id": "dialogue_all_past",
+      "role": "scope_control_not_primary"
+    },
+    "secondary_strategy_order": [
+      "recent_k3",
+      "similarity_top3",
+      "modality_balanced_top3"
+    ],
+    "final_primary_holm_family": {
+      "status": "S2_candidate_exact_family_no_test_authority",
+      "correction": "Holm_step_down_familywise_error_control",
+      "familywise_alpha": 0.05,
+      "dataset_aggregation": "equal_weight_mean_of_EmotionTalk_and_MELD_dataset_estimands",
+      "any_of_winner_selection_permitted": false,
+      "hypothesis_order": [
+        {
+          "hypothesis_id": "H_hb_linear_pool_v1_Macro-F1",
+          "model_id": "hb_linear_pool_v1",
+          "metric_id": "Macro-F1",
+          "contrast": "same_speaker_all_past_minus_matching_independent_current_only",
+          "population": "E_dialogue",
+          "null": "equal_to_zero",
+          "alternative": "two_sided_not_equal_to_zero"
+        },
+        {
+          "hypothesis_id": "H_hb_linear_pool_v1_mean-regret",
+          "model_id": "hb_linear_pool_v1",
+          "metric_id": "mean-regret",
+          "contrast": "same_speaker_all_past_NLL_minus_matching_independent_current_only_NLL",
+          "population": "E_dialogue",
+          "null": "equal_to_zero",
+          "alternative": "two_sided_not_equal_to_zero"
+        },
+        {
+          "hypothesis_id": "H_hb_deepsets_pool_v1_Macro-F1",
+          "model_id": "hb_deepsets_pool_v1",
+          "metric_id": "Macro-F1",
+          "contrast": "same_speaker_all_past_minus_matching_independent_current_only",
+          "population": "E_dialogue",
+          "null": "equal_to_zero",
+          "alternative": "two_sided_not_equal_to_zero"
+        },
+        {
+          "hypothesis_id": "H_hb_deepsets_pool_v1_mean-regret",
+          "model_id": "hb_deepsets_pool_v1",
+          "metric_id": "mean-regret",
+          "contrast": "same_speaker_all_past_NLL_minus_matching_independent_current_only_NLL",
+          "population": "E_dialogue",
+          "null": "equal_to_zero",
+          "alternative": "two_sided_not_equal_to_zero"
+        },
+        {
+          "hypothesis_id": "H_hb_causal_gru_v1_Macro-F1",
+          "model_id": "hb_causal_gru_v1",
+          "metric_id": "Macro-F1",
+          "contrast": "same_speaker_all_past_minus_matching_independent_current_only",
+          "population": "E_dialogue",
+          "null": "equal_to_zero",
+          "alternative": "two_sided_not_equal_to_zero"
+        },
+        {
+          "hypothesis_id": "H_hb_causal_gru_v1_mean-regret",
+          "model_id": "hb_causal_gru_v1",
+          "metric_id": "mean-regret",
+          "contrast": "same_speaker_all_past_NLL_minus_matching_independent_current_only_NLL",
+          "population": "E_dialogue",
+          "null": "equal_to_zero",
+          "alternative": "two_sided_not_equal_to_zero"
+        }
+      ]
+    }
+  },
+  "evaluator_contract": {
+    "status": "S2_candidate_implementation_pending_no_test_authority",
+    "calibration": {
+      "metric_id": "ECE",
+      "bin_count": 15,
+      "binning": "for_i_0_to_13_[i/15,(i+1)/15)_and_i_14_[14/15,1]",
+      "confidence": "top_label_maximum_class_probability",
+      "top_label_tie": "argmax_first_class_in_frozen_class_order",
+      "correctness": "top_label_equals_reference_label",
+      "empty_bins": "ignored_with_zero_weight",
+      "bin_weighting": "nonempty_bin_query_count_divided_by_total_query_count_N",
+      "estimator": "sum_over_nonempty_bins_bin_count_over_N_times_absolute_bin_accuracy_minus_bin_mean_confidence",
+      "population": "E_dialogue",
+      "role": "secondary_metric"
+    },
+    "worst_stratum": {
+      "axis_id": "E_dialogue_strict_past_depth",
+      "axis_is_outcome_free": true,
+      "depth_source_strategy_id": "dialogue_all_past",
+      "depth_source_field": "context_count_for_the_same_model_family_and_query",
+      "depth_definition": "same_family_same_query_dialogue_all_past_context_count_before_any_speaker_filter",
+      "required_seed_fold_consistency": "all_5_training_seeds_times_5_folds_have_exactly_identical_depth_for_each_family_and_query",
+      "inconsistency_action": "fail_closed_protocol_error_before_any_outcome_evaluation",
+      "ordered_strata": [
+        {
+          "stratum_id": "depth_1",
+          "minimum_inclusive": 1,
+          "maximum_inclusive": 1
+        },
+        {
+          "stratum_id": "depth_2_3",
+          "minimum_inclusive": 2,
+          "maximum_inclusive": 3
+        },
+        {
+          "stratum_id": "depth_4_7",
+          "minimum_inclusive": 4,
+          "maximum_inclusive": 7
+        },
+        {
+          "stratum_id": "depth_ge_8",
+          "minimum_inclusive": 8,
+          "maximum_inclusive": null
+        }
+      ],
+      "minimum_independent_clusters_per_stratum": 2,
+      "insufficient_stratum": "not_estimable_never_drop_merge_or_select_a_replacement_stratum",
+      "worst_definition": "maximum_mean_regret_over_estimable_predeclared_strata",
+      "post_outcome_axis_or_cutpoint_selection_permitted": false
+    },
+    "whole_cluster_paired_randomization": {
+      "cluster_unit": "typed_dataset_id_and_independent_group_tuple",
+      "swap_unit": "all_queries_and_training_seeds_for_one_cluster_swap_history_and_anchor_together",
+      "draws_shared_across_models_metrics_and_strategies": true,
+      "test_side": "two_sided",
+      "statistic": "absolute_equal_dataset_weight_paired_contrast",
+      "exact_enumeration_if_cluster_count_at_most": 20,
+      "monte_carlo_replicates_if_above_exact_threshold": 100000,
+      "monte_carlo_seed": 20260811,
+      "exact_p_value": "count_statistics_at_least_observed_divided_by_two_to_the_cluster_count",
+      "monte_carlo_p_value": "one_plus_count_statistics_at_least_observed_divided_by_one_plus_replicates"
+    },
+    "whole_cluster_bootstrap": {
+      "bootstrap_replicates": 10000,
+      "bootstrap_seed": 20260810,
+      "training_seed_resampling": "sample_the_5_predeclared_training_seeds_with_replacement_to_size_5",
+      "cluster_resampling": "within_each_dataset_sample_whole_independent_group_clusters_with_replacement_to_that_datasets_original_cluster_count",
+      "same_replicate_draws_shared_across_all_models_strategies_and_metrics": true,
+      "paired_candidate_and_anchor_use_identical_draws": true,
+      "joint_two_dataset_estimate": "equal_weight_mean_of_the_two_dataset_point_estimates_and_equal_weight_mean_of_same_index_dataset_replicates",
+      "confidence_interval": "percentile_[2.5,97.5]",
+      "minimum_finite_replicate_fraction": 0.95,
+      "per_dataset_cell_no_harm_CI_source": "that_dataset_cells_same_origin_shared_replicate_draws",
+      "caller_override_permitted": false,
+      "post_outcome_method_change_permitted": false
+    },
+    "selection_prediction_roster": {
+      "dataset_order": [
+        "EmotionTalk",
+        "MELD"
+      ],
+      "model_order": [
+        "hb_linear_pool_v1",
+        "hb_deepsets_pool_v1",
+        "hb_causal_gru_v1"
+      ],
+      "strategy_order": [
+        "independent_current_only",
+        "dialogue_all_past",
+        "same_speaker_all_past",
+        "recent_k3",
+        "similarity_top3",
+        "modality_balanced_top3"
+      ],
+      "artifact_identity_key": "typed_dataset_id_model_id_strategy_id_tuple",
+      "exact_total_loaded_artifact_count": 36,
+      "exact_loaded_artifact_count_per_dataset": 18,
+      "exact_loaded_artifact_count_per_dataset_model": 6,
+      "exact_current_anchor_count_per_dataset_model": 1,
+      "missing_duplicate_or_extra_artifacts_permitted": false,
+      "evaluator_live_reverification_required": true,
+      "within_dataset_alignment": "all_18_artifacts_have_exactly_identical_query_group_class_seed_order_and_E_dialogue_vector",
+      "history_nonempty_relation": "every_history_strategy_context_nonempty_is_a_subset_of_E_dialogue",
+      "current_anchor_context_semantics": "for_all_5_seeds_times_5_folds_context_count_is_0_and_context_nonempty_is_false_while_carrying_the_true_E_dialogue_vector",
+      "dialogue_all_nonempty_relation": "dialogue_all_past_context_nonempty_exactly_equals_E_dialogue",
+      "cross_model_dialogue_depth_relation": "dialogue_all_past_context_count_is_exactly_identical_across_all_3_models_for_each_dataset_seed_fold_query"
+    },
+    "empty_context_probability_fallback": {
+      "trigger": "history_strategy_context_nonempty_is_false",
+      "source_strategy_id": "independent_current_only",
+      "matching_key": "exact_dataset_id_model_id_training_seed_fold_query_id",
+      "operation": "elementwise_copy_the_unique_matching_current_fold_anchor_probability_vector",
+      "requires_identical_frozen_class_order": true,
+      "history_checkpoint_raw_empty_context_probability_permitted": false,
+      "missing_or_duplicate_anchor_action": "fail_closed_before_any_outcome_evaluation",
+      "post_fallback_regret": "canonical_exact_0_with_no_tolerance"
+    },
+    "selection_probability_evaluation_order": {
+      "step_1": "verify_exact_36_artifact_roster_and_all_live_alignment_relations",
+      "step_2": "apply_empty_context_probability_fallback_at_exact_dataset_model_seed_fold_query",
+      "step_3": "arithmetic_probability_mean_over_exactly_5_folds_for_each_dataset_model_seed_strategy_query",
+      "step_4": "compute_NLL_regret_argmax_and_other_row_metrics_separately_for_each_seed_query_from_fold_mean_probabilities",
+      "fold_level_metric_computation_permitted": false,
+      "cross_seed_probability_averaging_before_row_metrics_permitted": false,
+      "seed_metric_aggregation": "only_after_per_seed_query_row_metrics_exist"
+    },
+    "irreversible_evaluation_state_machine": {
+      "exact_state_order": [
+        "analysis_frozen",
+        "predictions_verified",
+        "prelabel_bundle_write_once_fsync",
+        "attempt_marker_write_once_fsync",
+        "label_capability_created",
+        "each_label_sidecar_single_handle_single_deserialization",
+        "in_memory_row_metrics",
+        "aggregate_only_publication",
+        "terminal_exploratory"
+      ],
+      "attempt_marker_must_precede": [
+        "label_path_resolve",
+        "label_path_stat",
+        "label_path_hash",
+        "label_path_open"
+      ],
+      "state_skip_repeat_or_reverse_permitted": false,
+      "any_crash_or_partial_output_is_terminal": true,
+      "crash_or_partial_output_terminal_state": "terminal_exploratory",
+      "silent_rerun_permitted": false
+    },
+    "tail_risk": {
+      "metric_id": "CVaR-regret",
+      "alpha": 0.9,
+      "regret_unit": "natural_log_nats_history_NLL_minus_matching_anchor_NLL",
+      "definition": "largest_empirical_10_percent_with_fractional_boundary_mass_never_values_greater_than_or_equal_to_quantile_averaging",
+      "population": "E_dialogue",
+      "role": "secondary_metric"
+    },
+    "sign_severity": {
+      "metric_id": "sign_x_severity_regret_bins",
+      "regret_definition": "natural_log_nats_history_NLL_minus_matching_anchor_NLL",
+      "population": "E_dialogue",
+      "zero_comparison": "exact_canonical_regret_float_equality_with_no_tolerance_including_fallback",
+      "ordered_bins": [
+        {
+          "bin_id": "substantial_benefit",
+          "predicate": "regret < -0.05"
+        },
+        {
+          "bin_id": "small_benefit",
+          "predicate": "-0.05 <= regret < 0"
+        },
+        {
+          "bin_id": "exact_zero_including_fallback",
+          "predicate": "regret == 0"
+        },
+        {
+          "bin_id": "small_harm",
+          "predicate": "0 < regret <= 0.05"
+        },
+        {
+          "bin_id": "substantial_harm",
+          "predicate": "regret > 0.05"
+        }
+      ],
+      "aggregate_output": "query_count_and_fraction_for_every_bin_no_bin_selection",
+      "role": "secondary_metric"
+    },
+    "harm_thresholds": {
+      "primary_harm_threshold_nats": 0.0,
+      "practical_harm_sensitivity_threshold_nats": 0.05,
+      "harm_event_operator": "regret_strictly_greater_than_threshold"
+    },
+    "minimum_practical_effects": {
+      "Macro-F1_absolute_difference": 0.005,
+      "mean-regret_absolute_nats": 0.01,
+      "substantive_claim_gate": "Holm_rejected_and_absolute_point_estimate_at_least_the_metric_specific_minimum"
+    },
+    "no_harm_gate": {
+      "mean_regret_two_sided_95_percent_CI_upper_at_most_nats": 0.01,
+      "Macro-F1_two_sided_95_percent_CI_lower_at_least": -0.005,
+      "scope": "every_predeclared_model_by_dataset_cell",
+      "nonestimable_cell": "gate_failure",
+      "any_of_cell_selection_permitted": false
+    },
+    "selection_result_status": {
+      "observed_selection_outcome_results": "permanently_exploratory",
+      "may_enter_final_primary_family": false,
+      "may_change_model_or_strategy_rosters": false,
+      "may_change_thresholds_eligibility_or_strata": false,
+      "may_authorize_selection_rerun": false
+    }
+  },
+  "policy_artifact_contract": {
+    "status": "S2_candidate_separate_receipts_not_implemented_no_test_authority",
+    "policy_artifact_order": [
+      "learned_selector_v1",
+      "coverage_matched_recency_v1"
+    ],
+    "artifacts": [
+      {
+        "policy_artifact_id": "learned_selector_v1",
+        "context_roster_member": false,
+        "requires_separate_typed_receipt": true,
+        "outcome_capability": "fit_only_development_capability_if_later_authorized",
+        "may_define_confirmatory_eligibility": false
+      },
+      {
+        "policy_artifact_id": "coverage_matched_recency_v1",
+        "context_roster_member": false,
+        "requires_separate_typed_receipt": true,
+        "coverage_source": "frozen_fit_only_learned_selector_policy_receipt_if_later_authorized",
+        "may_define_confirmatory_eligibility": false
+      }
+    ],
+    "context_roster_membership_permitted": false,
+    "may_redefine_E_dialogue": false
+  },
+  "runtime_control_contract": {
+    "caller_supplied_strategy_rules_permitted": false,
+    "caller_supplied_candidate_scope_permitted": false,
+    "caller_supplied_top_k_permitted": false,
+    "caller_supplied_ranking_or_tie_permitted": false,
+    "caller_supplied_empty_fallback_permitted": false,
+    "caller_supplied_eligibility_permitted": false,
+    "unknown_runtime_controls_permitted": false
+  },
+  "privacy_contract": {
+    "restricted_real_data_to_external_GPT_or_API_permitted": false,
+    "real_data_or_labels_read_by_protocol_validation": false,
+    "public_artifacts": "aggregate_only",
+    "synthetic_fixtures_only_before_data_authorization": true
+  }
+}

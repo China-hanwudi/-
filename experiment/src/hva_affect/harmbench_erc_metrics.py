@@ -22,6 +22,8 @@ PROBABILITY_TOLERANCE = 1e-6
 NLL_EPSILON = 1e-12
 DEFAULT_HARM_THRESHOLDS = (0.0, 0.05)
 DEFAULT_TAIL_ALPHA = 0.90
+DEFAULT_TOP_LABEL_ECE_BINS = 15
+DEFAULT_PRACTICAL_REGRET_THRESHOLD = 0.05
 FORBIDDEN_PUBLIC_KEYS = frozenset(
     {
         "seed_results",
@@ -129,6 +131,80 @@ def multiclass_brier_per_query(labels: object, probability: object) -> np.ndarra
     one_hot = np.zeros_like(values)
     one_hot[np.arange(len(y_true)), y_true] = 1.0
     return np.sum((values - one_hot) ** 2, axis=1)
+
+
+def top_label_expected_calibration_error(
+    labels: object,
+    probability: object,
+    *,
+    bins: int = DEFAULT_TOP_LABEL_ECE_BINS,
+) -> float:
+    """Return frozen 15-bin top-label ECE.
+
+    Bins 0--13 are left-closed/right-open equal-width intervals and bin 14
+    includes confidence 1.0.  Empty bins contribute zero weight.  ``argmax``
+    therefore resolves an exact tie to the first class in the already-frozen
+    class order.
+    """
+
+    if isinstance(bins, bool) or not isinstance(bins, (int, np.integer)):
+        raise HarmBenchMetricError("ECE bins must be an exact integer")
+    if int(bins) != DEFAULT_TOP_LABEL_ECE_BINS:
+        raise HarmBenchMetricError(
+            f"top-label ECE bins are frozen at {DEFAULT_TOP_LABEL_ECE_BINS}"
+        )
+    values = validated_probability(probability, name="probability")
+    y_true = validated_labels(labels, queries=values.shape[0], classes=values.shape[1])
+    prediction = np.argmax(values, axis=1)
+    confidence = values[np.arange(len(y_true)), prediction]
+    correct = (prediction == y_true).astype(np.float64)
+    bin_index = np.minimum(
+        np.floor(confidence * DEFAULT_TOP_LABEL_ECE_BINS).astype(np.int64),
+        DEFAULT_TOP_LABEL_ECE_BINS - 1,
+    )
+    result = 0.0
+    for index in range(DEFAULT_TOP_LABEL_ECE_BINS):
+        member = bin_index == index
+        count = int(member.sum())
+        if not count:
+            continue
+        result += (count / len(y_true)) * abs(
+            float(np.mean(correct[member])) - float(np.mean(confidence[member]))
+        )
+    return float(result)
+
+
+def regret_sign_severity_profile(
+    regret: object,
+    *,
+    practical_threshold: float = DEFAULT_PRACTICAL_REGRET_THRESHOLD,
+) -> dict[str, object]:
+    """Summarize the frozen five-bin sign-by-severity regret partition."""
+
+    if float(practical_threshold) != DEFAULT_PRACTICAL_REGRET_THRESHOLD:
+        raise HarmBenchMetricError(
+            "practical regret threshold is frozen at 0.05 nats"
+        )
+    values = _finite_vector(regret, name="regret")
+    threshold = DEFAULT_PRACTICAL_REGRET_THRESHOLD
+    masks = {
+        "substantial_benefit": values < -threshold,
+        "small_benefit": (values >= -threshold) & (values < 0.0),
+        "exact_zero_including_fallback": values == 0.0,
+        "small_harm": (values > 0.0) & (values <= threshold),
+        "substantial_harm": values > threshold,
+    }
+    counts = {name: int(mask.sum()) for name, mask in masks.items()}
+    if sum(counts.values()) != len(values):
+        raise AssertionError("sign-by-severity bins are not mutually exhaustive")
+    return {
+        "queries": int(len(values)),
+        "practical_threshold_nats": threshold,
+        "counts": counts,
+        "rates": {
+            name: float(count / len(values)) for name, count in counts.items()
+        },
+    }
 
 
 def empirical_upper_cvar(values: object, *, alpha: float = DEFAULT_TAIL_ALPHA) -> float:

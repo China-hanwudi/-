@@ -1,0 +1,6 @@
+# HarmBench-ERC framework and contract-test dependencies.
+-r requirements-multimodal.txt
+
+# CPU execution is sufficient for the synthetic, data-free contract tests.
+# GPU/media extraction users should follow requirements-emotiontalk-media.txt.
+torch==2.11.0
