@@ -1,0 +1,8 @@
+# ComposerN3 training dependencies (synthetic smoke is enough with torch+numpy).
+numpy>=1.24
+torch>=2.1
+pytest>=7.0
+
+# Optional: enable text_tower=qwen2.5-0.5b (weights must stay outside git)
+# transformers>=4.44
+# safetensors>=0.4

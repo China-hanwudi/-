@@ -1,0 +1,62 @@
+{
+  "protocol_id": "n3_train_v1",
+  "status": "trainable_candidate_no_official_test_authority",
+  "created_date": "2026-08-09",
+  "design_note": "Architecture follows docs/12 N3 freeze protocol; default backbone is ComposerN3 (repo-native), optional text tower Qwen2.5-0.5B-Instruct for CN/EN dialogue.",
+  "authorization": {
+    "fit_training_authorized": true,
+    "official_test_evaluation_authorized": false
+  },
+  "builtin_llm": {
+    "default_mode": "composer_n3",
+    "composer_n3": {
+      "description": "Cursor Composer designed N3 backbone: six-way projectors + shared 3x3 + bidirectional utility + two-level gates",
+      "requires_download": false
+    },
+    "optional_text_tower": {
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "reason": "Bilingual CN/EN coverage for EmotionTalk + MELD; small enough for LoRA / frozen-tower training",
+      "requires_transformers": true,
+      "download_policy": "local_only_never_commit_weights"
+    }
+  },
+  "architecture": {
+    "six_streams": ["T_t", "A_t", "V_t", "T_h", "A_h", "V_h"],
+    "d_model": 128,
+    "num_heads": 4,
+    "num_layers": 4,
+    "ffn_dim": 384,
+    "num_classes": 7,
+    "parameter_budget": 2000000,
+    "relation": "shared_low_rank_3x3",
+    "utility": ["U_T", "U_A", "U_V", "U_joint", "U_cross"],
+    "gating": ["modality_gate", "joint_risk_gate", "current_only_fallback"]
+  },
+  "input_dims": {
+    "text_dim": 256,
+    "audio_dim": 1536,
+    "video_dim": 768
+  },
+  "training": {
+    "seeds": [17, 29, 43, 71, 101],
+    "lr": 0.0003,
+    "weight_decay": 0.01,
+    "batch_size": 8,
+    "max_epochs": 5,
+    "grad_clip": 1.0,
+    "loss_weights": {
+      "emotion": 1.0,
+      "utility": 0.2,
+      "vad": 0.1
+    }
+  },
+  "emotion_label_order": [
+    "anger",
+    "disgust",
+    "fear",
+    "joy",
+    "neutral",
+    "sadness",
+    "surprise"
+  ]
+}
