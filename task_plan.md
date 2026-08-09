@@ -33,7 +33,42 @@ Phase 1 — 预注册与 benchmark 冻结（in_progress）
 - [x] 实现 versioned immutable source snapshot：clean detached worktree、commit/tree、递归 source set、repository-external write-once manifest
 - [x] 关闭 source-key consumer High、单数据集 verifier performance-gate High 与双数据集 joint freeze，并完成全仓独立审计
 - [x] 完成 history production CLI 第二轮修复、current-only 对称审计、全仓回归与最终独立只读 N2 审计
-- [ ] 只在新 freeze commit 推送后运行 fit-only OOF gate
+- [x] 推送 freeze `de056c3`，创建 clean detached worktree/外部 source snapshot，并通过 MELD 最坏形状 batch=64 CUDA backward smoke
+- [x] 在新 freeze 后完成八变体 `fit-preflight`、`fit-lineage-create` 与独立 `fit-lineage-validate`；全程未打开 selection payload、未训练、未计算性能
+- [x] 完成首个真实 `EmotionTalk/full history-fit`：25/25 checkpoints、fit OOF、双向 utility targets 与 producer receipt 均发布，selection payload 未消费
+- [x] 完成 `EmotionTalk/full history-complete-selection`：25 套 checkpoint-only 恢复、selection-feature-only cache 与 receipt 发布，selection label 未访问
+- [x] 完成每数据集唯一的 EmotionTalk full-anchor `current-only-fit`：25/25 folds、独立 fit OOF 与 receipt 发布，历史和 selection payload 均未消费
+- [x] 绑定 full history completion 完成 EmotionTalk current-only selection cache：2,682 selection queries，selection label 未物化
+- [x] 完成 `EmotionTalk/no_vad history-fit`：25/25 folds、fit OOF/targets/receipt 发布，selection payload 未消费
+- [x] 完成 `EmotionTalk/no_vad history-complete-selection`：25 套 complete checkpoint 恢复、2,682 条 selection query 特征缓存与 receipt 发布，selection label 未访问
+- [x] 完成 `EmotionTalk/no_history_3x3 history-fit`：25/25 folds、fit OOF/targets/receipt 发布，selection payload 未消费
+- [x] 完成 `EmotionTalk/no_history_3x3 history-complete-selection`：25 套 complete checkpoint 恢复、2,682 条 selection query 特征缓存与 receipt 发布，selection label 未访问
+- [x] 完成 `EmotionTalk/capacity_control history-fit`：25/25 folds、fit OOF/targets/receipt 发布，selection payload 未消费
+- [x] 完成 `EmotionTalk/capacity_control history-complete-selection`：25 套 complete checkpoint 恢复、2,682 条 selection query 特征缓存与 receipt 发布，selection label 未访问
+- [x] 完成 `MELD/full history-fit`：25/25 folds、fit OOF/targets/receipt 发布，selection payload 未消费
+- [x] 完成 `MELD/full history-complete-selection`：25 套 complete checkpoint 恢复、1,419 条 selection query 特征缓存与 receipt 发布，selection label 未访问
+- [x] 完成 MELD 唯一 full-anchor `current-only-fit`：25/25 folds、独立 fit OOF/receipt 发布，训练与推理历史均为 0，selection payload 未消费
+- [x] 完成 MELD 唯一 full-anchor `current-only-complete-selection`：25 套 complete checkpoint 恢复、1,419 条 selection query 特征缓存，selection label 未访问
+- [x] 完成 `MELD/no_vad history-fit`：25/25 folds、fit OOF/targets/receipt 发布，selection payload 未消费
+- [x] 完成 `MELD/no_vad history-complete-selection`：25 套 complete checkpoint 恢复、1,419 条 selection query 特征缓存，selection label 未访问
+- [x] 完成 `MELD/no_history_3x3 history-fit`：25/25 folds、fit OOF/targets/receipt 发布，selection payload 未消费
+- [x] 完成 `MELD/no_history_3x3 history-complete-selection`：25 套 complete checkpoint 恢复、1,419 条 selection query / 3,880 个 context 的 feature-only 缓存与 receipt 发布，selection label、utility target 与性能未消费
+- [x] 完成最后一个 `MELD/capacity_control history-fit`：25/25 folds、fit OOF/targets/receipt 发布，selection payload 未消费
+- [x] 完成 `MELD/capacity_control history-complete-selection`：25 套 complete checkpoint 恢复、1,419 条 selection query / 3,880 个 context 的 feature-only 缓存与 receipt 发布，selection label、utility target 与性能未消费
+- [x] 生成 EmotionTalk 与 MELD 各四份 `strategy-complete-selection`，完成八份 outcome-free strategy roster
+  - [x] MELD/full
+  - [x] MELD/no_vad
+  - [x] MELD/no_history_3x3
+  - [x] MELD/capacity_control
+  - [x] EmotionTalk/full
+  - [x] EmotionTalk/no_vad
+  - [x] EmotionTalk/no_history_3x3
+  - [x] EmotionTalk/capacity_control
+- [x] 在 exact 八份 strategy 认证后，分别运行 MELD 与 EmotionTalk `evaluate-model-selection`，再执行双数据集 joint freeze
+  - [x] MELD：`model_selection_gate_passed=false`；prospective power `0.8127`（power gate=true），七项性能门全部失败；H1–H5 中仅 H3 emotion-constraint increment 经 Holm 校正显著
+  - [x] EmotionTalk：attempt 1 在标签访问前 fail closed；clean-closure attempt 2 exit 0，`model_selection_gate_passed=false`、prospective power `0.2201`（power gate=false），仅 regret-vs-current 门通过；H2/H5 Holm 拒绝但 H1、最强参考、安全、稳定性与功效均未通过
+  - [x] 双数据集 hash-bound joint freeze：`joint_model_selection_freeze_passed=false`，calibration workflow、holdout、validation 与 test 均未获授权
+- [x] 完成公开层最终评估、EmotionTalk 独立只读审计、三 public JSON 散列/隐私扫描、冻结 source closure 复核与 evaluator/joint 专项 `58 passed`
 
 ### Selector repair 关闭记录（2026-08-08）
 
@@ -65,7 +100,7 @@ reject_if: candidate fails to improve query Macro-F1 without positive excess NLL
 
 ## Next Step
 
-Repair 3 已以 0/5 永久 NO-GO 结束且不得重跑。N2 的 source snapshot、history/current/strategy/evaluator、单数据集 performance gate 与双数据集 joint freeze 已关闭全部已知 P0/P1；根任务全仓回归为 504 passed，最终独立 N2 审计为 167 passed。当前唯一下一动作是完成隐私/大文件/禁用文件审计并推送新 freeze；随后从该 commit 创建 clean detached worktree、仓库外 source manifest，并先做不读取真实标签的最大形状 CUDA smoke。只有 smoke 证明 batch=64 可行后才创建跨盘全新 write-once roots并启动真实 N2 open-role 训练；若 OOM，只能在任何性能结果可见前冻结等价 batch=32 应急配置并重新走完整 freeze。真实性能失败必须保留并进入 underpowered/否证路线，不得据结果修改 N2 结构、参考或阈值。
+N2 两个单数据集 evaluator 与 joint freeze 已全部完成、验签并冻结为 NO-GO。当前唯一下一动作是在不复用已观察 selection 作为确认数据的前提下，完成一次证据驱动的新路线选择并冻结新的 protocol id：优先评估可用全新数据集/角色上的历史负迁移 benchmark 与独立模型族；若没有合法的新确认数据，先把两数据集的强基线支配、跨数据集异质性、重尾 regret、history-harm 与 fail-closed 协议整理为可审计的否证论文证据包。calibration、internal holdout、validation 与 external test 继续封存；禁止 Repair 4、禁止按结果修改 N2 后重看同一 selection。
 
 ## Confirmatory Evidence Gate
 
@@ -158,7 +193,8 @@ Status: pending
 
 | Error | Attempt | Resolution |
 |---|---:|---|
-| 当前 Windows PowerShell 的 `ConvertFrom-Json` 不支持 `-Depth` 参数 | 1 | 未修改任何文件；改用 `python -m json.tool` 与无 `-Depth` 的定向字段读取，不重复该参数 |
+| 首次 MELD/full strategy 只读审计命令在内插表达式中混用赋值与管道，触发 PowerShell `Missing closing ')'` parser error | 1 | 无文件修改；把 stderr 读取拆为独立变量后重跑，只读审计成功，不重复原语法 |
+| 当前 Windows PowerShell 的 `ConvertFrom-Json` 不支持 `-Depth` 参数 | 2 | 未修改任何文件；改用无 `-Depth` 的定向字段读取，并再次登记禁止重复该参数 |
 | 首次组合 planning patch 使用了错误的 findings/progress 标题锚点 | 1 | `apply_patch` 原子拒绝且无部分写入；读取真实 UTF-8 标题后分文件重试 |
 | 并行 `rg --files`/缺失 config 探测中有一个只读子命令以“无匹配”退出 1，使组合工具被标记失败 | 1 | 无文件修改；改用 `rg --files | Select-String` 与精确文件名只读定位，显式允许空结果 |
 | 初始仓库缺少持续计划文件 | 1 | 创建 task_plan.md、findings.md、progress.md |
@@ -204,6 +240,19 @@ Status: pending
 | 合并磁盘与 `Win32_VideoController` CIM 查询超过默认 10 秒 | 1 | 无状态变化；拆为轻量 `Get-PSDrive` 与 `nvidia-smi --query-gpu` 后成功，不重复慢 CIM 路径 |
 | 已登记禁止的 Windows `rg` 路径通配符写法被再次误用，测试文件搜索返回路径语法错误 | 2 | 只读失败且无状态变化；立即改为目录参数加 `rg -g 'test_*.py'` 并成功，后续审计固定使用该形式 |
 | 将 CLI `--help` 直接管道到 `Select-Object -First` 导致消费端提前关闭、并行检查整体返回失败 | 1 | 无文件修改；改为完整捕获 help 文本后再取首行，compileall、JSON、diff 与 isolated CLI 四项均重新独立通过 |
+| 首次八变体 `fit-lineage-validate` 把 shell 超时错误设为 1 秒，读验证进程被工具终止 | 1 | 验证入口只读且未修改任何产物；把 shell 内部超时调整为 300 秒后再运行，不改变科研参数或 write-once root |
+| 第二次 `fit-lineage-validate` 手工把保留名 `production_source_snapshot_v1` 重复加入 `--config` | 1 | CLI 在读取训练/性能数据前 fail closed；核对 `_bind_source_snapshot_config` 后移除重复参数，由三个显式 snapshot 参数自动绑定同一 manifest，再运行八项全部通过 |
+| 检查新日志路径时再次使用已禁止的 PowerShell 内联 `foreach {...} |` | 4 | 只读 parser error、无状态变化；立即改为先赋值 `$rows=foreach (...) {...}` 再单独管道。后续所有枚举检查改用该两阶段模板，不再手写内联 pipe |
+| 首次 `EmotionTalk/full history-fit` 的 PowerShell 包装器设置 `ErrorActionPreference=Stop`，把 PyTorch AMP FutureWarning 的 stderr 误判为致命错误 | 1 | Python 在首个 fold 训练前被包装器中止；保留 claim、lock、processor 与零长度日志，不删除或覆盖。使用完全相同 frozen 参数、同一 root 和 CLI `--resume`，仅把 native stderr 策略改为 Continue 并写入新日志 |
+| current-only 完成后散列枚举先把 `FileInfo` 投影成不含 `FullName` 的对象，再错误读取 `$f.FullName` | 1 | 只读 `Get-FileHash` 参数错误、无文件修改；保留原对象用于散列、另建投影用于显示后重跑，artifact/receipt SHA 与 stdout 一致 |
+| 并行只读审计在最终 GO 消息后又导入冻结包，重新生成 ignored `__pycache__`；首次 no-history-3×3 启动被源码闭包在 0.805 秒 fail closed | 1 | 未创建训练 root、未读取 payload、无训练进程；把两批可再生缓存精确移到 run quarantine，等所有审计进程结束后再次验证 `.py`-only 闭包。下一次使用新日志且仍按首次运行、不加 `--resume` |
+| 续接时误把顶层 `functions.wait` 当作 `functions.exec` 内的嵌套工具调用 | 1 | 立即改用顶层 wait；活跃训练 cell 未受影响、无文件或进程状态变化 |
+| 元数据枚举再次误写 PowerShell 内联 `foreach {...} |` | 7 | 只读 parser error、无状态变化；最近一次发生在收口 UTF-8 枚举，立即改回 `$rows=@(); foreach (...) {...}; $rows | ...` 两阶段模板并成功完成七文件验证 |
+| EmotionTalk 首次 `evaluate-model-selection` 前的独立验签导入在冻结源码闭包生成 ignored `__pycache__`，触发 `production package bootstrap integrity check failed closed` | 1 | 入口在首次项目包 import、参数解析、payload/label archive 访问与性能计算前退出；stdout 为空，private/public 目标均未创建。保留 attempt 1 日志，将 28 个 `.pyc` 完整移入 run quarantine，重验 `.py`-only closure 后以相同冻结协议和新日志启动 attempt 2，不使用 `--resume`、不覆盖失败现场 |
+| 首次 MELD aggregate verifier 的 PowerShell→Python 原生命令引号被剥离，Python 将环境变量键误作名称 | 1 | verifier 尚未执行且无文件修改；把 `-c` 代码改为 PowerShell 双引号包裹、Python 内部单引号键后，以首次 stdout 的固定 receipt SHA 验签通过 |
+| 安全策略拒绝对 frozen `__pycache__` 做递归及逐文件删除 | 2 | 两次均未删除任何内容；改用经过绝对路径、内容类型和目标父目录验证的 `Move-Item`，把完整缓存可恢复地移入 run quarantine |
+| 对 0 字节 EmotionTalk stderr 调用 `[regex]::Matches($null, ...)` 触发只读 ArgumentNullException | 1 | stdout 与 stderr 元数据已完整读取、评估不受影响；以文件长度 0 作为空日志证据，后续正则统计前先把 null 归一为空字符串 |
+| 收口专项测试首次同时使用 `python -I` 与外部 `PYTHONPATH`，隔离模式按设计忽略该路径，导致两个模块在 collection 阶段 `ModuleNotFoundError` | 1 | 未执行测试主体、未修改科研代码或结果；对仓库工作副本改用普通解释器加显式 `PYTHONPATH=experiment/src`，同两份专项最终 `58 passed`。正式冻结入口仍保持 `python -I` |
 
 ## Decisions Made
 
@@ -223,3 +272,7 @@ Status: pending
 | 2026-08-08 | repair 1/3 distributional query-level 判定 NO-GO，不再调参 | true excess NLL显著改善但Macro-F1未高于current且比同coverage recency低0.01729，0/5过预注册门；forward/backward各4/5不能转化为双向成功 |
 | 2026-08-08 | 下一独立模型族预选 Affect-Relation Causal Backbone（N2），plain causal/quantile selector（N1）作强基线 | N2 最直接落实情感理论、当前/历史3×3关系和双向效用；必须先冻结同参数control、no-VAD/no-3×3消融与fit-only nested gate，不能依据selection结果调结构 |
 | 2026-08-09 | N2 production 工程与统计链单项 GO，但性能结论仍未知 | source/joint/CLI 独立审计与最终 N2 审计均无 P0/P1；504 项全仓回归通过。只有新 freeze、detached snapshot 与 CUDA smoke 后才授权真实训练，且 model-selection 前不得改结构/阈值 |
+| 2026-08-09 | N2 Stage-A 八变体 lineage 门通过，授权顺序启动 EmotionTalk/full fit-only history 训练 | 八份 receipt/map/lineage 均由 frozen source snapshot 再验证，选择标签/特征 payload 未打开且 worktree clean；该授权只覆盖 fit-only 训练，不授权 model-selection、calibration、holdout 或 test |
+| 2026-08-09 | 保持既定 D/E/C history 分配，并把未来 MELD current-only 调度到 D 盘 | 十个训练产品保守约 18.0 GiB；调整 current-only 的物理路径可把 D/E 最终余量平衡到约 3.3/4.5 GiB，不改变数据、模型、种子或统计协议；每个新 root 前仍须重新查盘 |
+| 2026-08-09 | 冻结 MELD N2 model-selection 为单数据集 NO-GO，不据此修补 N2 | prospective power 0.8127 达标，但七门全部失败，H1/H2 均未 Holm 拒绝；仅 H3 显著不足以支持整体方法或解封后续角色 |
+| 2026-08-09 | 冻结 N2 双数据集 joint 为 NO-GO，终止在当前角色上继续调参 | EmotionTalk gate=false 且 power=0.2201，MELD gate=false；joint verifier 给出三个预注册失败原因并拒绝 calibration/holdout/test 授权。后续只能使用全新 protocol/数据角色或转 benchmark/否证路线 |

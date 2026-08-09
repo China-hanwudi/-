@@ -1,7 +1,144 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-09 — 双数据集 evaluator、独立审计与 joint freeze 最终闭环
+
+- MELD 首次正式 evaluator 以 exit 0 在 911.986 秒完成；独立 verifier 与 SHA 三方绑定通过。`model_selection_gate_passed=false`，prospective power `0.8127` 且 power gate=true；七门全部失败，H1–H5 仅 H3 经 Holm 校正拒绝。
+- MELD private artifact / receipt / public report SHA-256 分别为 `a4cf48d9e0ac8890475880e578991b2133246618188d0a12738765972eda3bb3`、`e047f76f3aa37dfbcb99aa705e8589d8dade27fa01bf687af1ab9b8ae3c75b8a`、`7ef638b9491be96ec2ea1345173228eeb582c11def341eb70cbcce6b77657a40`；后续角色仍全部封存，结果不回流修改 N2。
+- EmotionTalk attempt 1 因独立验签生成的 `__pycache__` 在 source bootstrap 与标签访问前 fail closed；stdout 为空，private/public 目标不存在，零标签访问。两份失败日志保留，28 个 `.pyc` 已完整移入 run quarantine。
+- 重验 `.py`-only closure、frozen commit、全部上游 SHA 和 write-once 目标后，EmotionTalk attempt 2 按完全相同的冻结协议完成，exit 0、用时 1,635.598 秒、stderr 0 字节；private artifact / receipt / public report SHA-256 分别为 `4bb08f062ccbf6b7adaff14a05f63de9c51a7c79f4d6ec706faebcdd29f2d204`、`aa6f539caf6ecabc1e4574b40bfdb2cf3fcb97a1388fbcef613b46ec3d4fddb0`、`27b4bad50e477a6f08e002eec6aed0eacb4a1d8d57b65a69d5142764fe08bda2`。
+- EmotionTalk `model_selection_gate_passed=false`、prospective power `0.2201`；七门仅 regret-vs-current 通过。full 相对 all-history 的 Macro-F1 差 `-0.015007`，95% CI `[-0.026216, -0.003708]`；mean-regret 差 `+0.019528`，95% CI `[0.010478, 0.028949]`；五个 seed 的 Macro-F1 全部更低，联合成功 `0/5`。
+- 独立只读审计未导入冻结源码、未运行 evaluator、未修改文件；确认 private/receipt/public 三方散列、来源身份、公开/私有节、七门、H1–H5、五 seed 与 stage authorization 全部内部一致，未发现完整性或隐私异常。
+- joint run 与正式 verifier 均 exit 0；private artifact / receipt / public report SHA-256 分别为 `27f0485028b1fa86490797089247f47eef8638d72343b9762f5613e57418302d`、`b4243d523a55eb5facc837ac5f0bde34fb940d19fa1b32d321702b3405257237`、`47ec55d4b1a60be5b574812fd0c82713685efc07083734ab86c1e890421d36a5`。`joint_model_selection_freeze_passed=false`，calibration workflow、holdout、validation、test 与 confirmatory method-success 全未授权。
+- 收口复核重算三份 public JSON 的 SHA-256 并执行递归隐私键/绝对路径扫描，三份均与冻结散列一致且零异常；model-selection evaluator 与 joint-freeze 两个专项测试共 `58 passed`。冻结 detached worktree 仍为 commit `de056c3`、Git clean、源码目录仅含 `.py` 且无 `.pyc`。
+- 下一步：保持全部后续角色封存，不在已观察 selection 上修改后重跑；提交 aggregate-only N2 否定证据包，并冻结全新的历史负迁移 benchmark／独立模型族 protocol id。GPT 只允许 synthetic-only 或未来许可、DPA/ZDR 和固定适配器均齐备后的预定义基线。
+
+## 2026-08-09 — EmotionTalk/capacity-control strategy 与八份 bundle 闭环
+
+- `EmotionTalk/capacity_control strategy-complete-selection` 以 exit 0 在 899.213 秒完成；artifact SHA-256 `9843ab84d5dde3adcaedf96a2719fc57648ef4c2fc50a0f60fd98131ff5e7897`，receipt SHA-256 `1638f7093f92174cdd66eda3b1b4127b0b14b88e3b7b641de8b93fdafe94aed3`。
+- 联合只读审计两数据集×四变体共八份 strategy：derived variant、25% coverage、query/task 数、共享 current/full anchor、outcome/evaluate/performance 禁止项全部精确一致，`invalid_count=0`；冻结 worktree clean。
+- 八份 strategy 至此全部齐备，model-selection evaluator 首次获得协议授权。下一步先运行 MELD evaluator，再运行 EmotionTalk evaluator；此后结果只能按七门、Holm H1/H2 与 prospective power 冻结解释。
+
+## 2026-08-09 — EmotionTalk/no-history-3×3 strategy completion
+
+- `EmotionTalk/no_history_3x3 strategy-complete-selection` 以 exit 0 在 880.483 秒完成；artifact SHA-256 `24743a9300825ce1a5d36296a298020569dee5bc7f53fbda663f99c7d94982bb`，receipt SHA-256 `4be076567e5417b8dd85debf3950b4f9302d23bf71801f597bd4aded6fbb19e0`。
+- 25/25 checkpoints、25% coverage（9,380/37,518）、2,682 queries / 16,342 tasks、共享 full/current anchor 全部通过；outcome/evaluate/performance 全 false。
+- stderr 无 ConvergenceWarning、无错误。下一步最后一份 EmotionTalk/capacity-control。
+
+## 2026-08-09 — EmotionTalk/no-VAD strategy completion
+
+- `EmotionTalk/no_vad strategy-complete-selection` 以 exit 0 在 891.274 秒完成；artifact SHA-256 `54cab96c311d138f0750f5afa55c46d676e727ed5463dfc0ee8c55cf7765aeff`，receipt SHA-256 `9628c87f8b537edb7fde761f624acc68dd1deabca9708d7f25d67d2ea918ccc8`。
+- 25/25 checkpoints、25% coverage（9,380/37,518）、2,682 queries / 16,342 tasks 与共享 full/current anchor 全部通过；outcome/evaluate/performance 全 false。
+- stderr 无 ConvergenceWarning、无错误。下一步 EmotionTalk/no-history-3×3。
+
+## 2026-08-09 — EmotionTalk/full strategy completion
+
+- `EmotionTalk/full strategy-complete-selection` 以 exit 0 在 883.959 秒完成；artifact SHA-256 `06c80ca1192132540526fd491c64955e7068a9c3cd8c99a76016f00b1f3a30ec`，receipt SHA-256 `81b5cee192483c45b0529059cb290326f7c64348f978dea2dd30990fed81e1ff`。
+- 25/25 checkpoints、25% fit coverage（9,380/37,518 bidirectional pairs）、2,682 selection queries / 16,342 tasks 与共享 full/current anchor 全部通过。
+- outcome/evaluate/performance 全 false；stderr 无 ConvergenceWarning、无错误。下一步 EmotionTalk/no-VAD。
+
+## 2026-08-09 — MELD/capacity-control strategy completion
+
+- `MELD/capacity_control strategy-complete-selection` 以 exit 0 在 526.932 秒完成；artifact SHA-256 `1974c4f231fcc50ac64bcc3ac0c3de5d2cfcaad53758b66c3ad5eee76b4c0bff`，receipt SHA-256 `c75ce0237d92e768d2b4113d6ff3f09b01b05d1d247c60b13009b43c43beef00`。
+- 25/25 checkpoints、25% coverage、1,419 queries / 3,880 tasks、共享 full/current anchor 全部认证；outcome/evaluate/performance 均 false。7 条冻结 ConvergenceWarning、无错误。
+- MELD exact 四变体 strategy bundle 已齐，但按操作纪律仍不打开标签；下一步完成 EmotionTalk 四份 strategy。
+
+## 2026-08-09 — MELD/no-history-3×3 strategy completion
+
+- `MELD/no_history_3x3 strategy-complete-selection` 以 exit 0 在 526.001 秒完成；artifact SHA-256 `2637c0ae21a107a54bab9a2b4398200e12f374a1a193ecb7528c2fdecb7b1210`，receipt SHA-256 `45304f4cdab23884a69c894f6da02306a81a2e6c772822e0bfe53640865a7c60`。
+- 25/25 checkpoints、25% coverage、1,419 queries / 3,880 tasks、共享 current/full anchor 均通过；outcome/evaluate/performance 全 false。5 条冻结 ConvergenceWarning、无错误。
+- MELD 已完成三份 strategy；下一步最后一份 `capacity_control`。
+
+## 2026-08-09 — MELD/no-VAD strategy completion
+
+- `MELD/no_vad strategy-complete-selection` 以 exit 0 在 545.052 秒完成；artifact SHA-256 `4ca8e4543f3d44e7bb1cde33b47e61f1e380491989089fa49bce51c1ac5f3e2d`，receipt SHA-256 `589e08ca77816138f994cd4826096d33848b81cf5c6fa400636a2c374672a6bf`。
+- 25/25 checkpoints、25% fit coverage、1,419 selection queries / 3,880 tasks 与固定六方法 roster 均通过；绑定 variant history receipt `b4b3…063d`、full anchor `ff45…b755`、共享 current `1422…d1b9`。
+- outcome label 未反序列化/物化，evaluate/performance 均为 false；10 条冻结 ConvergenceWarning、无运行错误。下一步 `MELD/no_history_3x3` strategy。
+
+## 2026-08-09 — MELD/full strategy completion
+
+- 第一份 `strategy-complete-selection`（MELD/full）以 exit 0 在 529.518 秒完成；artifact SHA-256 `b97f043db0ea20d715503548571513816b8c6eeb9cd62f6a9250118bb962dc0e`，receipt SHA-256 `8cd22757594543d904dcf11f21aaf1d6b94dab1a391d3bd68319982bb1120f4c`。
+- 25/25 complete checkpoints 恢复；固定 joint roster 包含 shared independent-current、bidirectional、forward-only、backward-only、coverage-matched recency 与 all-history。fit coverage 固定 25%，selection 为 1,419 queries / 3,880 tasks。
+- `model_selection_outcome_deserialized=false`、`model_selection_outcome_materialized=false`、`evaluate_stage_run=false`、`performance_computed=false`。stderr 有 8 条冻结 `max_iter=80` ConvergenceWarning、无 traceback/runtime error；下一步 `MELD/no_vad` strategy。
+
+## 2026-08-09 — MELD/capacity-control completion 闭环
+
+- `MELD/capacity_control history-complete-selection` 以 exit 0 在 711.618 秒完成；25/25 complete checkpoints 均完成语义恢复，1,419 条 selection queries、3,880 个 contexts/tasks 生成 feature-only 概率缓存。
+- completion artifact SHA-256 `63d7f628cd67af94efde3ef3088825ee3e6309a751223edcd72ac8c5fb9bba10`，receipt SHA-256 `8dc014624616c6d947306b95172916fa167c711a2227ba7408b3b8c1a289286c`；receipt 完整绑定 fit 三 SHA 与 manifest `c1f72dc6…7487`。
+- `complete_checkpoint_only=true`、`selection_label_deserialized=false`、`selection_label_materialized=false`、`selection_utility_target_computed=false`、`evaluate_stage_run=false`、`performance_metric_computed=false`。至此两个数据集的八个 history 变体与两个共享 current-only anchors 全部 fit/completion 闭环；下一步生成八份 strategy completion。
+
+## 2026-08-09 — MELD/capacity-control history-fit 完成
+
+- 最后一个 `MELD/capacity_control history-fit` 首次运行以 exit 0 在 1,303.036 秒完成；25/25 checkpoint、25/25 processor 齐全，stderr 仅有已知 AMP FutureWarning，无 traceback/runtime error。
+- 动态 SHA-256：fit outcome `766c3fc7f2996d79ceb2e207d6e8c1001d7e779c2314a45b8a0cbf7ee103ba37`，fit targets `e7f1844acf916e37a565ab48a7f99a639734c4c9673a4d338766875de60cace1`，fit receipt `ccbf2e1051c480e9f53b1325146b00b1fc6278ea058752bc14316e9518ecdf1e`，checkpoint manifest `c1f72dc6f0acc83574200bdde78cfaecc06f80fa34dbc4d7fb9b22db34dd7487`。
+- receipt 证明 6,606 fit queries、17,944 fit tasks、5 seeds×5 folds，`selection_payload_consumed=false`、`performance_metric_computed=false`；冻结 worktree 仍 clean。下一步只允许用以上动态三 SHA 运行同 root `history-complete-selection`。
+
+## 2026-08-09 — N2 解封顺序与统计门独立复核
+
+- 独立只读复核冻结实现、配置与测试后，确认正式顺序为：MELD/capacity fit→completion→两数据集共八份 strategy completion→两次单数据集 evaluator→双数据集 joint freeze。
+- evaluator 是首次允许打开 model-selection labels 的阶段；在此之前 exact 四变体、共享 full current anchor 与全 lineage 必须完成认证。单数据集成功要求七门全部通过且 H1/H2 经完整 H1–H5 Holm 校正后均拒绝；prospective power≥0.80 为独立条件。
+- joint 层即使通过也只授权另建 calibration workflow，不授权直接读取 calibration、internal holdout 或 external test；失败同样发布 aggregate-only 否定工件并保留全部封存角色。
+
+## 2026-08-09 — MELD/no-history-3×3 completion 闭环
+
+- `MELD/no_history_3x3 history-complete-selection` 以 exit 0 在 688.824 秒完成；25 套 complete checkpoint 恢复后，仅生成 1,419 条 selection query、3,880 个 context/task 的 feature-only 概率缓存。
+- outcome-free artifact SHA-256 为 `17378b1fc7ab97ae4fcd2230cd6925ea1b2e38c4959e43a571265f58f921ea51`，receipt SHA-256 为 `60440888a2b5d0fd5fc628bc37dbd9430a4cb19db38ec1a46ee1962f108c675b`；receipt 内 selection feature/history/task/live-lineage 与 source identity 均已发布并完成只读复核。
+- `complete_checkpoint_only=true`、`selection_label_deserialized=false`、`selection_label_materialized=false`、`selection_utility_target_computed=false`、`evaluate_stage_run=false`、`performance_metric_computed=false`。当前唯一下一动作是全新 `MELD/capacity_control history-fit`，成功后再做同 root completion；evaluator 与所有 model-selection 性能继续 HOLD。
+
+## 2026-08-09 — MELD/no-history-3×3 fit 闭环
+
+- `MELD/no_history_3x3 history-fit` 以 exit 0 在 1,145.629 秒完成；25/25 folds、outcome `2cb6f4a9…af13e`、targets `1bad38d5…c1ee1`、receipt `cae19a51…8df71` 与 manifest `ea6d1c42…0ad4b` 均完成字节复核。
+- receipt 声明 6,606 fit queries、17,944 fit tasks、五 seed×五折；selection payload 未消费、heldout outcome 未进入 fold callback、未计算性能，detached worktree 仍 clean。
+- 已启动同 root `history-complete-selection`；成功后只剩 MELD/capacity-control 的 fit/completion，再生成两数据集各四份 strategy。evaluator 与 model-selection label 继续 HOLD。
+
+## 2026-08-09 — MELD/no-VAD fit 闭环
+
+- `MELD/no_vad history-fit` 以 exit 0 在 1,160.005 秒完成；25/25 folds、outcome `5b4dcde4…e78f8`、targets `88b6681e…20e4`、receipt `1f2e239e…5a434` 与 manifest `fe61952e…66020` 均完成字节复核。
+- receipt 声明 6,606 fit queries、17,944 fit tasks、五 seed×五折，selection payload 未消费、heldout outcome 未进入 fold callback、未计算性能；detached worktree 与 `.py`-only source closure 仍 clean。
+- 同 root `history-complete-selection` 以 exit 0 在 688.176 秒完成；artifact `d8368f57…bd390` 与 receipt `b4b3f9d3…e063d` 字节复核一致。1,419 queries / 3,880 contexts 仅做 feature-only 推理，label、utility target 与性能均未消费。
+- no-VAD 至此 fit/completion 闭环；C 盘剩余约 14.4 GiB，已在全新叶 root 启动 `MELD/no_history_3x3 history-fit`。evaluator 与 model-selection label 继续 HOLD。
+
+## 2026-08-09 — MELD current-only anchor fit 闭环
+
+- `MELD/full-anchor current-only-fit` 以 exit 0 在 879.498 秒完成；25/25 folds、25 个 checkpoint、25 个 processor、0 个临时文件。fit artifact `eb0f69c6…ffe0`、receipt `0f501a6f…72d3`、manifest `fcf8d364…bf8bc` 均完成字节复核。
+- receipt 精确绑定 6,606 fit queries、seeds 17/29/43/71/101、5 folds、full preflight/map/lineage 与 source snapshot；训练/推理历史消耗为 0，selection payload 与 heldout fit labels 未物化，未计算性能。
+- detached worktree 与 `.py`-only source closure 复核通过；stderr 只有已知 AMP FutureWarning。
+- `current-only-complete-selection` 以 exit 0 在 165.166 秒完成；1,419 selection queries 的 artifact `9ad4593c…c2ac` 与 receipt `1422333f…d1b9` 字节复核一致。25 个 checkpoint 只读恢复，selection label 未访问/反序列化/物化，未计算性能。
+- MELD 共享 current-only 锚点至此完全闭环；已在仅预建父目录、叶 root 不存在的条件下启动 `MELD/no_vad history-fit`，仍使用 frozen `python -I`、五 seed×五折和同容量配置。
+- 并行 GPT 审计确认：云 GPT、当前 Codex 批量标注与本地 7B+ 均为 NO-GO；若 N2 未过门，唯一具备本机可行性的候选是把固定 XLM-EMO 作为独立 N3 的本地冻结四类辅助特征，但完整 N3 协议必须在首次 N2 model-selection 标签访问前冻结。
+
+## 2026-08-09 — N2 Stage-A lineage 全通过，首个真实训练获授权
+
+- 接回既有 write-once 运行并收齐八份 `fit-lineage-create`：EmotionTalk/full、no-VAD、no-history-3×3、capacity-control 各 9,549 行；MELD 四变体各 6,606 行。所有输出均为 outcome-free，selection payload 未打开、未训练、未计算性能，detached worktree clean。
+- 使用冻结 venv 的 `python -I` 与 commit `de056c397890fa5dbdfb90bbb78f84a1ab42c0fc` detached CLI 对八份 map/lineage 做独立 `fit-lineage-validate`，八项全部返回 `fit_only_alignment_lineage_valid`，map/lineage SHA 与创建输出逐项一致。
+- 第一次批量验证因工具内部超时误设为 1 秒而被终止；只读入口未写任何结果。第二次因手工重复加入 CLI 保留的 `production_source_snapshot_v1` config 而在数据访问前 fail closed。核对绑定实现后移除重复项，第三次以 300 秒工具超时完成；两次错误均未改变配置、数据或 write-once root。
+- 按冻结顺序，下一步启动 `EmotionTalk/full` 的真实 fit-only `history-fit`，先测量实际训练耗时；其完成后在相同 storage root 运行 `history-complete-selection`。model-selection label、calibration、holdout、validation 与 test 继续封存。
+- 首次 history-fit 在创建 run claim、lock 与 seed17/fold0 的 39.3 MB text processor 后，被 PowerShell 的 `ErrorActionPreference=Stop` 因 AMP FutureWarning 写 stderr 而误中止；无 Python 进程残留、无性能产物发布。保留原 root 与日志后，以同一 frozen 参数和 CLI `--resume` 恢复。恢复运行已完成 seed17 的 5/5 folds 并进入 seed29；fold 峰值显存约 363–376 MiB，远低于 7,800 MiB 门。
+- 只读推导后续依赖：每个 history fit 必须先完成同 root history completion；每数据集只训练 full-anchor 的一套 independent current-only；current completion 同时依赖 full history completion；四个 strategy 完成后 evaluator 才首次获准读取 model-selection labels。当前 evaluator 仍 HOLD。
+- 独立存储审计判定 GO（黄灯）：EmotionTalk complete fold 实测约 55.153 MiB，单产品约 1.347 GiB；保守给 ET/MELD 每产品 1.75/1.85 GiB，八 history+两 current-only 总预算约 18.0 GiB。E 盘是最紧资源，后续每建 root 前复查，并把 MELD current-only 调度到 D 盘以平衡余量；只改路径，不改科研合同。
+- `EmotionTalk/full history-fit` 恢复运行以 exit 0 完成，恢复段 1,881.948 秒；25 个 checkpoint、25 个 processor、fit outcome、fit targets 和 receipt 均发布。最终 SHA 为 manifest `f1cbf977…2d67`、outcome `20f4fcf8…e25d`、targets `5c12359e…1513`、receipt `c93fc27c…3466`。字节重算与 stdout 一致，root 1.375 GiB，detached worktree clean；未消费 selection payload、未计算性能。
+- 已启动同 root `history-complete-selection`，正在逐 checkpoint 做语义恢复并只打开 model-selection feature；label 仍不允许访问。completion 成功后先验证 artifact/receipt，再启动唯一 EmotionTalk full-anchor current-only。
+- `EmotionTalk/full history-complete-selection` 以 exit 0 在 1,215.296 秒完成；25 个 checkpoint-only 恢复后发布 outcome-free artifact `052de7b6…388a` 与 receipt `c0c12099…32c3`。字节 SHA 复核一致，detached worktree clean；selection label 未访问、未算 utility target/性能。
+- 下一动作更新为唯一 EmotionTalk full-anchor `current-only-fit`，沿用 full 的 receipt/map/lineage/config/snapshot；完成后必须绑定上述 full history completion 才能打开 selection features。
+- 唯一 EmotionTalk full-anchor `current-only-fit` 以 exit 0 在 1,154.362 秒完成；25/25 folds、50 个 checkpoint/processor 文件、fit artifact `d27621cc…3e74`、receipt `291b2bbe…891d`、manifest `78d2db86…fd8a` 均齐全。峰值显存约 48.199 MiB；历史和 selection payload 未消费，未算性能。
+- 一次只读散列检查因先投影掉 `FileInfo.FullName` 而报参数错误；无状态变化，改为保留 raw FileInfo 后重跑，字节 SHA 与 stdout 一致。下一步运行 current-only completion，并绑定已验证的 full history artifact/receipt。
+- EmotionTalk `current-only-complete-selection` 以 exit 0 在 191.316 秒完成；2,682 selection queries 的 artifact `26c5ceff…73c0` 与 receipt `7b8004ab…42b8` 字节复核一致。完整 checkpoint-only、selection label 未访问/未物化、无性能计算。
+- full history 与唯一 current-only 的 outcome-free 链均闭环；D 盘剩余约 7.80 GiB。下一步按冻结 roster 启动 `EmotionTalk/no_vad history-fit`，仍不读取 model-selection labels。
+- `EmotionTalk/no_vad history-fit` 以 exit 0 在 1,732.568 秒完成；25/25 folds、outcome `c1d1ef47…8154`、targets `d15c7ebd…200b`、receipt `d4bc57eb…9e2c` 与 manifest `64b5ac60…cafb` 均发布。selection 未消费、无性能计算；下一步同 root completion。
+- `EmotionTalk/no_vad history-complete-selection` 以 exit 0 在 1,203.977 秒完成；artifact `f6f20337…db14` 与 receipt `b822855c…5f8b` 的字节 SHA 已重算一致。25 个 complete checkpoint 恢复后只物化 selection features；label、utility target、性能指标均未访问或计算，detached worktree clean。
+- E 盘复核剩余 9.843 GiB，目标 `E:\CARMA_Affect_N2_prod\de056c397890-p01\history\EmotionTalk\no_history_3x3` 尚不存在。下一步按冻结 DAG 启动该变体 history-fit；fit 成功后立即运行同 root completion。
+- 启动前仅创建 E 盘目标父目录；叶 root 保持不存在。CLI help 与并行协议审计先后在 ignored `__pycache__` 生成 5/11 个 `.pyc`，均已精确移入 `C:\CARMA_Affect_N2_prod\de056c397890-p01\quarantine`，不触碰源码或工件。第一次 fit 因第二批缓存被闭包检查在 0.805 秒 fail closed；目标 root 未创建、无 Python 进程、未访问任何 payload。下一次改用新日志，重新通过 `.py`-only 检查后仍作为初次 fit 启动，不加 `--resume`。
+- `EmotionTalk/no_history_3x3 history-fit` 第二次启动以 exit 0 在 1,824.776 秒完成；25/25 folds 与 50 个 checkpoint/processor 文件齐全。字节 SHA 重算为 outcome `eaa59c87…d97cc`、targets `8a957198…2f59a`、receipt `7aacee40…1af4`，receipt 内 manifest `79a21c80…ef2e`；selection payload 未消费、无性能计算。stderr 仅含已知 AMP FutureWarning。下一步同 root completion。
+- `EmotionTalk/no_history_3x3 history-complete-selection` 以 exit 0 在 1,220.652 秒完成；artifact `fbe8a6a6…04c4` 与 receipt `43ef313e…00c6` 字节复核一致。25 个 complete checkpoint 恢复后只物化 2,682 条 selection query 特征；label、utility target、性能指标均未访问或计算。root 1.408 GiB，E 盘剩余 8.435 GiB；下一步全新 `capacity_control` root。
+- `EmotionTalk/capacity_control history-fit` 以 exit 0 在 1,874.919 秒完成；25/25 folds、outcome `a6c02357…adb75`、targets `37f6aa5d…332b4`、receipt `ce6c24b1…175d` 与 manifest `b6711d05…b67f` 均发布并完成字节复核。selection payload 未消费、无性能计算；下一步同 root completion。
+- `EmotionTalk/capacity_control history-complete-selection` 以 exit 0 在 1,212.942 秒完成；artifact `d95edd41…3fe1` 与 receipt `23ddfe93…8662` 字节复核一致。标签、utility target、性能指标均未访问或计算；EmotionTalk 四个 history 变体至此全部 fit/completion 闭环。E 盘剩余 7.027 GiB，下一步全新 `MELD/full` root。
+- `MELD/full history-fit` 以 exit 0 在 1,176.644 秒完成；25/25 folds、outcome `951a8b9d…f5bc`、targets `0c9e1985…9880`、receipt `38cd6571…60d2` 与 manifest `83c68cf6…cc9d` 均发布并完成字节复核。selection payload 未消费、无性能计算；下一步同 root completion。
+- `MELD/full history-complete-selection` 以 exit 0 在 685.745 秒完成；artifact `7d87eeb1…2b63` 与 receipt `ff45d6d6…b755` 字节复核一致。标签、utility target、性能指标均未访问或计算；下一步在 D 盘全新 root 训练唯一 MELD full-anchor current-only。
+
 ## 2026-08-09 — N2 production 全仓 GO 与 freeze 前收口
 
+- 显式暂存 48 个科研文件并排除两个 IPC DLL；禁用扩展名、单文件>1 MiB、symlink mode、绝对私有路径与 secrets 扫描均为 0。创建 commit `de056c397890fa5dbdfb90bbb78f84a1ab42c0fc` 并推送至 `hanwudi/codex/carma-affect-research-status-20260807`。
+- 在 `C:/CARMA_Affect_N2_worktrees/de056c397890fa5dbdfb90bbb78f84a1ab42c0fc` 创建 clean detached worktree；真实 checkout 的 confirmatory SHA 为 `990c2960…4fa3`、CRLF=0、Git status=0、source root closed。仓库外 snapshot manifest SHA 为 `8a28c0c9…8422`，create/verify 均证明 commit `de056c3`、tree `fddb0ba1…6eca`、41 个 source files 与 code bundle `a2288e40…41e0`。
+- 运行不接触任何真实数据的 MELD/full 最大形状 CUDA smoke：batch=64×2 contexts、129 sequence、4096D video 完成 backward/AdamW，peak allocated 1,420.184 MiB、reserved 1,864.0 MiB；inference batch=128 peak allocated 720.049 MiB。结论为冻结 batch=64 GO，不创建 batch=32 应急 config。
 - 完成 source snapshot、joint freeze 与四个正式 CLI 生命周期入口；关闭创建期 hidden-index、ignored import shadow、source-root sibling、junction、receipt-before-public、decode/hash TOCTOU、typed subclass、重复上游 hash 与 joint source lineage 等全部已知 P1。
 - source snapshot 专项 `24 passed`；CLI+joint 专项 `44 passed`；source/CLI/lineage/joint 联合 `95 passed`。所有 production 命令除 snapshot create 自身外均强制显式 snapshot manifest/SHA/worktree，无 live glob、`--code` 或隐式 fallback。
 - 最终独立 N2 审计逐线检查 backbone、affect relation、EmotionTalk/MELD loader、fit-lineage、history/current/strategy/evaluator 与八配置，结论 P0=0、P1=0；两组专项合计 `167 passed`，104 个 Python 文件 compile-to-memory 通过。
