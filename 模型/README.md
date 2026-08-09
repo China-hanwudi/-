@@ -1,43 +1,38 @@
-# 模型 / ComposerN3
+# 模型 / ComposerN3 + 主线千问
 
-本目录是面向仓库 N3 主线的**可训练情感分类模型包**。
+- **主线大模型：** `Qwen/Qwen3-4B-Instruct-2507`（`text_tower=qwen3_4b`，Apache-2.0，**免费**开源权重，本机从 Hugging Face 下载）
+- **N3 融合骨干：** ComposerN3（六路 / 3×3 / 效用门控）
+- **支线保留：** `emoberta_base`（已入库 LFS）、`composer_n3`（纯特征）、`xlm_roberta_large`
 
-- 默认骨干：**ComposerN3**（六路 N3 可训练网络，可直接冒烟）
-- **推荐文本塔（已上传权重）：** [EmoBERTa-base](artifacts/pretrained/emoberta-base)（`tae898/emoberta-base`，对话情感，MELD/IEMOCAP 导向，上游 MIT）
+> 4B 千问体积大，**不整包进 Git**；首次主线训练会自动拉权重到本机缓存，也可放到 `artifacts/pretrained/qwen3-4b-instruct-2507/`。
 
-选型对照见 [`artifacts/pretrained/MODEL_CARD.md`](artifacts/pretrained/MODEL_CARD.md)。
-
-> 边界见 [`DATA_BOUNDARY.md`](../DATA_BOUNDARY.md)（科研协作版）：鼓励上传开源权重与自训 checkpoint；仍禁止未授权的数据集原文镜像与密钥。
-
-## 权重 vs 调参
-
-- **权重**：模型参数数字（本仓已放 EmoBERTa 的 `pytorch_model.bin`）
-- **超参数**：lr、batch size 等（在 `configs/`）
-- 你们继续训出的 N3 头 → 放 `artifacts/checkpoints/`
-
-## 结构
-
-```text
-模型/
-  artifacts/pretrained/emoberta-base/  # 已入库推荐权重（Git LFS）
-  artifacts/checkpoints/               # 自训 N3
-  configs/n3_train_v1.json
-  n3_affect/
-  tests/
-```
-
-## 启用 EmoBERTa
+## 主线用法
 
 ```python
 from n3_affect import N3TrainConfig, N3EmotionModel
-cfg = N3TrainConfig(text_tower="emoberta_base")  # 优先读本地 artifacts
+# 读 configs/n3_train_v1.json 时 default_mode 已是 qwen3_4b
+cfg = N3TrainConfig.from_json("configs/n3_train_v1.json")
+assert cfg.text_tower == "qwen3_4b"
 model = N3EmotionModel(cfg)
 ```
 
-## 冒烟（默认不加载 EmoBERTa）
+## 支线用法
+
+```python
+cfg = N3TrainConfig(text_tower="emoberta_base")  # 本地 artifacts
+cfg = N3TrainConfig(text_tower="composer_n3")    # 冒烟 / 特征 sidecar
+```
+
+## 冒烟（不下载千问）
 
 ```powershell
 cd 模型
 python -m pytest tests -q
-python -m n3_affect.train --epochs 1 --steps-per-epoch 2
+python -m n3_affect.train --text-tower composer_n3 --epochs 1 --steps-per-epoch 2
+```
+
+可选：把千问缓存到仓库外或 `artifacts/pretrained/qwen3-4b-instruct-2507/`：
+
+```powershell
+python -m n3_affect.download_qwen
 ```

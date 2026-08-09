@@ -2,30 +2,51 @@
   "protocol_id": "n3_train_v1",
   "status": "trainable_candidate_no_official_test_authority",
   "created_date": "2026-08-09",
-  "design_note": "ComposerN3 backbone + recommended ERC text tower EmoBERTa-base (MIT, MELD/IEMOCAP-oriented). Weights vendored under artifacts/pretrained/emoberta-base.",
+  "updated_date": "2026-08-09",
+  "design_note": "Main-line text LLM is Qwen3-4B-Instruct-2507 (Apache-2.0, free open weights). Branch towers keep EmoBERTa-base (vendored) and ComposerN3 feature path.",
   "authorization": {
     "fit_training_authorized": true,
     "official_test_evaluation_authorized": false
   },
   "builtin_llm": {
-    "default_mode": "composer_n3",
+    "default_mode": "qwen3_4b",
     "composer_n3": {
-      "description": "N3 six-way trainable backbone (projectors, 3x3, utility, gates)",
+      "description": "N3 six-way trainable backbone without external LLM (smoke / feature sidecars)",
       "requires_download": false
     },
-    "recommended_text_tower": {
-      "tower_key": "emoberta_base",
-      "model_id": "tae898/emoberta-base",
-      "local_path": "artifacts/pretrained/emoberta-base",
-      "license": "MIT (upstream erc repository)",
-      "reason": "Best practical open ERC encoder for this repo: conversation emotion, MELD/IEMOCAP evidence, MIT, Git-LFS-friendly vs XLM-R-large"
-    },
-    "optional_text_tower": {
-      "tower_key": "emoberta_base",
-      "model_id": "tae898/emoberta-base",
-      "license": "MIT",
+    "main_text_tower": {
+      "tower_key": "qwen3_4b",
+      "model_id": "Qwen/Qwen3-4B-Instruct-2507",
+      "local_path": "artifacts/pretrained/qwen3-4b-instruct-2507",
+      "license": "Apache-2.0",
+      "cost": "free_open_weights_download_from_huggingface",
+      "reason": "Latest practical Qwen3 Instruct (4B) for CN/EN dialogue; free Apache-2.0; freeze tower + train N3 heads",
       "requires_transformers": true,
-      "download_policy": "prefer_local_artifacts_pretrained_emoberta_base"
+      "download_policy": "huggingface_hub_or_local_artifacts_not_vendored_in_git_due_to_size"
+    },
+    "branch_text_towers": {
+      "emoberta_base": {
+        "tower_key": "emoberta_base",
+        "model_id": "tae898/emoberta-base",
+        "local_path": "artifacts/pretrained/emoberta-base",
+        "license": "MIT",
+        "reason": "ERC / MELD-oriented branch; weights already in repo via Git LFS"
+      },
+      "composer_n3": {
+        "tower_key": "composer_n3",
+        "reason": "No external LLM; use pre-extracted multimodal features only"
+      },
+      "xlm_roberta_large": {
+        "tower_key": "xlm_roberta_large",
+        "model_id": "FacebookAI/xlm-roberta-large",
+        "license": "MIT",
+        "reason": "Optional multilingual encoder branch"
+      }
+    },
+    "recommended_text_tower": {
+      "tower_key": "qwen3_4b",
+      "model_id": "Qwen/Qwen3-4B-Instruct-2507",
+      "license": "Apache-2.0"
     }
   },
   "architecture": {

@@ -3,7 +3,10 @@ numpy>=1.24
 torch>=2.1
 pytest>=7.0
 
-# Optional: enable text_tower=xlm_roberta_large (weights download locally, never commit)
-# transformers>=4.44
+# Optional HF towers
+# transformers>=4.51
 # safetensors>=0.4
 # sentencepiece>=0.1.99
+# accelerate>=0.33
+# huggingface_hub>=0.24
+

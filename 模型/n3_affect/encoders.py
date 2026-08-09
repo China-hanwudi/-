@@ -1,8 +1,8 @@
 """Six-way modality encoders for N3.
 
-Default ``composer_n3`` uses learnable projectors over pre-extracted features.
-Optional ``emoberta_base`` loads the vendored ERC encoder under
-``模型/artifacts/pretrained/emoberta-base`` (MIT, MELD/IEMOCAP-oriented).
+Main-line text tower: ``qwen3_4b`` → ``Qwen/Qwen3-4B-Instruct-2507`` (Apache-2.0).
+Branch towers: ``emoberta_base`` (vendored), ``xlm_roberta_large``, or
+feature-only ``composer_n3`` projectors.
 """
 
 from __future__ import annotations
@@ -15,9 +15,13 @@ from torch import Tensor, nn
 from .config import N3TrainConfig
 
 HF_TEXT_TOWERS = {
+    "qwen3_4b": "Qwen/Qwen3-4B-Instruct-2507",
     "emoberta_base": "tae898/emoberta-base",
     "xlm_roberta_large": "FacebookAI/xlm-roberta-large",
 }
+
+# Causal LMs lack a BERT-style CLS; use masked mean pooling.
+CAUSAL_TEXT_TOWERS = frozenset({"qwen3_4b"})
 
 
 class ModalityProjector(nn.Module):
@@ -35,22 +39,34 @@ class ModalityProjector(nn.Module):
 
 
 class OptionalHFTextTower(nn.Module):
-    """Frozen Hugging Face encoder -> d_model."""
+    """Frozen Hugging Face encoder/LM -> d_model."""
 
-    def __init__(self, model_source: str, d_model: int) -> None:
+    def __init__(self, model_source: str, d_model: int, *, causal: bool = False) -> None:
         super().__init__()
         try:
-            from transformers import AutoModel, AutoTokenizer
+            from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
                 "HF text towers require transformers. "
-                "pip install transformers safetensors sentencepiece"
+                "pip install 'transformers>=4.51' safetensors sentencepiece accelerate"
             ) from exc
-        self.tokenizer = AutoTokenizer.from_pretrained(model_source)
-        self.backbone = AutoModel.from_pretrained(model_source)
+        self.causal = causal
+        self.tokenizer = AutoTokenizer.from_pretrained(model_source, trust_remote_code=True)
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        if causal:
+            lm = AutoModelForCausalLM.from_pretrained(
+                model_source,
+                trust_remote_code=True,
+                torch_dtype=torch.float32,
+            )
+            # Prefer the underlying transformer body when present.
+            self.backbone = getattr(lm, "model", None) or getattr(lm, "transformer", None) or lm
+        else:
+            self.backbone = AutoModel.from_pretrained(model_source, trust_remote_code=True)
         for p in self.backbone.parameters():
             p.requires_grad = False
-        hidden = int(self.backbone.config.hidden_size)
+        hidden = int(getattr(self.backbone.config, "hidden_size"))
         self.proj = nn.Linear(hidden, d_model)
 
     def forward_texts(self, texts: list[str], device: torch.device) -> Tensor:
@@ -64,7 +80,12 @@ class OptionalHFTextTower(nn.Module):
         encoded = {k: v.to(device) for k, v in encoded.items()}
         with torch.no_grad():
             out = self.backbone(**encoded)
-            pooled = out.last_hidden_state[:, 0]
+            hidden = out.last_hidden_state
+            if self.causal:
+                mask = encoded["attention_mask"].unsqueeze(-1).to(hidden.dtype)
+                pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1.0)
+            else:
+                pooled = hidden[:, 0]
         return self.proj(pooled)
 
 
@@ -80,7 +101,11 @@ class SixWayEncoders(nn.Module):
         self.hf_text: OptionalHFTextTower | None = None
         if cfg.text_tower in HF_TEXT_TOWERS:
             source = cfg.resolved_text_model_source()
-            self.hf_text = OptionalHFTextTower(source, cfg.d_model)
+            self.hf_text = OptionalHFTextTower(
+                source,
+                cfg.d_model,
+                causal=cfg.text_tower in CAUSAL_TEXT_TOWERS,
+            )
 
     def forward(
         self,

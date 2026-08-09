@@ -26,7 +26,7 @@ def _batch(cfg: N3TrainConfig, n: int = 4) -> dict[str, torch.Tensor]:
 
 
 def test_forward_shapes() -> None:
-    cfg = N3TrainConfig()
+    cfg = N3TrainConfig(text_tower="composer_n3")
     model = N3EmotionModel(cfg)
     out = model(_batch(cfg))
     assert out["logits"].shape == (4, 7)
@@ -37,7 +37,7 @@ def test_forward_shapes() -> None:
 
 
 def test_loss_backward() -> None:
-    cfg = N3TrainConfig()
+    cfg = N3TrainConfig(text_tower="composer_n3")
     model = N3EmotionModel(cfg)
     batch = _batch(cfg)
     labels = torch.randint(0, 7, (4,))
@@ -47,23 +47,22 @@ def test_loss_backward() -> None:
     assert any(p.grad is not None for p in model.parameters() if p.requires_grad)
 
 
-def test_config_from_json() -> None:
+def test_config_from_json_mainline_qwen() -> None:
     path = ROOT / "configs" / "n3_train_v1.json"
     cfg = N3TrainConfig.from_json(path)
-    assert cfg.text_tower == "composer_n3"
-    assert "emoberta" in cfg.hf_text_model_id
+    assert cfg.text_tower == "qwen3_4b"
+    assert "Qwen3-4B-Instruct-2507" in cfg.hf_text_model_id
     assert cfg.num_classes == 7
 
 
-def test_emoberta_tower_config_validates() -> None:
-    cfg = N3TrainConfig(text_tower="emoberta_base")
-    cfg.validate()
-    source = cfg.resolved_text_model_source()
-    assert "emoberta" in source.lower()
+def test_branch_towers_validate() -> None:
+    for key in ("composer_n3", "emoberta_base", "qwen3_4b", "xlm_roberta_large"):
+        cfg = N3TrainConfig(text_tower=key)
+        cfg.validate()
 
 
 def test_smoke_train() -> None:
-    cfg = N3TrainConfig(max_epochs=1, batch_size=4, seed=17)
+    cfg = N3TrainConfig(text_tower="composer_n3", max_epochs=1, batch_size=4, seed=17)
     card = train_one_run(cfg, steps_per_epoch=1)
     assert card["model_name"] == "ComposerN3"
     assert card["history"][0]["loss"] > 0

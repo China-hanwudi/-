@@ -18,10 +18,14 @@ DEFAULT_LABELS = (
     "surprise",
 )
 
-ALLOWED_TEXT_TOWERS = frozenset({"composer_n3", "emoberta_base", "xlm_roberta_large"})
-DEFAULT_HF_TEXT_MODEL = "tae898/emoberta-base"
+ALLOWED_TEXT_TOWERS = frozenset(
+    {"composer_n3", "qwen3_4b", "emoberta_base", "xlm_roberta_large"}
+)
+# Main-line open LLM (Apache-2.0). Branch towers remain selectable.
+DEFAULT_HF_TEXT_MODEL = "Qwen/Qwen3-4B-Instruct-2507"
 _PKG_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LOCAL_EMOBERTA = _PKG_ROOT / "artifacts" / "pretrained" / "emoberta-base"
+DEFAULT_LOCAL_QWEN = _PKG_ROOT / "artifacts" / "pretrained" / "qwen3-4b-instruct-2507"
 
 
 @dataclass
@@ -40,9 +44,10 @@ class N3TrainConfig:
     parameter_budget: int = 2_000_000
     relation_rank: int = 32
     gate_hidden: int = 64
-    text_tower: str = "composer_n3"  # or emoberta_base / xlm_roberta_large
+    # Safe local default for unit tests; main JSON pins qwen3_4b.
+    text_tower: str = "composer_n3"
     hf_text_model_id: str = DEFAULT_HF_TEXT_MODEL
-    hf_text_local_path: str = str(DEFAULT_LOCAL_EMOBERTA)
+    hf_text_local_path: str = str(DEFAULT_LOCAL_QWEN)
     emotion_label_order: tuple[str, ...] = field(default_factory=lambda: DEFAULT_LABELS)
     lr: float = 3e-4
     weight_decay: float = 1e-2
@@ -65,17 +70,25 @@ class N3TrainConfig:
             raise ValueError("emotion_label_order length must equal num_classes")
 
     def resolved_text_model_source(self) -> str:
-        """Prefer vendored EmoBERTa snapshot when present."""
+        """Prefer local snapshot when present, else Hugging Face id."""
+        local = Path(self.hf_text_local_path)
         if self.text_tower == "emoberta_base":
-            local = Path(self.hf_text_local_path)
-            has_weights = any(local.glob("*.bin")) or any(local.glob("*.safetensors"))
-            if local.is_dir() and has_weights:
-                return str(local)
-            if DEFAULT_LOCAL_EMOBERTA.is_dir() and (
-                any(DEFAULT_LOCAL_EMOBERTA.glob("*.bin"))
-                or any(DEFAULT_LOCAL_EMOBERTA.glob("*.safetensors"))
-            ):
-                return str(DEFAULT_LOCAL_EMOBERTA)
+            candidates = [local, DEFAULT_LOCAL_EMOBERTA]
+        elif self.text_tower == "qwen3_4b":
+            candidates = [local, DEFAULT_LOCAL_QWEN]
+        else:
+            candidates = [local]
+        for path in candidates:
+            if not path.is_dir():
+                continue
+            has_weights = (
+                any(path.glob("*.bin"))
+                or any(path.glob("*.safetensors"))
+                or any(path.glob("model*.safetensors"))
+                or (path / "model.safetensors.index.json").exists()
+            )
+            if has_weights:
+                return str(path)
         return self.hf_text_model_id
 
     def to_dict(self) -> dict[str, Any]:
@@ -91,20 +104,30 @@ class N3TrainConfig:
         train = raw.get("training", {})
         weights = train.get("loss_weights", {})
         llm = raw.get("builtin_llm", {})
-        optional = llm.get("optional_text_tower") or llm.get("recommended_text_tower") or {}
-        default_mode = str(llm.get("default_mode", "composer_n3"))
+        main = llm.get("main_text_tower") or llm.get("recommended_text_tower") or {}
+        branch = llm.get("branch_text_towers") or {}
+        optional = llm.get("optional_text_tower") or main
+        default_mode = str(llm.get("default_mode", "qwen3_4b"))
         if default_mode in ALLOWED_TEXT_TOWERS:
             text_tower = default_mode
+        elif main.get("tower_key") in ALLOWED_TEXT_TOWERS:
+            text_tower = str(main["tower_key"])
         elif optional.get("tower_key") in ALLOWED_TEXT_TOWERS:
             text_tower = str(optional["tower_key"])
         else:
-            text_tower = "composer_n3"
-        local = optional.get("local_path")
-        local_path = (
-            str((_PKG_ROOT / local).resolve())
-            if local and not Path(str(local)).is_absolute()
-            else str(local or DEFAULT_LOCAL_EMOBERTA)
-        )
+            text_tower = "qwen3_4b"
+        source_meta = main if text_tower == main.get("tower_key") else optional
+        if text_tower == "emoberta_base" and "emoberta_base" in branch:
+            source_meta = branch["emoberta_base"]
+        local = source_meta.get("local_path")
+        if local and not Path(str(local)).is_absolute():
+            local_path = str((_PKG_ROOT / local).resolve())
+        elif local:
+            local_path = str(local)
+        elif text_tower == "emoberta_base":
+            local_path = str(DEFAULT_LOCAL_EMOBERTA)
+        else:
+            local_path = str(DEFAULT_LOCAL_QWEN)
         return cls(
             text_dim=int(dims.get("text_dim", 256)),
             audio_dim=int(dims.get("audio_dim", 1536)),
@@ -116,7 +139,7 @@ class N3TrainConfig:
             num_classes=int(arch.get("num_classes", 7)),
             parameter_budget=int(arch.get("parameter_budget", 2_000_000)),
             text_tower=text_tower,
-            hf_text_model_id=str(optional.get("model_id", DEFAULT_HF_TEXT_MODEL)),
+            hf_text_model_id=str(source_meta.get("model_id", DEFAULT_HF_TEXT_MODEL)),
             hf_text_local_path=local_path,
             emotion_label_order=tuple(raw.get("emotion_label_order", DEFAULT_LABELS)),
             lr=float(train.get("lr", 3e-4)),

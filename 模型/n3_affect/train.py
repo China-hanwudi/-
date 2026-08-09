@@ -113,6 +113,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument(
+        "--text-tower",
+        default=None,
+        choices=["composer_n3", "qwen3_4b", "emoberta_base", "xlm_roberta_large"],
+        help="Override config text tower (use composer_n3 for smoke without downloading Qwen)",
+    )
     parser.add_argument("--steps-per-epoch", type=int, default=2)
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args(argv)
@@ -122,6 +128,8 @@ def main(argv: list[str] | None = None) -> int:
         cfg.max_epochs = args.epochs
     if args.seed is not None:
         cfg.seed = args.seed
+    if args.text_tower is not None:
+        cfg.text_tower = args.text_tower
     cfg.validate()
 
     card = train_one_run(cfg, steps_per_epoch=args.steps_per_epoch)
