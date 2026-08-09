@@ -72,6 +72,10 @@ experiment/checkpoints/
 !模型/artifacts/**/*.txt
 !模型/artifacts/**/.gitattributes
 
+# Never auto-commit Omni / large Qwen downloads
+模型/artifacts/pretrained/qwen*/
+模型/artifacts/pretrained/qwen3-omni-*/
+
 # Private working documents and screenshots
 *.docx
 ~$*

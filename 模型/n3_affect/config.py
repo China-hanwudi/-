@@ -19,13 +19,13 @@ DEFAULT_LABELS = (
 )
 
 ALLOWED_TEXT_TOWERS = frozenset(
-    {"composer_n3", "qwen3_4b", "emoberta_base", "xlm_roberta_large"}
+    {"composer_n3", "qwen3_omni_30b_a3b", "emoberta_base", "xlm_roberta_large"}
 )
-# Main-line open LLM (Apache-2.0). Branch towers remain selectable.
-DEFAULT_HF_TEXT_MODEL = "Qwen/Qwen3-4B-Instruct-2507"
+# Main-line omni LLM (Apache-2.0). Do NOT vendor weights into git.
+DEFAULT_HF_TEXT_MODEL = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
 _PKG_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LOCAL_EMOBERTA = _PKG_ROOT / "artifacts" / "pretrained" / "emoberta-base"
-DEFAULT_LOCAL_QWEN = _PKG_ROOT / "artifacts" / "pretrained" / "qwen3-4b-instruct-2507"
+DEFAULT_LOCAL_QWEN = _PKG_ROOT / "artifacts" / "pretrained" / "qwen3-omni-30b-a3b-instruct"
 
 
 @dataclass
@@ -44,7 +44,7 @@ class N3TrainConfig:
     parameter_budget: int = 2_000_000
     relation_rank: int = 32
     gate_hidden: int = 64
-    # Safe local default for unit tests; main JSON pins qwen3_4b.
+    # Safe local default for unit tests; main JSON pins qwen3_omni_30b_a3b.
     text_tower: str = "composer_n3"
     hf_text_model_id: str = DEFAULT_HF_TEXT_MODEL
     hf_text_local_path: str = str(DEFAULT_LOCAL_QWEN)
@@ -74,7 +74,7 @@ class N3TrainConfig:
         local = Path(self.hf_text_local_path)
         if self.text_tower == "emoberta_base":
             candidates = [local, DEFAULT_LOCAL_EMOBERTA]
-        elif self.text_tower == "qwen3_4b":
+        elif self.text_tower == "qwen3_omni_30b_a3b":
             candidates = [local, DEFAULT_LOCAL_QWEN]
         else:
             candidates = [local]
@@ -107,7 +107,7 @@ class N3TrainConfig:
         main = llm.get("main_text_tower") or llm.get("recommended_text_tower") or {}
         branch = llm.get("branch_text_towers") or {}
         optional = llm.get("optional_text_tower") or main
-        default_mode = str(llm.get("default_mode", "qwen3_4b"))
+        default_mode = str(llm.get("default_mode", "qwen3_omni_30b_a3b"))
         if default_mode in ALLOWED_TEXT_TOWERS:
             text_tower = default_mode
         elif main.get("tower_key") in ALLOWED_TEXT_TOWERS:
@@ -115,7 +115,7 @@ class N3TrainConfig:
         elif optional.get("tower_key") in ALLOWED_TEXT_TOWERS:
             text_tower = str(optional["tower_key"])
         else:
-            text_tower = "qwen3_4b"
+            text_tower = "qwen3_omni_30b_a3b"
         source_meta = main if text_tower == main.get("tower_key") else optional
         if text_tower == "emoberta_base" and "emoberta_base" in branch:
             source_meta = branch["emoberta_base"]

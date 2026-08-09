@@ -50,13 +50,13 @@ def test_loss_backward() -> None:
 def test_config_from_json_mainline_qwen() -> None:
     path = ROOT / "configs" / "n3_train_v1.json"
     cfg = N3TrainConfig.from_json(path)
-    assert cfg.text_tower == "qwen3_4b"
-    assert "Qwen3-4B-Instruct-2507" in cfg.hf_text_model_id
+    assert cfg.text_tower == "qwen3_omni_30b_a3b"
+    assert "Qwen3-Omni-30B-A3B" in cfg.hf_text_model_id
     assert cfg.num_classes == 7
 
 
 def test_branch_towers_validate() -> None:
-    for key in ("composer_n3", "emoberta_base", "qwen3_4b", "xlm_roberta_large"):
+    for key in ("composer_n3", "emoberta_base", "qwen3_omni_30b_a3b", "xlm_roberta_large"):
         cfg = N3TrainConfig(text_tower=key)
         cfg.validate()
 

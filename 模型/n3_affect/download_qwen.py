@@ -1,4 +1,8 @@
-"""Download main-line Qwen3-4B-Instruct-2507 into local artifacts (optional)."""
+"""Optional local download for main-line Qwen3-Omni-30B-A3B-Instruct.
+
+Never commit the downloaded weights (tens of GB). Keep outside git or under
+artifacts/ only with Git LFS after explicit team decision.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +14,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--model-id",
-        default="Qwen/Qwen3-4B-Instruct-2507",
+        default="Qwen/Qwen3-Omni-30B-A3B-Instruct",
         help="Hugging Face model id",
     )
     parser.add_argument(
@@ -19,7 +23,7 @@ def main(argv: list[str] | None = None) -> int:
         default=Path(__file__).resolve().parents[1]
         / "artifacts"
         / "pretrained"
-        / "qwen3-4b-instruct-2507",
+        / "qwen3-omni-30b-a3b-instruct",
     )
     args = parser.parse_args(argv)
     try:
@@ -29,7 +33,7 @@ def main(argv: list[str] | None = None) -> int:
     args.dest.mkdir(parents=True, exist_ok=True)
     path = snapshot_download(repo_id=args.model_id, local_dir=str(args.dest))
     print(f"downloaded {args.model_id} -> {path}")
-    print("Note: keep large weight files local; do not commit unless using Git LFS intentionally.")
+    print("DO NOT git add this directory unless the team explicitly enables LFS for it.")
     return 0
 
 

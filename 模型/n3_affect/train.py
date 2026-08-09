@@ -116,8 +116,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--text-tower",
         default=None,
-        choices=["composer_n3", "qwen3_4b", "emoberta_base", "xlm_roberta_large"],
-        help="Override config text tower (use composer_n3 for smoke without downloading Qwen)",
+        choices=["composer_n3", "qwen3_omni_30b_a3b", "emoberta_base", "xlm_roberta_large"],
+        help="Override config text tower (use composer_n3 for smoke without downloading Omni)",
     )
     parser.add_argument("--steps-per-epoch", type=int, default=2)
     parser.add_argument("--out", type=Path, default=None)

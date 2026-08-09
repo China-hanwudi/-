@@ -1,8 +1,9 @@
 """Six-way modality encoders for N3.
 
-Main-line text tower: ``qwen3_4b`` → ``Qwen/Qwen3-4B-Instruct-2507`` (Apache-2.0).
-Branch towers: ``emoberta_base`` (vendored), ``xlm_roberta_large``, or
-feature-only ``composer_n3`` projectors.
+Main-line tower: ``qwen3_omni_30b_a3b`` → ``Qwen/Qwen3-Omni-30B-A3B-Instruct``.
+Branch: ``emoberta_base`` (vendored), ``xlm_roberta_large``, ``composer_n3``.
+
+Weights are never vendored for Omni (too large); load from HF id or local cache only.
 """
 
 from __future__ import annotations
@@ -15,13 +16,12 @@ from torch import Tensor, nn
 from .config import N3TrainConfig
 
 HF_TEXT_TOWERS = {
-    "qwen3_4b": "Qwen/Qwen3-4B-Instruct-2507",
+    "qwen3_omni_30b_a3b": "Qwen/Qwen3-Omni-30B-A3B-Instruct",
     "emoberta_base": "tae898/emoberta-base",
     "xlm_roberta_large": "FacebookAI/xlm-roberta-large",
 }
 
-# Causal LMs lack a BERT-style CLS; use masked mean pooling.
-CAUSAL_TEXT_TOWERS = frozenset({"qwen3_4b"})
+CAUSAL_TEXT_TOWERS = frozenset({"qwen3_omni_30b_a3b"})
 
 
 class ModalityProjector(nn.Module):
@@ -55,12 +55,19 @@ class OptionalHFTextTower(nn.Module):
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         if causal:
-            lm = AutoModelForCausalLM.from_pretrained(
-                model_source,
-                trust_remote_code=True,
-                torch_dtype=torch.float32,
-            )
-            # Prefer the underlying transformer body when present.
+            try:
+                lm = AutoModelForCausalLM.from_pretrained(
+                    model_source,
+                    trust_remote_code=True,
+                    torch_dtype=torch.float32,
+                )
+            except Exception:
+                # Omni checkpoints may need AutoModel + remote code.
+                lm = AutoModel.from_pretrained(
+                    model_source,
+                    trust_remote_code=True,
+                    torch_dtype=torch.float32,
+                )
             self.backbone = getattr(lm, "model", None) or getattr(lm, "transformer", None) or lm
         else:
             self.backbone = AutoModel.from_pretrained(model_source, trust_remote_code=True)
