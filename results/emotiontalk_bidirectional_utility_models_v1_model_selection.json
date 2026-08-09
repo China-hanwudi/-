@@ -1,0 +1,2509 @@
+{
+  "claim_boundary": "Fit OOF and model-selection metrics do not establish validation/test improvement or top-conference readiness. No sealed split was read.",
+  "data_contract": {
+    "cluster_identifiers_emitted": false,
+    "feature_count": 59,
+    "fit_clusters": 378,
+    "fit_rows": 58976,
+    "input_schema": "emotiontalk_bidirectional_oof_cache_v1",
+    "model_selection_clusters": 94,
+    "model_selection_rows": 16212,
+    "row_level_output": false,
+    "sealed_data_read": false
+  },
+  "models": [
+    {
+      "across_seed_summary": {
+        "selection_cluster_macro_policy_regret_mean": 0.07273132313126965,
+        "selection_cluster_macro_policy_regret_std": 0.002351209080631513,
+        "selection_cluster_macro_rmse_mean": 0.37634680666617537,
+        "selection_cluster_macro_rmse_std": 0.004439985093016486
+      },
+      "architecture": {
+        "activation": "tanh",
+        "alpha": 0.001,
+        "batch_size": 1024,
+        "early_stop_fraction": 0.1,
+        "early_stopping": true,
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "learning_rate_init": 0.002,
+        "max_iter": 80,
+        "n_iter_no_change": 8,
+        "parameter_count": 2465,
+        "parameter_limit_exclusive": 2000000,
+        "solver": "adam",
+        "tolerance": 0.0001
+      },
+      "decision_rule": "top_25pct_fit_oof_predicted_forward",
+      "five_seed_ensemble": {
+        "fit_oof": {
+          "forward": {
+            "cluster_macro_mae": 0.21499466148402313,
+            "cluster_macro_rmse": 0.4039131892671453,
+            "pearson": 0.22841167919890681,
+            "row_mae": 0.20229386599523727,
+            "row_rmse": 0.4297888654848154
+          },
+          "policy": {
+            "cluster_macro_policy_regret": 0.06756702381574539,
+            "cluster_macro_policy_utility": -0.010262236079890108,
+            "coverage": 0.2499830439500814,
+            "mean_policy_regret": 0.06402513268095898,
+            "mean_policy_utility": -0.010082500430166706,
+            "negative_utility_fallback_rate": 0.6956629262110111,
+            "positive_utility_selection_rate": 0.18394862357757163,
+            "selected_positive_precision": 0.33222546293156074,
+            "selected_rows": 14743,
+            "threshold": 0.031108590620440312
+          },
+          "strict_bidirectional": {
+            "cluster_macro_mae": 0.20683115573946179,
+            "cluster_macro_rmse": 0.39278638438533614,
+            "pearson": 0.09551791060217062,
+            "row_mae": 0.1946635045782802,
+            "row_rmse": 0.42047649184983754
+          }
+        },
+        "fit_oof_threshold": 0.031108590620440312,
+        "model_selection": {
+          "forward": {
+            "cluster_macro_mae": 0.21256228905508864,
+            "cluster_macro_rmse": 0.3750379090181633,
+            "pearson": 0.19052092723408798,
+            "row_mae": 0.18835528250373396,
+            "row_rmse": 0.3886908223545677
+          },
+          "policy": {
+            "cluster_macro_policy_regret": 0.07205506947229451,
+            "cluster_macro_policy_utility": -0.012547881430207377,
+            "coverage": 0.2574019245003701,
+            "mean_policy_regret": 0.06384726815176117,
+            "mean_policy_utility": -0.012237843400278966,
+            "negative_utility_fallback_rate": 0.6832397754611067,
+            "positive_utility_selection_rate": 0.18815982894561004,
+            "selected_positive_precision": 0.3374071411454589,
+            "selected_rows": 4173,
+            "threshold": 0.031108590620440312
+          },
+          "strict_bidirectional": {
+            "cluster_macro_mae": 0.208066409690756,
+            "cluster_macro_rmse": 0.36953441763385564,
+            "pearson": 0.06258292721180152,
+            "row_mae": 0.1832836308826945,
+            "row_rmse": 0.3817639315346763
+          }
+        },
+        "zero_threshold_diagnostic": {
+          "fit_oof": {
+            "forward": {
+              "cluster_macro_mae": 0.21499466148402313,
+              "cluster_macro_rmse": 0.4039131892671453,
+              "pearson": 0.22841167919890681,
+              "row_mae": 0.20229386599523727,
+              "row_rmse": 0.4297888654848154
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07375083382722865,
+              "cluster_macro_policy_utility": -0.016446046091373352,
+              "coverage": 0.48991115029842647,
+              "mean_policy_regret": 0.0695556526703266,
+              "mean_policy_utility": -0.01561302041953431,
+              "negative_utility_fallback_rate": 0.42066215338959473,
+              "positive_utility_selection_rate": 0.38126713486310887,
+              "selected_positive_precision": 0.3513653826186274,
+              "selected_rows": 28893,
+              "threshold": 0.0
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20683115573946179,
+              "cluster_macro_rmse": 0.39278638438533614,
+              "pearson": 0.09551791060217062,
+              "row_mae": 0.1946635045782802,
+              "row_rmse": 0.42047649184983754
+            }
+          },
+          "model_selection": {
+            "forward": {
+              "cluster_macro_mae": 0.21256228905508864,
+              "cluster_macro_rmse": 0.3750379090181633,
+              "pearson": 0.19052092723408798,
+              "row_mae": 0.18835528250373396,
+              "row_rmse": 0.3886908223545677
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07772647742090565,
+              "cluster_macro_policy_utility": -0.018219289378818497,
+              "coverage": 0.44886503824327656,
+              "mean_policy_regret": 0.0688355807711335,
+              "mean_policy_utility": -0.017226156019651294,
+              "negative_utility_fallback_rate": 0.4510253179058311,
+              "positive_utility_selection_rate": 0.33208606173994387,
+              "selected_positive_precision": 0.3414868764600797,
+              "selected_rows": 7277,
+              "threshold": 0.0
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.208066409690756,
+              "cluster_macro_rmse": 0.36953441763385564,
+              "pearson": 0.06258292721180152,
+              "row_mae": 0.1832836308826945,
+              "row_rmse": 0.3817639315346763
+            }
+          }
+        }
+      },
+      "mode": "forward_only",
+      "name": "forward_only_mlp",
+      "output_heads": 1,
+      "per_seed": [
+        {
+          "final_fit_iterations": 17,
+          "final_fit_loss": 0.44637657532878405,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "forward": {
+              "cluster_macro_mae": 0.22026396717847657,
+              "cluster_macro_rmse": 0.4080567972559164,
+              "pearson": 0.20712391584455453,
+              "row_mae": 0.20767949420335444,
+              "row_rmse": 0.4333421693638117
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06773502049158991,
+              "cluster_macro_policy_utility": -0.010430232755734637,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.0638648931439536,
+              "mean_policy_utility": -0.009922260893161327,
+              "negative_utility_fallback_rate": 0.7054004760579925,
+              "positive_utility_selection_rate": 0.1957787208472603,
+              "selected_positive_precision": 0.35359153496574647,
+              "selected_rows": 14743,
+              "threshold": 0.04315848201029812
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21237523542384154,
+              "cluster_macro_rmse": 0.39638875304116683,
+              "pearson": 0.09300042928467848,
+              "row_mae": 0.20034816461051166,
+              "row_rmse": 0.42357303589051787
+            }
+          },
+          "fit_oof_threshold": 0.04315848201029812,
+          "model_selection": {
+            "forward": {
+              "cluster_macro_mae": 0.21655363504034653,
+              "cluster_macro_rmse": 0.3767590292254908,
+              "pearson": 0.17423971307622435,
+              "row_mae": 0.19264930535747712,
+              "row_rmse": 0.390259497849203
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07225495931181351,
+              "cluster_macro_policy_utility": -0.012747771269726376,
+              "coverage": 0.25,
+              "mean_policy_regret": 0.06362432681215197,
+              "mean_policy_utility": -0.012014902060669772,
+              "negative_utility_fallback_rate": 0.6870202772367969,
+              "positive_utility_selection_rate": 0.17653347587865828,
+              "selected_positive_precision": 0.32593140883296323,
+              "selected_rows": 4053,
+              "threshold": 0.04315848201029812
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21116325690857612,
+              "cluster_macro_rmse": 0.36941502860903425,
+              "pearson": 0.059899473416458134,
+              "row_mae": 0.18653145013305003,
+              "row_rmse": 0.3817909221618005
+            }
+          },
+          "oof_folds": 5,
+          "seed": 11,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "forward": {
+                "cluster_macro_mae": 0.22026396717847657,
+                "cluster_macro_rmse": 0.4080567972559164,
+                "pearson": 0.20712391584455453,
+                "row_mae": 0.20767949420335444,
+                "row_rmse": 0.4333421693638117
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.0749393025732667,
+                "cluster_macro_policy_utility": -0.0176345148374114,
+                "coverage": 0.5191942485078677,
+                "mean_policy_regret": 0.07080882437405656,
+                "mean_policy_utility": -0.01686619212326428,
+                "negative_utility_fallback_rate": 0.41608705060434636,
+                "positive_utility_selection_rate": 0.44056784466894505,
+                "selected_positive_precision": 0.383115610711953,
+                "selected_rows": 30620,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21237523542384154,
+                "cluster_macro_rmse": 0.39638875304116683,
+                "pearson": 0.09300042928467848,
+                "row_mae": 0.20034816461051166,
+                "row_rmse": 0.42357303589051787
+              }
+            },
+            "model_selection": {
+              "forward": {
+                "cluster_macro_mae": 0.21655363504034653,
+                "cluster_macro_rmse": 0.3767590292254908,
+                "pearson": 0.17423971307622435,
+                "row_mae": 0.19264930535747712,
+                "row_rmse": 0.390259497849203
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.08170830685343133,
+                "cluster_macro_policy_utility": -0.0222011188113442,
+                "coverage": 0.5302245250431779,
+                "mean_policy_regret": 0.07189732330415821,
+                "mean_policy_utility": -0.020287898552676004,
+                "negative_utility_fallback_rate": 0.3993584603047314,
+                "positive_utility_selection_rate": 0.44808231992516373,
+                "selected_positive_precision": 0.39006514657980457,
+                "selected_rows": 8596,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21116325690857612,
+                "cluster_macro_rmse": 0.36941502860903425,
+                "pearson": 0.059899473416458134,
+                "row_mae": 0.18653145013305003,
+                "row_rmse": 0.3817909221618005
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 23,
+          "final_fit_loss": 0.4331968824312085,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "forward": {
+              "cluster_macro_mae": 0.22151622544278932,
+              "cluster_macro_rmse": 0.4086034934456411,
+              "pearson": 0.20374149870259958,
+              "row_mae": 0.20900890278961923,
+              "row_rmse": 0.4342029691515004
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06905081472989286,
+              "cluster_macro_policy_utility": -0.011746026994037555,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06535969608018945,
+              "mean_policy_utility": -0.011417063829397176,
+              "negative_utility_fallback_rate": 0.704442177501623,
+              "positive_utility_selection_rate": 0.19461448905246553,
+              "selected_positive_precision": 0.35148884216238213,
+              "selected_rows": 14743,
+              "threshold": 0.03738143605139738
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21431343275049372,
+              "cluster_macro_rmse": 0.39830123308261667,
+              "pearson": 0.07956222705207831,
+              "row_mae": 0.20223348476388137,
+              "row_rmse": 0.4253196181308155
+            }
+          },
+          "fit_oof_threshold": 0.03738143605139738,
+          "model_selection": {
+            "forward": {
+              "cluster_macro_mae": 0.2194050677913106,
+              "cluster_macro_rmse": 0.38021779431593306,
+              "pearson": 0.16902460882237413,
+              "row_mae": 0.1952915226214758,
+              "row_rmse": 0.3932987764564515
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07670972540673635,
+              "cluster_macro_policy_utility": -0.017202537364649197,
+              "coverage": 0.3115593387614113,
+              "mean_policy_regret": 0.06719152570665156,
+              "mean_policy_utility": -0.015582100955169343,
+              "negative_utility_fallback_rate": 0.6321457211593539,
+              "positive_utility_selection_rate": 0.2458906855539222,
+              "selected_positive_precision": 0.3642843001385864,
+              "selected_rows": 5051,
+              "threshold": 0.03738143605139738
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21679996953547512,
+              "cluster_macro_rmse": 0.37779411836799903,
+              "pearson": 0.046744215140801064,
+              "row_mae": 0.19200103659431253,
+              "row_rmse": 0.3892071248277523
+            }
+          },
+          "oof_folds": 5,
+          "seed": 29,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "forward": {
+                "cluster_macro_mae": 0.22151622544278932,
+                "cluster_macro_rmse": 0.4086034934456411,
+                "pearson": 0.20374149870259958,
+                "row_mae": 0.20900890278961923,
+                "row_rmse": 0.4342029691515004
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07430595249645246,
+                "cluster_macro_policy_utility": -0.017001164760597164,
+                "coverage": 0.4393990775908844,
+                "mean_policy_regret": 0.07039715190376299,
+                "mean_policy_utility": -0.01645451965297072,
+                "negative_utility_fallback_rate": 0.49887168073201643,
+                "positive_utility_selection_rate": 0.364404551770759,
+                "selected_positive_precision": 0.3744308096009879,
+                "selected_rows": 25914,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21431343275049372,
+                "cluster_macro_rmse": 0.39830123308261667,
+                "pearson": 0.07956222705207831,
+                "row_mae": 0.20223348476388137,
+                "row_rmse": 0.4253196181308155
+              }
+            },
+            "model_selection": {
+              "forward": {
+                "cluster_macro_mae": 0.2194050677913106,
+                "cluster_macro_rmse": 0.38021779431593306,
+                "pearson": 0.16902460882237413,
+                "row_mae": 0.1952915226214758,
+                "row_rmse": 0.3932987764564515
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.0857140728400156,
+                "cluster_macro_policy_utility": -0.02620688479792846,
+                "coverage": 0.5464470762398224,
+                "mean_policy_regret": 0.07548143890702094,
+                "mean_policy_utility": -0.023872014155538728,
+                "negative_utility_fallback_rate": 0.38778783365792185,
+                "positive_utility_selection_rate": 0.4697313911532808,
+                "selected_positive_precision": 0.39677164465515297,
+                "selected_rows": 8859,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21679996953547512,
+                "cluster_macro_rmse": 0.37779411836799903,
+                "pearson": 0.046744215140801064,
+                "row_mae": 0.19200103659431253,
+                "row_rmse": 0.3892071248277523
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 48,
+          "final_fit_loss": 0.41450105846147706,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "forward": {
+              "cluster_macro_mae": 0.22376530111558074,
+              "cluster_macro_rmse": 0.41008058555718085,
+              "pearson": 0.19775251185867643,
+              "row_mae": 0.21091513112353283,
+              "row_rmse": 0.43502023963722586
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06816812290425152,
+              "cluster_macro_policy_utility": -0.010863335168396236,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06428508720425231,
+              "mean_policy_utility": -0.010342454953460044,
+              "negative_utility_fallback_rate": 0.7026801446721691,
+              "positive_utility_selection_rate": 0.19247380478461712,
+              "selected_positive_precision": 0.34762260055619615,
+              "selected_rows": 14743,
+              "threshold": 0.04792357721577904
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21660887439210758,
+              "cluster_macro_rmse": 0.4000737018387149,
+              "pearson": 0.07881787386855796,
+              "row_mae": 0.20396113349068568,
+              "row_rmse": 0.42647962936575134
+            }
+          },
+          "fit_oof_threshold": 0.04792357721577904,
+          "model_selection": {
+            "forward": {
+              "cluster_macro_mae": 0.22266572283310498,
+              "cluster_macro_rmse": 0.38767584840323266,
+              "pearson": 0.1613820051805404,
+              "row_mae": 0.1979724892093279,
+              "row_rmse": 0.39771125012689534
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07081443169772658,
+              "cluster_macro_policy_utility": -0.011307243655639438,
+              "coverage": 0.2513570194917345,
+              "mean_policy_regret": 0.06265883481988928,
+              "mean_policy_utility": -0.011049410068407083,
+              "negative_utility_fallback_rate": 0.6987054645434758,
+              "positive_utility_selection_rate": 0.19310436990511826,
+              "selected_positive_precision": 0.35460122699386504,
+              "selected_rows": 4075,
+              "threshold": 0.04792357721577904
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.2185007333153724,
+              "cluster_macro_rmse": 0.38170414373502265,
+              "pearson": 0.07118377167639316,
+              "row_mae": 0.1935688796714445,
+              "row_rmse": 0.3898780120559272
+            }
+          },
+          "oof_folds": 5,
+          "seed": 47,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "forward": {
+                "cluster_macro_mae": 0.22376530111558074,
+                "cluster_macro_rmse": 0.41008058555718085,
+                "pearson": 0.19775251185867643,
+                "row_mae": 0.21091513112353283,
+                "row_rmse": 0.43502023963722586
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07719198756654888,
+                "cluster_macro_policy_utility": -0.01988719983069358,
+                "coverage": 0.5200590070537168,
+                "mean_policy_regret": 0.07271346054682537,
+                "mean_policy_utility": -0.018770828296033087,
+                "negative_utility_fallback_rate": 0.4201675476830814,
+                "positive_utility_selection_rate": 0.44744056784466896,
+                "selected_positive_precision": 0.38844511101692153,
+                "selected_rows": 30671,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21660887439210758,
+                "cluster_macro_rmse": 0.4000737018387149,
+                "pearson": 0.07881787386855796,
+                "row_mae": 0.20396113349068568,
+                "row_rmse": 0.42647962936575134
+              }
+            },
+            "model_selection": {
+              "forward": {
+                "cluster_macro_mae": 0.22266572283310498,
+                "cluster_macro_rmse": 0.38767584840323266,
+                "pearson": 0.1613820051805404,
+                "row_mae": 0.1979724892093279,
+                "row_rmse": 0.39771125012689534
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07905039535807529,
+                "cluster_macro_policy_utility": -0.019543207315988152,
+                "coverage": 0.5437947199605231,
+                "mean_policy_regret": 0.07036976536680767,
+                "mean_policy_utility": -0.018760340615325458,
+                "negative_utility_fallback_rate": 0.4022224768014664,
+                "positive_utility_selection_rate": 0.480823199251637,
+                "selected_positive_precision": 0.4081215970961887,
+                "selected_rows": 8816,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.2185007333153724,
+                "cluster_macro_rmse": 0.38170414373502265,
+                "pearson": 0.07118377167639316,
+                "row_mae": 0.1935688796714445,
+                "row_rmse": 0.3898780120559272
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 28,
+          "final_fit_loss": 0.43237618582094206,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "forward": {
+              "cluster_macro_mae": 0.2223257560034736,
+              "cluster_macro_rmse": 0.4092560190453067,
+              "pearson": 0.20383854473023058,
+              "row_mae": 0.2091957961240058,
+              "row_rmse": 0.4341505792755994
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06921828752495945,
+              "cluster_macro_policy_utility": -0.011913499789104179,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06466452290796013,
+              "mean_policy_utility": -0.01072189065716785,
+              "negative_utility_fallback_rate": 0.6997434232897463,
+              "positive_utility_selection_rate": 0.1889059976715364,
+              "selected_positive_precision": 0.3411788645458862,
+              "selected_rows": 14743,
+              "threshold": 0.04361764799382397
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21474936724964128,
+              "cluster_macro_rmse": 0.3983701242561781,
+              "pearson": 0.08926892130152085,
+              "row_mae": 0.20215239681484773,
+              "row_rmse": 0.42505648340483737
+            }
+          },
+          "fit_oof_threshold": 0.04361764799382397,
+          "model_selection": {
+            "forward": {
+              "cluster_macro_mae": 0.22200014528779244,
+              "cluster_macro_rmse": 0.3826557413503916,
+              "pearson": 0.1566465374351211,
+              "row_mae": 0.19779738859816287,
+              "row_rmse": 0.3956664381012471
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.0711879796485928,
+              "cluster_macro_policy_utility": -0.011680791606505663,
+              "coverage": 0.25172711571675305,
+              "mean_policy_regret": 0.06297373483882708,
+              "mean_policy_utility": -0.011364310087344865,
+              "negative_utility_fallback_rate": 0.7050063008362928,
+              "positive_utility_selection_rate": 0.20125618067619938,
+              "selected_positive_precision": 0.36902719921587845,
+              "selected_rows": 4081,
+              "threshold": 0.04361764799382397
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21753541404372087,
+              "cluster_macro_rmse": 0.37639502673135855,
+              "pearson": 0.05229003508117077,
+              "row_mae": 0.19252666449808742,
+              "row_rmse": 0.38771053788729315
+            }
+          },
+          "oof_folds": 5,
+          "seed": 71,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "forward": {
+                "cluster_macro_mae": 0.2223257560034736,
+                "cluster_macro_rmse": 0.4092560190453067,
+                "pearson": 0.20383854473023058,
+                "row_mae": 0.2091957961240058,
+                "row_rmse": 0.4341505792755994
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07593349552549432,
+                "cluster_macro_policy_utility": -0.01862870778963902,
+                "coverage": 0.5150400162778079,
+                "mean_policy_regret": 0.07152933887922668,
+                "mean_policy_utility": -0.017586706628434402,
+                "negative_utility_fallback_rate": 0.4186219048502272,
+                "positive_utility_selection_rate": 0.4344462387801855,
+                "selected_positive_precision": 0.3808395061728395,
+                "selected_rows": 30375,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21474936724964128,
+                "cluster_macro_rmse": 0.3983701242561781,
+                "pearson": 0.08926892130152085,
+                "row_mae": 0.20215239681484773,
+                "row_rmse": 0.42505648340483737
+              }
+            },
+            "model_selection": {
+              "forward": {
+                "cluster_macro_mae": 0.22200014528779244,
+                "cluster_macro_rmse": 0.3826557413503916,
+                "pearson": 0.1566465374351211,
+                "row_mae": 0.19779738859816287,
+                "row_rmse": 0.3956664381012471
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07727608674063222,
+                "cluster_macro_policy_utility": -0.017768898698545078,
+                "coverage": 0.42912657290895634,
+                "mean_policy_regret": 0.06890248972320383,
+                "mean_policy_utility": -0.017293064971721613,
+                "negative_utility_fallback_rate": 0.4950166112956811,
+                "positive_utility_selection_rate": 0.3406387812374716,
+                "selected_positive_precision": 0.3663935604427196,
+                "selected_rows": 6957,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21753541404372087,
+                "cluster_macro_rmse": 0.37639502673135855,
+                "pearson": 0.05229003508117077,
+                "row_mae": 0.19252666449808742,
+                "row_rmse": 0.38771053788729315
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 26,
+          "final_fit_loss": 0.4387912238654403,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "forward": {
+              "cluster_macro_mae": 0.2223197089080293,
+              "cluster_macro_rmse": 0.41051783783051665,
+              "pearson": 0.19714557586696507,
+              "row_mae": 0.20908720038431342,
+              "row_rmse": 0.43508050991594627
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06880800415191485,
+              "cluster_macro_policy_utility": -0.01150321641605956,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06473098859920122,
+              "mean_policy_utility": -0.01078835634840894,
+              "negative_utility_fallback_rate": 0.704813131781508,
+              "positive_utility_selection_rate": 0.19506515942464417,
+              "selected_positive_precision": 0.35230278776368446,
+              "selected_rows": 14743,
+              "threshold": 0.03882775147315844
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21406685740499157,
+              "cluster_macro_rmse": 0.39904831223337156,
+              "pearson": 0.08174215240073218,
+              "row_mae": 0.20147354362884945,
+              "row_rmse": 0.4253037885161879
+            }
+          },
+          "fit_oof_threshold": 0.03882775147315844,
+          "model_selection": {
+            "forward": {
+              "cluster_macro_mae": 0.22305528358767582,
+              "cluster_macro_rmse": 0.3812039078334271,
+              "pearson": 0.16990317089736173,
+              "row_mae": 0.19869062642237356,
+              "row_rmse": 0.3940926186689906
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07268951959147898,
+              "cluster_macro_policy_utility": -0.013182331549391862,
+              "coverage": 0.24518874907475943,
+              "mean_policy_regret": 0.06446713822122395,
+              "mean_policy_utility": -0.012857713469741738,
+              "negative_utility_fallback_rate": 0.7097032878909383,
+              "positive_utility_selection_rate": 0.19256982493652278,
+              "selected_positive_precision": 0.36251572327044024,
+              "selected_rows": 3975,
+              "threshold": 0.03882775147315844
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.219153389976107,
+              "cluster_macro_rmse": 0.3764257158874625,
+              "pearson": 0.04119626974560714,
+              "row_mae": 0.1947235768183434,
+              "row_rmse": 0.38828657520650534
+            }
+          },
+          "oof_folds": 5,
+          "seed": 101,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "forward": {
+                "cluster_macro_mae": 0.2223197089080293,
+                "cluster_macro_rmse": 0.41051783783051665,
+                "pearson": 0.19714557586696507,
+                "row_mae": 0.20908720038431342,
+                "row_rmse": 0.43508050991594627
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07526134390135913,
+                "cluster_macro_policy_utility": -0.01795655616550385,
+                "coverage": 0.4816026858383071,
+                "mean_policy_regret": 0.070818980520572,
+                "mean_policy_utility": -0.01687634826977973,
+                "negative_utility_fallback_rate": 0.45098766577019384,
+                "positive_utility_selection_rate": 0.3997070642580839,
+                "selected_positive_precision": 0.37471393866845054,
+                "selected_rows": 28403,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21406685740499157,
+                "cluster_macro_rmse": 0.39904831223337156,
+                "pearson": 0.08174215240073218,
+                "row_mae": 0.20147354362884945,
+                "row_rmse": 0.4253037885161879
+              }
+            },
+            "model_selection": {
+              "forward": {
+                "cluster_macro_mae": 0.22305528358767582,
+                "cluster_macro_rmse": 0.3812039078334271,
+                "pearson": 0.16990317089736173,
+                "row_mae": 0.19869062642237356,
+                "row_rmse": 0.3940926186689906
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.0779357315539623,
+                "cluster_macro_policy_utility": -0.01842854351187515,
+                "coverage": 0.3911917098445596,
+                "mean_policy_regret": 0.06898338722802652,
+                "mean_policy_utility": -0.017373962476544304,
+                "negative_utility_fallback_rate": 0.5378622980868369,
+                "positive_utility_selection_rate": 0.30843244687959376,
+                "selected_positive_precision": 0.36392305266477454,
+                "selected_rows": 6342,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.219153389976107,
+                "cluster_macro_rmse": 0.3764257158874625,
+                "pearson": 0.04119626974560714,
+                "row_mae": 0.1947235768183434,
+                "row_rmse": 0.38828657520650534
+              }
+            }
+          }
+        }
+      ],
+      "shared_hidden_representation": false
+    },
+    {
+      "across_seed_summary": {
+        "selection_cluster_macro_policy_regret_mean": 0.07132824113341663,
+        "selection_cluster_macro_policy_regret_std": 0.0014035529196860187,
+        "selection_cluster_macro_rmse_mean": 0.37069191464689455,
+        "selection_cluster_macro_rmse_std": 0.0037210000066319514
+      },
+      "architecture": {
+        "activation": "tanh",
+        "alpha": 0.001,
+        "batch_size": 1024,
+        "early_stop_fraction": 0.1,
+        "early_stopping": true,
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "learning_rate_init": 0.002,
+        "max_iter": 80,
+        "n_iter_no_change": 8,
+        "parameter_count": 2465,
+        "parameter_limit_exclusive": 2000000,
+        "solver": "adam",
+        "tolerance": 0.0001
+      },
+      "decision_rule": "top_25pct_fit_oof_predicted_backward",
+      "five_seed_ensemble": {
+        "fit_oof": {
+          "backward": {
+            "cluster_macro_mae": 0.21404086274978543,
+            "cluster_macro_rmse": 0.40727985617019413,
+            "pearson": 0.20491661693510865,
+            "row_mae": 0.2014312242153321,
+            "row_rmse": 0.43570041234352197
+          },
+          "policy": {
+            "cluster_macro_policy_regret": 0.06904817062495687,
+            "cluster_macro_policy_utility": -0.011743382889101582,
+            "coverage": 0.2499830439500814,
+            "mean_policy_regret": 0.06542881588976872,
+            "mean_policy_utility": -0.011486183638976454,
+            "negative_utility_fallback_rate": 0.6928189433985594,
+            "positive_utility_selection_rate": 0.1804934840575356,
+            "selected_positive_precision": 0.3259852133215763,
+            "selected_rows": 14743,
+            "threshold": 0.03157907622845784
+          },
+          "strict_bidirectional": {
+            "cluster_macro_mae": 0.20471838272786405,
+            "cluster_macro_rmse": 0.39247655409435617,
+            "pearson": 0.08312347830300328,
+            "row_mae": 0.19231844956910854,
+            "row_rmse": 0.4202720714951084
+          }
+        },
+        "fit_oof_threshold": 0.03157907622845784,
+        "model_selection": {
+          "backward": {
+            "cluster_macro_mae": 0.21617378501995685,
+            "cluster_macro_rmse": 0.38120451047414394,
+            "pearson": 0.17428363458878154,
+            "row_mae": 0.1904345751194922,
+            "row_rmse": 0.3909121574456448
+          },
+          "policy": {
+            "cluster_macro_policy_regret": 0.07042029163799414,
+            "cluster_macro_policy_utility": -0.010913103595906993,
+            "coverage": 0.2377251418702196,
+            "mean_policy_regret": 0.062137708741818974,
+            "mean_policy_utility": -0.010528283990336765,
+            "negative_utility_fallback_rate": 0.7051208614961623,
+            "positive_utility_selection_rate": 0.17105438995055458,
+            "selected_positive_precision": 0.3321224701608718,
+            "selected_rows": 3854,
+            "threshold": 0.03157907622845784
+          },
+          "strict_bidirectional": {
+            "cluster_macro_mae": 0.20575802829255968,
+            "cluster_macro_rmse": 0.3651638788839268,
+            "pearson": 0.0717962916707125,
+            "row_mae": 0.18108642530753605,
+            "row_rmse": 0.37806949655845884
+          }
+        },
+        "zero_threshold_diagnostic": {
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.21404086274978543,
+              "cluster_macro_rmse": 0.40727985617019413,
+              "pearson": 0.20491661693510865,
+              "row_mae": 0.2014312242153321,
+              "row_rmse": 0.43570041234352197
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07446741205162809,
+              "cluster_macro_policy_utility": -0.017162624315772798,
+              "coverage": 0.5165321486706457,
+              "mean_policy_regret": 0.07078080124880057,
+              "mean_policy_utility": -0.0168381689980083,
+              "negative_utility_fallback_rate": 0.3936752295279607,
+              "positive_utility_selection_rate": 0.4074435723138168,
+              "selected_positive_precision": 0.3561369530249811,
+              "selected_rows": 30463,
+              "threshold": 0.0
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20471838272786405,
+              "cluster_macro_rmse": 0.39247655409435617,
+              "pearson": 0.08312347830300328,
+              "row_mae": 0.19231844956910854,
+              "row_rmse": 0.4202720714951084
+            }
+          },
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.21617378501995685,
+              "cluster_macro_rmse": 0.38120451047414394,
+              "pearson": 0.17428363458878154,
+              "row_mae": 0.1904345751194922,
+              "row_rmse": 0.3909121574456448
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07649772037908291,
+              "cluster_macro_policy_utility": -0.01699053233699577,
+              "coverage": 0.4813101406365655,
+              "mean_policy_regret": 0.06766724444288787,
+              "mean_policy_utility": -0.016057819691405656,
+              "negative_utility_fallback_rate": 0.42146866765952573,
+              "positive_utility_selection_rate": 0.36790057463584125,
+              "selected_positive_precision": 0.35281302063308984,
+              "selected_rows": 7803,
+              "threshold": 0.0
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20575802829255968,
+              "cluster_macro_rmse": 0.3651638788839268,
+              "pearson": 0.0717962916707125,
+              "row_mae": 0.18108642530753605,
+              "row_rmse": 0.37806949655845884
+            }
+          }
+        }
+      },
+      "mode": "backward_only",
+      "name": "backward_only_mlp",
+      "output_heads": 1,
+      "per_seed": [
+        {
+          "final_fit_iterations": 16,
+          "final_fit_loss": 0.45208592962522237,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.21998767127345395,
+              "cluster_macro_rmse": 0.4112236659430918,
+              "pearson": 0.18638881130458296,
+              "row_mae": 0.20737013596824216,
+              "row_rmse": 0.43904572734047465
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06755028419417584,
+              "cluster_macro_policy_utility": -0.010245496458320562,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06439515703931381,
+              "mean_policy_utility": -0.010452524788521524,
+              "negative_utility_fallback_rate": 0.7041639617917091,
+              "positive_utility_selection_rate": 0.19427648627333158,
+              "selected_positive_precision": 0.3508783829614054,
+              "selected_rows": 14743,
+              "threshold": 0.04323700962073853
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21055737139235414,
+              "cluster_macro_rmse": 0.39587752077296084,
+              "pearson": 0.08562625176068893,
+              "row_mae": 0.198388349344003,
+              "row_rmse": 0.423435319376315
+            }
+          },
+          "fit_oof_threshold": 0.04323700962073853,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.21757935249784646,
+              "cluster_macro_rmse": 0.38218123134475585,
+              "pearson": 0.16081654385882813,
+              "row_mae": 0.19196514738147819,
+              "row_rmse": 0.39217269196180954
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07033517620727611,
+              "cluster_macro_policy_utility": -0.010827988165188979,
+              "coverage": 0.23032321736984948,
+              "mean_policy_regret": 0.06195450490116587,
+              "mean_policy_utility": -0.010345080149683663,
+              "negative_utility_fallback_rate": 0.7156604422041472,
+              "positive_utility_selection_rate": 0.1673125751703862,
+              "selected_positive_precision": 0.3352972683449384,
+              "selected_rows": 3734,
+              "threshold": 0.04323700962073853
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20680053516773086,
+              "cluster_macro_rmse": 0.36510697063189945,
+              "pearson": 0.07182144996172538,
+              "row_mae": 0.1823481339272403,
+              "row_rmse": 0.37848328444495277
+            }
+          },
+          "oof_folds": 5,
+          "seed": 11,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.21998767127345395,
+                "cluster_macro_rmse": 0.4112236659430918,
+                "pearson": 0.18638881130458296,
+                "row_mae": 0.20737013596824216,
+                "row_rmse": 0.43904572734047465
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07507936174593655,
+                "cluster_macro_policy_utility": -0.01777457401008126,
+                "coverage": 0.5332847259902334,
+                "mean_policy_regret": 0.07195270069542609,
+                "mean_policy_utility": -0.018010068444633803,
+                "negative_utility_fallback_rate": 0.4001669294259482,
+                "positive_utility_selection_rate": 0.4524354978029819,
+                "selected_positive_precision": 0.38304028488760294,
+                "selected_rows": 31451,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21055737139235414,
+                "cluster_macro_rmse": 0.39587752077296084,
+                "pearson": 0.08562625176068893,
+                "row_mae": 0.198388349344003,
+                "row_rmse": 0.423435319376315
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.21757935249784646,
+                "cluster_macro_rmse": 0.38218123134475585,
+                "pearson": 0.16081654385882813,
+                "row_mae": 0.19196514738147819,
+                "row_rmse": 0.39217269196180954
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07765545858478237,
+                "cluster_macro_policy_utility": -0.018148270542695244,
+                "coverage": 0.5112262521588946,
+                "mean_policy_regret": 0.06834378518880367,
+                "mean_policy_utility": -0.01673436043732145,
+                "negative_utility_fallback_rate": 0.41069996563180206,
+                "positive_utility_selection_rate": 0.4201523453160497,
+                "selected_positive_precision": 0.37934362934362936,
+                "selected_rows": 8288,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20680053516773086,
+                "cluster_macro_rmse": 0.36510697063189945,
+                "pearson": 0.07182144996172538,
+                "row_mae": 0.1823481339272403,
+                "row_rmse": 0.37848328444495277
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 30,
+          "final_fit_loss": 0.42897000779167616,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.21987122985020843,
+              "cluster_macro_rmse": 0.4121985404838292,
+              "pearson": 0.17445476704205587,
+              "row_mae": 0.20737090826975332,
+              "row_rmse": 0.43957624491149094
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06917972259565676,
+              "cluster_macro_policy_utility": -0.011874934859801468,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06550930997427185,
+              "mean_policy_utility": -0.011566677723479567,
+              "negative_utility_fallback_rate": 0.7057405174812205,
+              "positive_utility_selection_rate": 0.1961918353550907,
+              "selected_positive_precision": 0.35433765176694026,
+              "selected_rows": 14743,
+              "threshold": 0.04157467264128131
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21109715301823326,
+              "cluster_macro_rmse": 0.39681092613122887,
+              "pearson": 0.06530587750480667,
+              "row_mae": 0.198572952151031,
+              "row_rmse": 0.42337292006487914
+            }
+          },
+          "fit_oof_threshold": 0.04157467264128131,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.22262228601158385,
+              "cluster_macro_rmse": 0.3891561821147176,
+              "pearson": 0.14291676297905803,
+              "row_mae": 0.1966416560637454,
+              "row_rmse": 0.3974711310181759
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07010332020004244,
+              "cluster_macro_policy_utility": -0.010596132157955287,
+              "coverage": 0.2650505798174192,
+              "mean_policy_regret": 0.06193977965076989,
+              "mean_policy_utility": -0.010330354899287684,
+              "negative_utility_fallback_rate": 0.6834688967808454,
+              "positive_utility_selection_rate": 0.20499799545636777,
+              "selected_positive_precision": 0.3569932511054224,
+              "selected_rows": 4297,
+              "threshold": 0.04157467264128131
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21352396344960675,
+              "cluster_macro_rmse": 0.37351489627348416,
+              "pearson": 0.0670715519450566,
+              "row_mae": 0.18825698009199238,
+              "row_rmse": 0.38438091234809135
+            }
+          },
+          "oof_folds": 5,
+          "seed": 29,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.21987122985020843,
+                "cluster_macro_rmse": 0.4121985404838292,
+                "pearson": 0.17445476704205587,
+                "row_mae": 0.20737090826975332,
+                "row_rmse": 0.43957624491149094
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07710098621636913,
+                "cluster_macro_policy_utility": -0.01979619848051383,
+                "coverage": 0.4840782691264243,
+                "mean_policy_regret": 0.07278591716330447,
+                "mean_policy_utility": -0.01884328491251218,
+                "negative_utility_fallback_rate": 0.44882376580419797,
+                "positive_utility_selection_rate": 0.40256130994854844,
+                "selected_positive_precision": 0.37545973589267573,
+                "selected_rows": 28549,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21109715301823326,
+                "cluster_macro_rmse": 0.39681092613122887,
+                "pearson": 0.06530587750480667,
+                "row_mae": 0.198572952151031,
+                "row_rmse": 0.42337292006487914
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.22262228601158385,
+                "cluster_macro_rmse": 0.3891561821147176,
+                "pearson": 0.14291676297905803,
+                "row_mae": 0.1966416560637454,
+                "row_rmse": 0.3974711310181759
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07856950054616334,
+                "cluster_macro_policy_utility": -0.019062312504076213,
+                "coverage": 0.5482975573649149,
+                "mean_policy_regret": 0.06873824863522247,
+                "mean_policy_utility": -0.01712882388374027,
+                "negative_utility_fallback_rate": 0.3777064955894146,
+                "positive_utility_selection_rate": 0.46198048910864625,
+                "selected_positive_precision": 0.38890763865451683,
+                "selected_rows": 8889,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21352396344960675,
+                "cluster_macro_rmse": 0.37351489627348416,
+                "pearson": 0.0670715519450566,
+                "row_mae": 0.18825698009199238,
+                "row_rmse": 0.38438091234809135
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 24,
+          "final_fit_loss": 0.4352180899923448,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.22221622976294772,
+              "cluster_macro_rmse": 0.41349906666178315,
+              "pearson": 0.16941673322286324,
+              "row_mae": 0.20920227354259913,
+              "row_rmse": 0.4414678313362513
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.0701152764571753,
+              "cluster_macro_policy_utility": -0.01281048872132001,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06635457501214277,
+              "mean_policy_utility": -0.0124119427613505,
+              "negative_utility_fallback_rate": 0.6977340876070358,
+              "positive_utility_selection_rate": 0.18646486648890223,
+              "selected_positive_precision": 0.336769992538832,
+              "selected_rows": 14743,
+              "threshold": 0.04290172547119305
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.2129243765544292,
+              "cluster_macro_rmse": 0.399184322266851,
+              "pearson": 0.06523205895909875,
+              "row_mae": 0.20029508897000847,
+              "row_rmse": 0.426473973364706
+            }
+          },
+          "fit_oof_threshold": 0.04290172547119305,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.22097115942573634,
+              "cluster_macro_rmse": 0.38537482595909067,
+              "pearson": 0.15873093638609886,
+              "row_mae": 0.19609197812315346,
+              "row_rmse": 0.3943287998980146
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07050657576479782,
+              "cluster_macro_policy_utility": -0.010999387722710663,
+              "coverage": 0.22853441894892673,
+              "mean_policy_regret": 0.06270899843159417,
+              "mean_policy_utility": -0.011099573680111958,
+              "negative_utility_fallback_rate": 0.7186390193607515,
+              "positive_utility_selection_rate": 0.1669116664439396,
+              "selected_positive_precision": 0.33711201079622133,
+              "selected_rows": 3705,
+              "threshold": 0.04290172547119305
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21093322216829255,
+              "cluster_macro_rmse": 0.36859627188072114,
+              "pearson": 0.06937365164442731,
+              "row_mae": 0.18664427180546456,
+              "row_rmse": 0.38061597020303284
+            }
+          },
+          "oof_folds": 5,
+          "seed": 47,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.22221622976294772,
+                "cluster_macro_rmse": 0.41349906666178315,
+                "pearson": 0.16941673322286324,
+                "row_mae": 0.20920227354259913,
+                "row_rmse": 0.4414678313362513
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07848806563909398,
+                "cluster_macro_policy_utility": -0.021183277903238703,
+                "coverage": 0.5584135919696147,
+                "mean_policy_regret": 0.07453683962793795,
+                "mean_policy_utility": -0.020594207377145676,
+                "negative_utility_fallback_rate": 0.3801663111688151,
+                "positive_utility_selection_rate": 0.48379464453374393,
+                "selected_positive_precision": 0.39115780524094373,
+                "selected_rows": 32933,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.2129243765544292,
+                "cluster_macro_rmse": 0.399184322266851,
+                "pearson": 0.06523205895909875,
+                "row_mae": 0.20029508897000847,
+                "row_rmse": 0.426473973364706
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.22097115942573634,
+                "cluster_macro_rmse": 0.38537482595909067,
+                "pearson": 0.15873093638609886,
+                "row_mae": 0.19609197812315346,
+                "row_rmse": 0.3943287998980146
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07756575017857882,
+                "cluster_macro_policy_utility": -0.018058562136491672,
+                "coverage": 0.45016037503084133,
+                "mean_policy_regret": 0.0691529828244403,
+                "mean_policy_utility": -0.017543558072958085,
+                "negative_utility_fallback_rate": 0.46087753465459963,
+                "positive_utility_selection_rate": 0.34638513964987305,
+                "selected_positive_precision": 0.35516579884899974,
+                "selected_rows": 7298,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21093322216829255,
+                "cluster_macro_rmse": 0.36859627188072114,
+                "pearson": 0.06937365164442731,
+                "row_mae": 0.18664427180546456,
+                "row_rmse": 0.38061597020303284
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 31,
+          "final_fit_loss": 0.4338915503558233,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.2211352084975147,
+              "cluster_macro_rmse": 0.411154087594013,
+              "pearson": 0.182883208808511,
+              "row_mae": 0.2085712881229652,
+              "row_rmse": 0.4389721565508931
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06990019979712038,
+              "cluster_macro_policy_utility": -0.0125954120612651,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.0656154585395504,
+              "mean_policy_utility": -0.01167282628875812,
+              "negative_utility_fallback_rate": 0.7031129246653683,
+              "positive_utility_selection_rate": 0.19299958688549218,
+              "selected_positive_precision": 0.3485722037577155,
+              "selected_rows": 14743,
+              "threshold": 0.04334250696716706
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21212162394905007,
+              "cluster_macro_rmse": 0.39671504596922746,
+              "pearson": 0.07263913367831915,
+              "row_mae": 0.19984074162272147,
+              "row_rmse": 0.4235959529481473
+            }
+          },
+          "fit_oof_threshold": 0.04334250696716706,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.222701894705796,
+              "cluster_macro_rmse": 0.38750936616037923,
+              "pearson": 0.1429674010560223,
+              "row_mae": 0.1972757554516006,
+              "row_rmse": 0.39737568466579687
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07262630090187859,
+              "cluster_macro_policy_utility": -0.013119112859791438,
+              "coverage": 0.22384653343202565,
+              "mean_policy_regret": 0.06417458125046353,
+              "mean_policy_utility": -0.012565156498981322,
+              "negative_utility_fallback_rate": 0.7289494787489976,
+              "positive_utility_selection_rate": 0.16878257383402379,
+              "selected_positive_precision": 0.3480297602645357,
+              "selected_rows": 3629,
+              "threshold": 0.04334250696716706
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.2134210996474102,
+              "cluster_macro_rmse": 0.373248499774671,
+              "pearson": 0.04627520961629362,
+              "row_mae": 0.18918355130066253,
+              "row_rmse": 0.38559608384813104
+            }
+          },
+          "oof_folds": 5,
+          "seed": 71,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.2211352084975147,
+                "cluster_macro_rmse": 0.411154087594013,
+                "pearson": 0.182883208808511,
+                "row_mae": 0.2085712881229652,
+                "row_rmse": 0.4389721565508931
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07695206079704625,
+                "cluster_macro_policy_utility": -0.01964727306119096,
+                "coverage": 0.5000508681497559,
+                "mean_policy_regret": 0.07249030002314444,
+                "mean_policy_utility": -0.01854766777235217,
+                "negative_utility_fallback_rate": 0.43611858171813656,
+                "positive_utility_selection_rate": 0.4225034739174522,
+                "selected_positive_precision": 0.3814723135871961,
+                "selected_rows": 29491,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21212162394905007,
+                "cluster_macro_rmse": 0.39671504596922746,
+                "pearson": 0.07263913367831915,
+                "row_mae": 0.19984074162272147,
+                "row_rmse": 0.4235959529481473
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.222701894705796,
+                "cluster_macro_rmse": 0.38750936616037923,
+                "pearson": 0.1429674010560223,
+                "row_mae": 0.1972757554516006,
+                "row_rmse": 0.39737568466579687
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.0801119924143347,
+                "cluster_macro_policy_utility": -0.02060480437224757,
+                "coverage": 0.44473229706390327,
+                "mean_policy_regret": 0.07107827738770871,
+                "mean_policy_utility": -0.019468852636226507,
+                "negative_utility_fallback_rate": 0.4749684958185359,
+                "positive_utility_selection_rate": 0.35106240812508355,
+                "selected_positive_precision": 0.36435506241331483,
+                "selected_rows": 7210,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.2134210996474102,
+                "cluster_macro_rmse": 0.373248499774671,
+                "pearson": 0.04627520961629362,
+                "row_mae": 0.18918355130066253,
+                "row_rmse": 0.38559608384813104
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 27,
+          "final_fit_loss": 0.442292734440518,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.22316571783050848,
+              "cluster_macro_rmse": 0.41400604099829746,
+              "pearson": 0.1782979011884641,
+              "row_mae": 0.21047717645816122,
+              "row_rmse": 0.44112532817621536
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07089759629384357,
+              "cluster_macro_policy_utility": -0.013592808557988282,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06667223429938175,
+              "mean_policy_utility": -0.012729602048589472,
+              "negative_utility_fallback_rate": 0.7043185260749946,
+              "positive_utility_selection_rate": 0.19446426559507268,
+              "selected_positive_precision": 0.351217526961948,
+              "selected_rows": 14743,
+              "threshold": 0.04579218200767398
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21557377699806238,
+              "cluster_macro_rmse": 0.40066258913047664,
+              "pearson": 0.07235874644571404,
+              "row_mae": 0.20288624266174177,
+              "row_rmse": 0.42694674684077466
+            }
+          },
+          "fit_oof_threshold": 0.04579218200767398,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.22636991931802827,
+              "cluster_macro_rmse": 0.38784663910074046,
+              "pearson": 0.15926341992339382,
+              "row_mae": 0.19874038943157032,
+              "row_rmse": 0.39523320473786994
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.07306983259308816,
+              "cluster_macro_policy_utility": -0.013562644551001007,
+              "coverage": 0.24185788304959288,
+              "mean_policy_regret": 0.06353296658949126,
+              "mean_policy_utility": -0.01192354183800905,
+              "negative_utility_fallback_rate": 0.7098178485508077,
+              "positive_utility_selection_rate": 0.18548710410263264,
+              "selected_positive_precision": 0.3539913287426677,
+              "selected_rows": 3921,
+              "threshold": 0.04579218200767398
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.21660371401615114,
+              "cluster_macro_rmse": 0.3729929346736968,
+              "pearson": 0.061603737549797574,
+              "row_mae": 0.1905541975007869,
+              "row_rmse": 0.38401126486708104
+            }
+          },
+          "oof_folds": 5,
+          "seed": 101,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.22316571783050848,
+                "cluster_macro_rmse": 0.41400604099829746,
+                "pearson": 0.1782979011884641,
+                "row_mae": 0.21047717645816122,
+                "row_rmse": 0.44112532817621536
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07794822972921586,
+                "cluster_macro_policy_utility": -0.020643441993360573,
+                "coverage": 0.4869777536625068,
+                "mean_policy_regret": 0.07335609348820167,
+                "mean_policy_utility": -0.019413461237409377,
+                "negative_utility_fallback_rate": 0.45080218863025134,
+                "positive_utility_selection_rate": 0.4113869380703797,
+                "selected_positive_precision": 0.3814066852367688,
+                "selected_rows": 28720,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21557377699806238,
+                "cluster_macro_rmse": 0.40066258913047664,
+                "pearson": 0.07235874644571404,
+                "row_mae": 0.20288624266174177,
+                "row_rmse": 0.42694674684077466
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.22636991931802827,
+                "cluster_macro_rmse": 0.38784663910074046,
+                "pearson": 0.15926341992339382,
+                "row_mae": 0.19874038943157032,
+                "row_rmse": 0.39523320473786994
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07855560610291111,
+                "cluster_macro_policy_utility": -0.019048418060823955,
+                "coverage": 0.5117813964964224,
+                "mean_policy_regret": 0.06869100818466672,
+                "mean_policy_utility": -0.017081583433184524,
+                "negative_utility_fallback_rate": 0.42502004811547717,
+                "positive_utility_selection_rate": 0.4380596017639984,
+                "selected_positive_precision": 0.3950825599614318,
+                "selected_rows": 8297,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.21660371401615114,
+                "cluster_macro_rmse": 0.3729929346736968,
+                "pearson": 0.061603737549797574,
+                "row_mae": 0.1905541975007869,
+                "row_rmse": 0.38401126486708104
+              }
+            }
+          }
+        }
+      ],
+      "shared_hidden_representation": false
+    },
+    {
+      "across_seed_summary": {
+        "selection_cluster_macro_policy_regret_mean": 0.06761494810399167,
+        "selection_cluster_macro_policy_regret_std": 0.001539289704920082,
+        "selection_cluster_macro_rmse_mean": 0.35791921742042276,
+        "selection_cluster_macro_rmse_std": 0.001716948631937563
+      },
+      "architecture": {
+        "activation": "tanh",
+        "alpha": 0.001,
+        "batch_size": 1024,
+        "early_stop_fraction": 0.1,
+        "early_stopping": true,
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "learning_rate_init": 0.002,
+        "max_iter": 80,
+        "n_iter_no_change": 8,
+        "parameter_count": 2482,
+        "parameter_limit_exclusive": 2000000,
+        "solver": "adam",
+        "tolerance": 0.0001
+      },
+      "decision_rule": "top_25pct_fit_oof_min(predicted_forward,predicted_backward)",
+      "five_seed_ensemble": {
+        "fit_oof": {
+          "backward": {
+            "cluster_macro_mae": 0.21442513434923152,
+            "cluster_macro_rmse": 0.4073223446691442,
+            "pearson": 0.20526539165215302,
+            "row_mae": 0.20169465636637643,
+            "row_rmse": 0.4356378497584463
+          },
+          "forward": {
+            "cluster_macro_mae": 0.21407622594875023,
+            "cluster_macro_rmse": 0.4037056222523913,
+            "pearson": 0.22933785933731554,
+            "row_mae": 0.20126594041402504,
+            "row_rmse": 0.4294666866042268
+          },
+          "policy": {
+            "cluster_macro_policy_regret": 0.06016131407436365,
+            "cluster_macro_policy_utility": -0.0028565263385083597,
+            "coverage": 0.2499830439500814,
+            "mean_policy_regret": 0.05761504198891859,
+            "mean_policy_utility": -0.003672409738126318,
+            "negative_utility_fallback_rate": 0.6937463290982719,
+            "positive_utility_selection_rate": 0.18162015998798212,
+            "selected_positive_precision": 0.3280200773248321,
+            "selected_rows": 14743,
+            "threshold": 0.009850075156798376
+          },
+          "strict_bidirectional": {
+            "cluster_macro_mae": 0.19773078808935643,
+            "cluster_macro_rmse": 0.3777149425359948,
+            "pearson": 0.16706062827057758,
+            "row_mae": 0.18598481535736963,
+            "row_rmse": 0.4058234442754409
+          }
+        },
+        "fit_oof_threshold": 0.009850075156798376,
+        "model_selection": {
+          "backward": {
+            "cluster_macro_mae": 0.21553228523272402,
+            "cluster_macro_rmse": 0.38088381508189195,
+            "pearson": 0.17837140925705156,
+            "row_mae": 0.19003243684068757,
+            "row_rmse": 0.3904623413180912
+          },
+          "forward": {
+            "cluster_macro_mae": 0.21490285202530232,
+            "cluster_macro_rmse": 0.3772864177210025,
+            "pearson": 0.1718338272863735,
+            "row_mae": 0.19084092262414615,
+            "row_rmse": 0.39081249612797314
+          },
+          "policy": {
+            "cluster_macro_policy_regret": 0.06639646676567765,
+            "cluster_macro_policy_utility": -0.006889278723590516,
+            "coverage": 0.2759067357512953,
+            "mean_policy_regret": 0.0598480825212518,
+            "mean_policy_utility": -0.008238657769769604,
+            "negative_utility_fallback_rate": 0.6528812005957154,
+            "positive_utility_selection_rate": 0.19283709742082053,
+            "selected_positive_precision": 0.3226022803487592,
+            "selected_rows": 4473,
+            "threshold": 0.009850075156798376
+          },
+          "strict_bidirectional": {
+            "cluster_macro_mae": 0.1994945767892512,
+            "cluster_macro_rmse": 0.35359500261265164,
+            "pearson": 0.12585784177965548,
+            "row_mae": 0.17659440827848485,
+            "row_rmse": 0.36758737936106706
+          }
+        },
+        "zero_threshold_diagnostic": {
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.21442513434923152,
+              "cluster_macro_rmse": 0.4073223446691442,
+              "pearson": 0.20526539165215302,
+              "row_mae": 0.20169465636637643,
+              "row_rmse": 0.4356378497584463
+            },
+            "forward": {
+              "cluster_macro_mae": 0.21407622594875023,
+              "cluster_macro_rmse": 0.4037056222523913,
+              "pearson": 0.22933785933731554,
+              "row_mae": 0.20126594041402504,
+              "row_rmse": 0.4294666866042268
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06294758685186236,
+              "cluster_macro_policy_utility": -0.005642799116007077,
+              "coverage": 0.3376966901790559,
+              "mean_policy_regret": 0.05983965992043503,
+              "mean_policy_utility": -0.00589702766964275,
+              "negative_utility_fallback_rate": 0.5876534050511608,
+              "positive_utility_selection_rate": 0.2470049198182296,
+              "selected_positive_precision": 0.33023699538059853,
+              "selected_rows": 19916,
+              "threshold": 0.0
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.19773078808935643,
+              "cluster_macro_rmse": 0.3777149425359948,
+              "pearson": 0.16706062827057758,
+              "row_mae": 0.18598481535736963,
+              "row_rmse": 0.4058234442754409
+            }
+          },
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.21553228523272402,
+              "cluster_macro_rmse": 0.38088381508189195,
+              "pearson": 0.17837140925705156,
+              "row_mae": 0.19003243684068757,
+              "row_rmse": 0.3904623413180912
+            },
+            "forward": {
+              "cluster_macro_mae": 0.21490285202530232,
+              "cluster_macro_rmse": 0.3772864177210025,
+              "pearson": 0.1718338272863735,
+              "row_mae": 0.19084092262414615,
+              "row_rmse": 0.39081249612797314
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06889101215043587,
+              "cluster_macro_policy_utility": -0.009383824108348723,
+              "coverage": 0.3700962250185048,
+              "mean_policy_regret": 0.06213282723748764,
+              "mean_policy_utility": -0.010523402486005437,
+              "negative_utility_fallback_rate": 0.5388933440256616,
+              "positive_utility_selection_rate": 0.2639315782440198,
+              "selected_positive_precision": 0.32916666666666666,
+              "selected_rows": 6000,
+              "threshold": 0.0
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.1994945767892512,
+              "cluster_macro_rmse": 0.35359500261265164,
+              "pearson": 0.12585784177965548,
+              "row_mae": 0.17659440827848485,
+              "row_rmse": 0.36758737936106706
+            }
+          }
+        }
+      },
+      "mode": "bidirectional_shared",
+      "name": "bidirectional_shared_mlp",
+      "output_heads": 2,
+      "per_seed": [
+        {
+          "final_fit_iterations": 26,
+          "final_fit_loss": 0.4451496869412717,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.2199163453772007,
+              "cluster_macro_rmse": 0.41070486367033576,
+              "pearson": 0.18799817598378116,
+              "row_mae": 0.20704361858399095,
+              "row_rmse": 0.43817933274295523
+            },
+            "forward": {
+              "cluster_macro_mae": 0.21986360896286775,
+              "cluster_macro_rmse": 0.40768319330748604,
+              "pearson": 0.2043240401592072,
+              "row_mae": 0.2070854621297685,
+              "row_rmse": 0.43284290608613796
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06164937168691466,
+              "cluster_macro_policy_utility": -0.004344583951059371,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.05839536657819509,
+              "mean_policy_utility": -0.004452734327402807,
+              "negative_utility_fallback_rate": 0.7016600204024854,
+              "positive_utility_selection_rate": 0.19123446126112592,
+              "selected_positive_precision": 0.3453842501526148,
+              "selected_rows": 14743,
+              "threshold": 0.012803272957192026
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20232756060656198,
+              "cluster_macro_rmse": 0.379659947886585,
+              "pearson": 0.15389472284803,
+              "row_mae": 0.19041370299841703,
+              "row_rmse": 0.4069931832572462
+            }
+          },
+          "fit_oof_threshold": 0.012803272957192026,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.2221233945430477,
+              "cluster_macro_rmse": 0.38615117513977737,
+              "pearson": 0.15122443272851832,
+              "row_mae": 0.19681787957156802,
+              "row_rmse": 0.394971607395304
+            },
+            "forward": {
+              "cluster_macro_mae": 0.21994217075236172,
+              "cluster_macro_rmse": 0.38195994735152083,
+              "pearson": 0.14771079903563425,
+              "row_mae": 0.19581318155777208,
+              "row_rmse": 0.39486040595812566
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06919603709521047,
+              "cluster_macro_policy_utility": -0.009688849053123337,
+              "coverage": 0.29983962496915867,
+              "mean_policy_regret": 0.061212170289996766,
+              "mean_policy_utility": -0.009602745538514564,
+              "negative_utility_fallback_rate": 0.6310001145606599,
+              "positive_utility_selection_rate": 0.21916343712414807,
+              "selected_positive_precision": 0.3373791400946307,
+              "selected_rows": 4861,
+              "threshold": 0.012803272957192026
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20357435571895183,
+              "cluster_macro_rmse": 0.3557484811456082,
+              "pearson": 0.11889877652882083,
+              "row_mae": 0.18076151840127735,
+              "row_rmse": 0.3692305786878967
+            }
+          },
+          "oof_folds": 5,
+          "seed": 11,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.2199163453772007,
+                "cluster_macro_rmse": 0.41070486367033576,
+                "pearson": 0.18799817598378116,
+                "row_mae": 0.20704361858399095,
+                "row_rmse": 0.43817933274295523
+              },
+              "forward": {
+                "cluster_macro_mae": 0.21986360896286775,
+                "cluster_macro_rmse": 0.40768319330748604,
+                "pearson": 0.2043240401592072,
+                "row_mae": 0.2070854621297685,
+                "row_rmse": 0.43284290608613796
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.06363116315769972,
+                "cluster_macro_policy_utility": -0.006326375421844429,
+                "coverage": 0.34436041779707,
+                "mean_policy_regret": 0.06048731173577846,
+                "mean_policy_utility": -0.006544679484986175,
+                "negative_utility_fallback_rate": 0.5972054777581997,
+                "positive_utility_selection_rate": 0.27336913659067863,
+                "selected_positive_precision": 0.3584125264660988,
+                "selected_rows": 20309,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20232756060656198,
+                "cluster_macro_rmse": 0.379659947886585,
+                "pearson": 0.15389472284803,
+                "row_mae": 0.19041370299841703,
+                "row_rmse": 0.4069931832572462
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.2221233945430477,
+                "cluster_macro_rmse": 0.38615117513977737,
+                "pearson": 0.15122443272851832,
+                "row_mae": 0.19681787957156802,
+                "row_rmse": 0.394971607395304
+              },
+              "forward": {
+                "cluster_macro_mae": 0.21994217075236172,
+                "cluster_macro_rmse": 0.38195994735152083,
+                "pearson": 0.14771079903563425,
+                "row_mae": 0.19581318155777208,
+                "row_rmse": 0.39486040595812566
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07035051936315155,
+                "cluster_macro_policy_utility": -0.010843331321064402,
+                "coverage": 0.39057488280286207,
+                "mean_policy_regret": 0.06249038442101328,
+                "mean_policy_utility": -0.010880959669531067,
+                "negative_utility_fallback_rate": 0.5323633864131058,
+                "positive_utility_selection_rate": 0.30068154483495924,
+                "selected_positive_precision": 0.3553379658875553,
+                "selected_rows": 6332,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20357435571895183,
+                "cluster_macro_rmse": 0.3557484811456082,
+                "pearson": 0.11889877652882083,
+                "row_mae": 0.18076151840127735,
+                "row_rmse": 0.3692305786878967
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 35,
+          "final_fit_loss": 0.43730142339390005,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.21996727634435473,
+              "cluster_macro_rmse": 0.4109981291222609,
+              "pearson": 0.18133406039105363,
+              "row_mae": 0.20731082422329275,
+              "row_rmse": 0.43871785923808354
+            },
+            "forward": {
+              "cluster_macro_mae": 0.21898085689032967,
+              "cluster_macro_rmse": 0.407127315264152,
+              "pearson": 0.20192433423856973,
+              "row_mae": 0.20655859782121166,
+              "row_rmse": 0.43309333611169404
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.061846306874806384,
+              "cluster_macro_policy_utility": -0.004541519138951102,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.05873938980858471,
+              "mean_policy_utility": -0.004796757557792435,
+              "negative_utility_fallback_rate": 0.7009181118427154,
+              "positive_utility_selection_rate": 0.1903331205167687,
+              "selected_positive_precision": 0.34375635895001017,
+              "selected_rows": 14743,
+              "threshold": 0.012157814568412159
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20291112985482054,
+              "cluster_macro_rmse": 0.37958705265261417,
+              "pearson": 0.14971056027560697,
+              "row_mae": 0.19147862035762617,
+              "row_rmse": 0.40730304168001563
+            }
+          },
+          "fit_oof_threshold": 0.012157814568412159,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.22091531238512657,
+              "cluster_macro_rmse": 0.38620144026619296,
+              "pearson": 0.1573658829356833,
+              "row_mae": 0.19453851197866537,
+              "row_rmse": 0.39489815435074677
+            },
+            "forward": {
+              "cluster_macro_mae": 0.22090483592942686,
+              "cluster_macro_rmse": 0.3826377663240751,
+              "pearson": 0.15752102547361865,
+              "row_mae": 0.19642744913114962,
+              "row_rmse": 0.3955445842948574
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06713946097454326,
+              "cluster_macro_policy_utility": -0.007632272932456128,
+              "coverage": 0.2934863064396743,
+              "mean_policy_regret": 0.06024991750678871,
+              "mean_policy_utility": -0.008640492755306503,
+              "negative_utility_fallback_rate": 0.6437163478061634,
+              "positive_utility_selection_rate": 0.22023252706133903,
+              "selected_positive_precision": 0.346364018495166,
+              "selected_rows": 4758,
+              "threshold": 0.012157814568412159
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20590171074691505,
+              "cluster_macro_rmse": 0.3594113656900575,
+              "pearson": 0.11138062283843471,
+              "row_mae": 0.18223394274520963,
+              "row_rmse": 0.3713438679906783
+            }
+          },
+          "oof_folds": 5,
+          "seed": 29,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.21996727634435473,
+                "cluster_macro_rmse": 0.4109981291222609,
+                "pearson": 0.18133406039105363,
+                "row_mae": 0.20731082422329275,
+                "row_rmse": 0.43871785923808354
+              },
+              "forward": {
+                "cluster_macro_mae": 0.21898085689032967,
+                "cluster_macro_rmse": 0.407127315264152,
+                "pearson": 0.20192433423856973,
+                "row_mae": 0.20655859782121166,
+                "row_rmse": 0.43309333611169404
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.06457215036770544,
+                "cluster_macro_policy_utility": -0.007267362631850155,
+                "coverage": 0.32660743353228433,
+                "mean_policy_regret": 0.06139339722966848,
+                "mean_policy_utility": -0.007450764978876199,
+                "negative_utility_fallback_rate": 0.6160004946057065,
+                "positive_utility_selection_rate": 0.25688211214181095,
+                "selected_positive_precision": 0.35510331222095315,
+                "selected_rows": 19262,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20291112985482054,
+                "cluster_macro_rmse": 0.37958705265261417,
+                "pearson": 0.14971056027560697,
+                "row_mae": 0.19147862035762617,
+                "row_rmse": 0.40730304168001563
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.22091531238512657,
+                "cluster_macro_rmse": 0.38620144026619296,
+                "pearson": 0.1573658829356833,
+                "row_mae": 0.19453851197866537,
+                "row_rmse": 0.39489815435074677
+              },
+              "forward": {
+                "cluster_macro_mae": 0.22090483592942686,
+                "cluster_macro_rmse": 0.3826377663240751,
+                "pearson": 0.15752102547361865,
+                "row_mae": 0.19642744913114962,
+                "row_rmse": 0.3955445842948574
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.06833792926836332,
+                "cluster_macro_policy_utility": -0.008830741226276178,
+                "coverage": 0.3732420429311621,
+                "mean_policy_regret": 0.06140044600691372,
+                "mean_policy_utility": -0.009791021255431513,
+                "negative_utility_fallback_rate": 0.5541299117882919,
+                "positive_utility_selection_rate": 0.288520646799412,
+                "selected_positive_precision": 0.35680052883820856,
+                "selected_rows": 6051,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20590171074691505,
+                "cluster_macro_rmse": 0.3594113656900575,
+                "pearson": 0.11138062283843471,
+                "row_mae": 0.18223394274520963,
+                "row_rmse": 0.3713438679906783
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 31,
+          "final_fit_loss": 0.44167983284531787,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.22230450294635717,
+              "cluster_macro_rmse": 0.41343645794839967,
+              "pearson": 0.17548339038624577,
+              "row_mae": 0.20945854786689708,
+              "row_rmse": 0.44108506466905545
+            },
+            "forward": {
+              "cluster_macro_mae": 0.22155946611982472,
+              "cluster_macro_rmse": 0.4094034778001619,
+              "pearson": 0.20441208475945474,
+              "row_mae": 0.20843237838239026,
+              "row_rmse": 0.43410403969665307
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06358667592231201,
+              "cluster_macro_policy_utility": -0.006281888186456716,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.05980728422593879,
+              "mean_policy_utility": -0.005864651975146506,
+              "negative_utility_fallback_rate": 0.706327861757705,
+              "positive_utility_selection_rate": 0.19690539677770683,
+              "selected_positive_precision": 0.3556263989690022,
+              "selected_rows": 14743,
+              "threshold": 0.014265098529624758
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20542625648385945,
+              "cluster_macro_rmse": 0.38327970472042455,
+              "pearson": 0.14320468162732264,
+              "row_mae": 0.19355321785324955,
+              "row_rmse": 0.40995858642323857
+            }
+          },
+          "fit_oof_threshold": 0.014265098529624758,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.22125209003299237,
+              "cluster_macro_rmse": 0.3855952059830542,
+              "pearson": 0.16285602591208168,
+              "row_mae": 0.1956551910169432,
+              "row_rmse": 0.39399678616192085
+            },
+            "forward": {
+              "cluster_macro_mae": 0.21991016174422015,
+              "cluster_macro_rmse": 0.38129017166671364,
+              "pearson": 0.17150821004358568,
+              "row_mae": 0.1952432544509147,
+              "row_rmse": 0.3934095004520045
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06636341991897995,
+              "cluster_macro_policy_utility": -0.006856231876892822,
+              "coverage": 0.26757957068837895,
+              "mean_policy_regret": 0.059154974476986734,
+              "mean_policy_utility": -0.00754554972550453,
+              "negative_utility_fallback_rate": 0.6636499026234391,
+              "positive_utility_selection_rate": 0.18735801149271683,
+              "selected_positive_precision": 0.3231904103273398,
+              "selected_rows": 4338,
+              "threshold": 0.014265098529624758
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20407091280679557,
+              "cluster_macro_rmse": 0.3574346197769236,
+              "pearson": 0.12605333218214979,
+              "row_mae": 0.18104372605015823,
+              "row_rmse": 0.36990479032004475
+            }
+          },
+          "oof_folds": 5,
+          "seed": 47,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.22230450294635717,
+                "cluster_macro_rmse": 0.41343645794839967,
+                "pearson": 0.17548339038624577,
+                "row_mae": 0.20945854786689708,
+                "row_rmse": 0.44108506466905545
+              },
+              "forward": {
+                "cluster_macro_mae": 0.22155946611982472,
+                "cluster_macro_rmse": 0.4094034778001619,
+                "pearson": 0.20441208475945474,
+                "row_mae": 0.20843237838239026,
+                "row_rmse": 0.43410403969665307
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.06518924383215145,
+                "cluster_macro_policy_utility": -0.007884456096296164,
+                "coverage": 0.34132528486163866,
+                "mean_policy_regret": 0.06147538841764036,
+                "mean_policy_utility": -0.007532756166848082,
+                "negative_utility_fallback_rate": 0.6038826547961297,
+                "positive_utility_selection_rate": 0.2747587035715627,
+                "selected_positive_precision": 0.3634376552409339,
+                "selected_rows": 20130,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20542625648385945,
+                "cluster_macro_rmse": 0.38327970472042455,
+                "pearson": 0.14320468162732264,
+                "row_mae": 0.19355321785324955,
+                "row_rmse": 0.40995858642323857
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.22125209003299237,
+                "cluster_macro_rmse": 0.3855952059830542,
+                "pearson": 0.16285602591208168,
+                "row_mae": 0.1956551910169432,
+                "row_rmse": 0.39399678616192085
+              },
+              "forward": {
+                "cluster_macro_mae": 0.21991016174422015,
+                "cluster_macro_rmse": 0.38129017166671364,
+                "pearson": 0.17150821004358568,
+                "row_mae": 0.1952432544509147,
+                "row_rmse": 0.3934095004520045
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.06793645050713537,
+                "cluster_macro_policy_utility": -0.008429262465048224,
+                "coverage": 0.3898346903528251,
+                "mean_policy_regret": 0.060890245087480685,
+                "mean_policy_utility": -0.009280820335998474,
+                "negative_utility_fallback_rate": 0.5252606255012029,
+                "positive_utility_selection_rate": 0.2907924629159428,
+                "selected_positive_precision": 0.34430379746835443,
+                "selected_rows": 6320,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20407091280679557,
+                "cluster_macro_rmse": 0.3574346197769236,
+                "pearson": 0.12605333218214979,
+                "row_mae": 0.18104372605015823,
+                "row_rmse": 0.36990479032004475
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 23,
+          "final_fit_loss": 0.44807691271456623,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.2199822309220469,
+              "cluster_macro_rmse": 0.4120194171609337,
+              "pearson": 0.17557133700130545,
+              "row_mae": 0.20695458115954304,
+              "row_rmse": 0.440175455393896
+            },
+            "forward": {
+              "cluster_macro_mae": 0.2210758162869032,
+              "cluster_macro_rmse": 0.4090810924196884,
+              "pearson": 0.19615835587985095,
+              "row_mae": 0.20831395965213784,
+              "row_rmse": 0.43447569514829487
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06375993153765537,
+              "cluster_macro_policy_utility": -0.00645514380180008,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.06092283632535909,
+              "mean_policy_utility": -0.006980204074566809,
+              "negative_utility_fallback_rate": 0.7030201860953971,
+              "positive_utility_selection_rate": 0.19288691929244753,
+              "selected_positive_precision": 0.34836871735738995,
+              "selected_rows": 14743,
+              "threshold": 0.010738885799644701
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.2047844225478334,
+              "cluster_macro_rmse": 0.3827851903050053,
+              "pearson": 0.1280884294473076,
+              "row_mae": 0.19274419180296215,
+              "row_rmse": 0.4104234723148284
+            }
+          },
+          "fit_oof_threshold": 0.010738885799644701,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.22101029822990761,
+              "cluster_macro_rmse": 0.3851230798678259,
+              "pearson": 0.14558923793808407,
+              "row_mae": 0.19556180143819538,
+              "row_rmse": 0.394846943634471
+            },
+            "forward": {
+              "cluster_macro_mae": 0.223231132484048,
+              "cluster_macro_rmse": 0.38273862348935533,
+              "pearson": 0.14239792311473945,
+              "row_mae": 0.19904559619220233,
+              "row_rmse": 0.39546266738472996
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.06607937921270177,
+              "cluster_macro_policy_utility": -0.006572191170614629,
+              "coverage": 0.21194177152726376,
+              "mean_policy_regret": 0.05897997783092611,
+              "mean_policy_utility": -0.0073705530794439,
+              "negative_utility_fallback_rate": 0.7369687249398557,
+              "positive_utility_selection_rate": 0.1523453160497127,
+              "selected_positive_precision": 0.3317811408614668,
+              "selected_rows": 3436,
+              "threshold": 0.010738885799644701
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.20731116597306917,
+              "cluster_macro_rmse": 0.35709693833416145,
+              "pearson": 0.08894085267855285,
+              "row_mae": 0.18455112316642552,
+              "row_rmse": 0.37063628865197834
+            }
+          },
+          "oof_folds": 5,
+          "seed": 71,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.2199822309220469,
+                "cluster_macro_rmse": 0.4120194171609337,
+                "pearson": 0.17557133700130545,
+                "row_mae": 0.20695458115954304,
+                "row_rmse": 0.440175455393896
+              },
+              "forward": {
+                "cluster_macro_mae": 0.2210758162869032,
+                "cluster_macro_rmse": 0.4090810924196884,
+                "pearson": 0.19615835587985095,
+                "row_mae": 0.20831395965213784,
+                "row_rmse": 0.43447569514829487
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.06512845748422302,
+                "cluster_macro_policy_utility": -0.007823669748367736,
+                "coverage": 0.3148568909386869,
+                "mean_policy_regret": 0.06225568757479279,
+                "mean_policy_utility": -0.008313055324000502,
+                "negative_utility_fallback_rate": 0.6276237287087699,
+                "positive_utility_selection_rate": 0.24497690314342585,
+                "selected_positive_precision": 0.3512843987290646,
+                "selected_rows": 18569,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.2047844225478334,
+                "cluster_macro_rmse": 0.3827851903050053,
+                "pearson": 0.1280884294473076,
+                "row_mae": 0.19274419180296215,
+                "row_rmse": 0.4104234723148284
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.22101029822990761,
+                "cluster_macro_rmse": 0.3851230798678259,
+                "pearson": 0.14558923793808407,
+                "row_mae": 0.19556180143819538,
+                "row_rmse": 0.394846943634471
+              },
+              "forward": {
+                "cluster_macro_mae": 0.223231132484048,
+                "cluster_macro_rmse": 0.38273862348935533,
+                "pearson": 0.14239792311473945,
+                "row_mae": 0.19904559619220233,
+                "row_rmse": 0.39546266738472996
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.0687877385342485,
+                "cluster_macro_policy_utility": -0.00928055049216136,
+                "coverage": 0.26245990624228965,
+                "mean_policy_regret": 0.061245772827496124,
+                "mean_policy_utility": -0.009636348076013919,
+                "negative_utility_fallback_rate": 0.6745331653110322,
+                "positive_utility_selection_rate": 0.18896164639850327,
+                "selected_positive_precision": 0.33231492361927145,
+                "selected_rows": 4255,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.20731116597306917,
+                "cluster_macro_rmse": 0.35709693833416145,
+                "pearson": 0.08894085267855285,
+                "row_mae": 0.18455112316642552,
+                "row_rmse": 0.37063628865197834
+              }
+            }
+          }
+        },
+        {
+          "final_fit_iterations": 35,
+          "final_fit_loss": 0.4427541182937842,
+          "final_fit_stopped_before_limit": true,
+          "fit_oof": {
+            "backward": {
+              "cluster_macro_mae": 0.22110882128669998,
+              "cluster_macro_rmse": 0.41324221459538435,
+              "pearson": 0.17995655399032587,
+              "row_mae": 0.20803241820610108,
+              "row_rmse": 0.4401643680591204
+            },
+            "forward": {
+              "cluster_macro_mae": 0.22043940801397272,
+              "cluster_macro_rmse": 0.40985723994425366,
+              "pearson": 0.20271692297188132,
+              "row_mae": 0.20705113479747164,
+              "row_rmse": 0.43429337482432917
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.063064765023763,
+              "cluster_macro_policy_utility": -0.005759977287907703,
+              "coverage": 0.2499830439500814,
+              "mean_policy_regret": 0.059840785759856845,
+              "mean_policy_utility": -0.005898153509064563,
+              "negative_utility_fallback_rate": 0.7023091903922841,
+              "positive_utility_selection_rate": 0.1920231344124385,
+              "selected_positive_precision": 0.3468086549548938,
+              "selected_rows": 14743,
+              "threshold": 0.013514872382377007
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.2040810164567109,
+              "cluster_macro_rmse": 0.3826223659410496,
+              "pearson": 0.1481454068209829,
+              "row_mae": 0.19192194739992358,
+              "row_rmse": 0.40895410718733344
+            }
+          },
+          "fit_oof_threshold": 0.013514872382377007,
+          "model_selection": {
+            "backward": {
+              "cluster_macro_mae": 0.2225149569875909,
+              "cluster_macro_rmse": 0.38505502154538984,
+              "pearson": 0.1694142766809137,
+              "row_mae": 0.19759189452355164,
+              "row_rmse": 0.3938672063970121
+            },
+            "forward": {
+              "cluster_macro_mae": 0.22787001745292879,
+              "cluster_macro_rmse": 0.3871387217847506,
+              "pearson": 0.13812043829708792,
+              "row_mae": 0.20421912724316726,
+              "row_rmse": 0.39902515682222667
+            },
+            "policy": {
+              "cluster_macro_policy_regret": 0.0692964433185229,
+              "cluster_macro_policy_utility": -0.009789255276435755,
+              "coverage": 0.32876881322477175,
+              "mean_policy_regret": 0.06254894378096783,
+              "mean_policy_utility": -0.010939519029485614,
+              "negative_utility_fallback_rate": 0.6123267270019476,
+              "positive_utility_selection_rate": 0.2600561272217025,
+              "selected_positive_precision": 0.3651031894934334,
+              "selected_rows": 5330,
+              "threshold": 0.013514872382377007
+            },
+            "strict_bidirectional": {
+              "cluster_macro_mae": 0.2095116517487568,
+              "cluster_macro_rmse": 0.3599046821553631,
+              "pearson": 0.1002565925848439,
+              "row_mae": 0.187653865298082,
+              "row_rmse": 0.3731464803026239
+            }
+          },
+          "oof_folds": 5,
+          "seed": 101,
+          "zero_threshold_diagnostic": {
+            "fit_oof": {
+              "backward": {
+                "cluster_macro_mae": 0.22110882128669998,
+                "cluster_macro_rmse": 0.41324221459538435,
+                "pearson": 0.17995655399032587,
+                "row_mae": 0.20803241820610108,
+                "row_rmse": 0.4401643680591204
+              },
+              "forward": {
+                "cluster_macro_mae": 0.22043940801397272,
+                "cluster_macro_rmse": 0.40985723994425366,
+                "pearson": 0.20271692297188132,
+                "row_mae": 0.20705113479747164,
+                "row_rmse": 0.43429337482432917
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.06508986072556844,
+                "cluster_macro_policy_utility": -0.00778507298971316,
+                "coverage": 0.34722599023331524,
+                "mean_policy_regret": 0.061893325597678885,
+                "mean_policy_utility": -0.007950693346886605,
+                "negative_utility_fallback_rate": 0.5912392964233825,
+                "positive_utility_selection_rate": 0.2724677958463214,
+                "selected_positive_precision": 0.35428264478953025,
+                "selected_rows": 20478,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.2040810164567109,
+                "cluster_macro_rmse": 0.3826223659410496,
+                "pearson": 0.1481454068209829,
+                "row_mae": 0.19192194739992358,
+                "row_rmse": 0.40895410718733344
+              }
+            },
+            "model_selection": {
+              "backward": {
+                "cluster_macro_mae": 0.2225149569875909,
+                "cluster_macro_rmse": 0.38505502154538984,
+                "pearson": 0.1694142766809137,
+                "row_mae": 0.19759189452355164,
+                "row_rmse": 0.3938672063970121
+              },
+              "forward": {
+                "cluster_macro_mae": 0.22787001745292879,
+                "cluster_macro_rmse": 0.3871387217847506,
+                "pearson": 0.13812043829708792,
+                "row_mae": 0.20421912724316726,
+                "row_rmse": 0.39902515682222667
+              },
+              "policy": {
+                "cluster_macro_policy_regret": 0.07179876402260824,
+                "cluster_macro_policy_utility": -0.0122915759805211,
+                "coverage": 0.39698988403651614,
+                "mean_policy_regret": 0.06449338316944861,
+                "mean_policy_utility": -0.012883958417966399,
+                "negative_utility_fallback_rate": 0.5382059800664452,
+                "positive_utility_selection_rate": 0.3213951623680342,
+                "selected_positive_precision": 0.37367930391547544,
+                "selected_rows": 6436,
+                "threshold": 0.0
+              },
+              "strict_bidirectional": {
+                "cluster_macro_mae": 0.2095116517487568,
+                "cluster_macro_rmse": 0.3599046821553631,
+                "pearson": 0.1002565925848439,
+                "row_mae": 0.187653865298082,
+                "row_rmse": 0.3731464803026239
+              }
+            }
+          }
+        }
+      ],
+      "shared_hidden_representation": true
+    }
+  ],
+  "polarity": "benefit_positive",
+  "ranking": [
+    {
+      "cluster_macro_policy_regret": 0.06639646676567765,
+      "cluster_macro_strict_utility_rmse": 0.35359500261265164,
+      "name": "bidirectional_shared_mlp",
+      "rank": 1
+    },
+    {
+      "cluster_macro_policy_regret": 0.07042029163799414,
+      "cluster_macro_strict_utility_rmse": 0.3651638788839268,
+      "name": "backward_only_mlp",
+      "rank": 2
+    },
+    {
+      "cluster_macro_policy_regret": 0.07205506947229451,
+      "cluster_macro_strict_utility_rmse": 0.36953441763385564,
+      "name": "forward_only_mlp",
+      "rank": 3
+    }
+  ],
+  "schema_version": "bidirectional_utility_model_report_v1",
+  "seed_contract": {
+    "count": 5,
+    "distinct": true,
+    "seeds": [
+      11,
+      29,
+      47,
+      71,
+      101
+    ]
+  },
+  "selected_model": "bidirectional_shared_mlp",
+  "selection_contract": {
+    "direction": "lower_is_better",
+    "fallback_utility": 0.0,
+    "primary_history_coverage": 0.25,
+    "primary_metric": "model_selection.cluster_macro_policy_regret",
+    "threshold_source": "fit_group_oof_only",
+    "threshold_transfer": "frozen_before_model_selection_scoring",
+    "tie_breaker": "model_selection.cluster_macro_strict_utility_rmse",
+    "zero_threshold_role": "diagnostic_only_not_used_for_ranking"
+  },
+  "status": "train_only_model_selection_complete; sealed_evaluation_not_run"
+}

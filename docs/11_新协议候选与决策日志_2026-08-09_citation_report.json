@@ -1,0 +1,173 @@
+{
+  "verification_provenance": {
+    "accessed_at": "2026-08-09T00:00:00+08:00",
+    "doi_metadata_endpoint": "https://api.crossref.org/works/{doi}",
+    "doi_verifier": "literature-review/scripts/verify_citations.py",
+    "document": "11_新协议候选与决策日志_2026-08-09.md",
+    "title_match_review": "Crossref titles were printed and manually compared with the document; 13/13 matched the cited work.",
+    "scope": "Citation identity and URL reachability only; not an independent replication of paper methods or results."
+  },
+  "link_checks": [
+    {
+      "url": "https://arxiv.org/abs/2309.11911",
+      "http_status": 200
+    },
+    {
+      "url": "https://arxiv.org/abs/2406.11161",
+      "http_status": 200
+    },
+    {
+      "url": "https://arxiv.org/abs/2501.11468",
+      "http_status": 200
+    },
+    {
+      "url": "https://arxiv.org/abs/2601.00181",
+      "http_status": 200
+    },
+    {
+      "url": "https://github.com/LIN-SHANG/InstructERC",
+      "http_status": 200
+    },
+    {
+      "url": "https://github.com/philhelenina/causal-erc-context-saturation",
+      "http_status": null,
+      "check_note": "Three connection attempts timed out from the current network; the linked arXiv paper remained reachable."
+    }
+  ],
+  "total_dois": 13,
+  "verified": [
+    "10.1109/TCSVT.2025.3572226",
+    "10.18653/v1/2024.findings-emnlp.950",
+    "10.1609/aaai.v34i05.6309",
+    "10.21437/Interspeech.2010-646",
+    "10.18653/v1/2021.findings-emnlp.104",
+    "10.1109/TAFFC.2022.3223517",
+    "10.18653/v1/2023.findings-emnlp.813",
+    "10.1109/ICASSP49660.2025.10889998",
+    "10.1016/j.neunet.2025.107901",
+    "10.18653/v1/2025.findings-naacl.117",
+    "10.1609/aaai.v39i24.34755",
+    "10.52202/079017-3518",
+    "10.1609/aaai.v40i37.40402"
+  ],
+  "failed": [],
+  "metadata": {
+    "10.1109/TCSVT.2025.3572226": {
+      "title": "BrainyHGNN: Brain-Inspired Memory Retrieval and Cross-Modal Interaction for Emotion Recognition in Conversations",
+      "authors": "Wang, Q., Li, Z., Li, X., et al.",
+      "year": "2025",
+      "journal": "IEEE Transactions on Circuits and Systems for Video Technology",
+      "volume": "35",
+      "pages": "10264-10277",
+      "doi": "10.1109/TCSVT.2025.3572226"
+    },
+    "10.18653/v1/2024.findings-emnlp.950": {
+      "title": "PFA-ERC: Psuedo-Future Augmented Dynamic Emotion Recognition in Conversations",
+      "authors": "Khule, T., Agrawal, R., Narayan, A.",
+      "year": "2024",
+      "journal": "Findings of the Association for Computational Linguistics: EMNLP 2024",
+      "volume": "",
+      "pages": "16196-16207",
+      "doi": "10.18653/v1/2024.findings-emnlp.950"
+    },
+    "10.1609/aaai.v34i05.6309": {
+      "title": "Real-Time Emotion Recognition via Attention Gated Hierarchical Memory Network",
+      "authors": "Jiao, W., Lyu, M., King, I.",
+      "year": "2020",
+      "journal": "Proceedings of the AAAI Conference on Artificial Intelligence",
+      "volume": "34",
+      "pages": "8002-8009",
+      "doi": "10.1609/aaai.v34i05.6309"
+    },
+    "10.21437/Interspeech.2010-646": {
+      "title": "Context-sensitive multimodal emotion recognition from speech and facial expression using bidirectional LSTM modeling",
+      "authors": "W\u00f6llmer, M., Metallinou, A., Eyben, F., et al.",
+      "year": "2010",
+      "journal": "Interspeech 2010",
+      "volume": "",
+      "pages": "2362-2365",
+      "doi": "10.21437/Interspeech.2010-646"
+    },
+    "10.18653/v1/2021.findings-emnlp.104": {
+      "title": "Past, Present, and Future: Conversational Emotion Recognition through Structural Modeling of Psychological Knowledge",
+      "authors": "Li, J., Lin, Z., Fu, P., et al.",
+      "year": "2021",
+      "journal": "Findings of the Association for Computational Linguistics: EMNLP 2021",
+      "volume": "",
+      "pages": "1204-1214",
+      "doi": "10.18653/v1/2021.findings-emnlp.104"
+    },
+    "10.1109/TAFFC.2022.3223517": {
+      "title": "Sentiment- Emotion- and Context-Guided Knowledge Selection Framework for Emotion Recognition in Conversations",
+      "authors": "Tu, G., Liang, B., Jiang, D., et al.",
+      "year": "2023",
+      "journal": "IEEE Transactions on Affective Computing",
+      "volume": "14",
+      "pages": "1803-1816",
+      "doi": "10.1109/TAFFC.2022.3223517"
+    },
+    "10.18653/v1/2023.findings-emnlp.813": {
+      "title": "An Empirical Study on Multiple Knowledge from ChatGPT for Emotion Recognition in Conversations",
+      "authors": "Tu, G., Liang, B., Qin, B., et al.",
+      "year": "2023",
+      "journal": "Findings of the Association for Computational Linguistics: EMNLP 2023",
+      "volume": "",
+      "pages": "12160-12173",
+      "doi": "10.18653/v1/2023.findings-emnlp.813"
+    },
+    "10.1109/ICASSP49660.2025.10889998": {
+      "title": "LLM supervised Pre-training for Multimodal Emotion Recognition in Conversations",
+      "authors": "Dutta, S., Ganapathy, S.",
+      "year": "2025",
+      "journal": "ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+      "volume": "",
+      "pages": "1-5",
+      "doi": "10.1109/ICASSP49660.2025.10889998"
+    },
+    "10.1016/j.neunet.2025.107901": {
+      "title": "DialogueLLM: Context and emotion knowledge-tuned large language models for emotion recognition in conversations",
+      "authors": "Zhang, Y., Wang, M., Wu, Y., et al.",
+      "year": "2025",
+      "journal": "Neural Networks",
+      "volume": "192",
+      "pages": "107901",
+      "doi": "10.1016/j.neunet.2025.107901"
+    },
+    "10.18653/v1/2025.findings-naacl.117": {
+      "title": "Beyond Silent Letters: Amplifying LLMs in Emotion Recognition with Vocal Nuances",
+      "authors": "Wu, Z., Gong, Z., Ai, L., et al.",
+      "year": "2025",
+      "journal": "Findings of the Association for Computational Linguistics: NAACL 2025",
+      "volume": "",
+      "pages": "2202-2218",
+      "doi": "10.18653/v1/2025.findings-naacl.117"
+    },
+    "10.1609/aaai.v39i24.34755": {
+      "title": "MSE-Adapter: A Lightweight Plugin Endowing LLMs with the Capability to Perform Multimodal Sentiment Analysis and Emotion Recognition",
+      "authors": "Yang, Y., Dong, X., Qiang, Y.",
+      "year": "2025",
+      "journal": "Proceedings of the AAAI Conference on Artificial Intelligence",
+      "volume": "39",
+      "pages": "25642-25650",
+      "doi": "10.1609/aaai.v39i24.34755"
+    },
+    "10.52202/079017-3518": {
+      "title": "Emotion-LLaMA: Multimodal Emotion Recognition and Reasoning with Instruction Tuning",
+      "authors": "Cheng, Z., Cheng, Z., He, J., et al.",
+      "year": "2024",
+      "journal": "Advances in Neural Information Processing Systems 37",
+      "volume": "",
+      "pages": "110805-110853",
+      "doi": "10.52202/079017-3518"
+    },
+    "10.1609/aaai.v40i37.40402": {
+      "title": "Causal-ERC: A Multimodal Framework with Causal Prompting for Emotion Recognition in Conversations with Large Language Models",
+      "authors": "Jing, R., Tu, G., Zhang, Y., et al.",
+      "year": "2026",
+      "journal": "Proceedings of the AAAI Conference on Artificial Intelligence",
+      "volume": "40",
+      "pages": "31383-31391",
+      "doi": "10.1609/aaai.v40i37.40402"
+    }
+  }
+}

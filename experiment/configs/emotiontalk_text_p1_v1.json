@@ -1,0 +1,32 @@
+{
+  "protocol": "emotiontalk_text_p1_v1",
+  "scope": "EmotionTalk text-only P1; train/validation labels only; test sealed",
+  "seeds": [17, 29, 43, 71, 101],
+  "vectorizer": {
+    "analyzer": "char",
+    "ngram_range": [2, 5],
+    "min_df": 2,
+    "max_df": 0.995,
+    "max_features": 25000,
+    "sublinear_tf": true
+  },
+  "classifier": {
+    "loss": "log_loss",
+    "penalty": "l2",
+    "alpha": 0.00001,
+    "class_weight": "balanced",
+    "average": true,
+    "max_iter": 1500,
+    "tol": 0.0001
+  },
+  "history_dropout_augmentation": true,
+  "ece_bins": 15,
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260805,
+  "restricted_null_draws": 200,
+  "g1_gate": {
+    "min_fixed_cardinality_queries": 500,
+    "min_observed_minus_null_rate": 0.02,
+    "max_empirical_upper_tail_p": 0.05
+  }
+}

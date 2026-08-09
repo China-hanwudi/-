@@ -1,0 +1,1946 @@
+{
+  "base_modality_ablation": {
+    "text": {
+      "current_only": {
+        "accuracy": 0.4339622641509434,
+        "brier": 0.7087947579776128,
+        "ece": 0.08639961696569906,
+        "log_loss": 1.5158665143120658,
+        "macro_f1": 0.37730807825289664,
+        "weighted_f1": 0.4363203619487126
+      },
+      "eligible_regret": {
+        "harm_rate": 0.28926553672316385,
+        "harm_rate_ci_high": 0.3345244897232919,
+        "harm_rate_ci_low": 0.2430088900428275,
+        "mean_excess_loss": -0.12211911912185826,
+        "mean_excess_loss_ci_high": -0.06554674923153563,
+        "mean_excess_loss_ci_low": -0.1793034245705042,
+        "mean_harm_nats": 0.5003031315757525,
+        "mean_harm_nats_ci_high": 0.5726933185720613,
+        "mean_harm_nats_ci_low": 0.4290939480751431,
+        "p90_excess_loss": 0.5365968290861923,
+        "p99_excess_loss": 1.74845741894284
+      },
+      "full_history": {
+        "accuracy": 0.48480083857442346,
+        "brier": 0.6643740041090607,
+        "ece": 0.12595834136875947,
+        "log_loss": 1.4025799100952474,
+        "macro_f1": 0.4114547135168746,
+        "weighted_f1": 0.47664684581338107
+      }
+    },
+    "text_audio": {
+      "current_only": {
+        "accuracy": 0.5277777777777778,
+        "brier": 0.6256108798221383,
+        "ece": 0.10839303381566844,
+        "log_loss": 1.374768129845512,
+        "macro_f1": 0.4422027980370343,
+        "weighted_f1": 0.5284948117822245
+      },
+      "eligible_regret": {
+        "harm_rate": 0.29265536723163843,
+        "harm_rate_ci_high": 0.33691474146434697,
+        "harm_rate_ci_low": 0.25346511957587525,
+        "mean_excess_loss": -0.029002217645271323,
+        "mean_excess_loss_ci_high": 0.03693679494394921,
+        "mean_excess_loss_ci_low": -0.09413113031670407,
+        "mean_harm_nats": 0.828783449698249,
+        "mean_harm_nats_ci_high": 0.9664064963554287,
+        "mean_harm_nats_ci_low": 0.6918596659058922,
+        "p90_excess_loss": 0.8741527318240877,
+        "p99_excess_loss": 3.0648992734149916
+      },
+      "full_history": {
+        "accuracy": 0.570230607966457,
+        "brier": 0.5926186454086632,
+        "ece": 0.15646525151381294,
+        "log_loss": 1.3478635568726975,
+        "macro_f1": 0.4650167739098114,
+        "weighted_f1": 0.5606622366833569
+      }
+    },
+    "text_audio_video": {
+      "current_only": {
+        "accuracy": 0.5613207547169812,
+        "brier": 0.6279926157909784,
+        "ece": 0.14879883650820575,
+        "log_loss": 1.4992677597485884,
+        "macro_f1": 0.4576913381207114,
+        "weighted_f1": 0.5597400469867184
+      },
+      "eligible_regret": {
+        "harm_rate": 0.3389830508474576,
+        "harm_rate_ci_high": 0.3817878463850447,
+        "harm_rate_ci_low": 0.2998877882574692,
+        "mean_excess_loss": 0.05637669767718937,
+        "mean_excess_loss_ci_high": 0.13599523876726227,
+        "mean_excess_loss_ci_low": -0.02159087916230964,
+        "mean_harm_nats": 0.8680218570090074,
+        "mean_harm_nats_ci_high": 0.9970543872798212,
+        "mean_harm_nats_ci_low": 0.744275750813672,
+        "p90_excess_loss": 1.0977420672773262,
+        "p99_excess_loss": 3.520446840453887
+      },
+      "full_history": {
+        "accuracy": 0.6011530398322851,
+        "brier": 0.6053508439688368,
+        "ece": 0.17813121672938126,
+        "log_loss": 1.551566897530887,
+        "macro_f1": 0.49158233661107653,
+        "weighted_f1": 0.5912430882828766
+      }
+    },
+    "text_video": {
+      "current_only": {
+        "accuracy": 0.48218029350104824,
+        "brier": 0.6994194702732798,
+        "ece": 0.1573115300132696,
+        "log_loss": 1.6136203469760477,
+        "macro_f1": 0.3812293999981872,
+        "weighted_f1": 0.47737902775529395
+      },
+      "eligible_regret": {
+        "harm_rate": 0.39096045197740115,
+        "harm_rate_ci_high": 0.4365636702243825,
+        "harm_rate_ci_low": 0.3441095890410959,
+        "mean_excess_loss": 0.10655545221611658,
+        "mean_excess_loss_ci_high": 0.18069706628773546,
+        "mean_excess_loss_ci_low": 0.03616931612878276,
+        "mean_harm_nats": 0.7769577055463769,
+        "mean_harm_nats_ci_high": 0.8803860511871551,
+        "mean_harm_nats_ci_low": 0.6813583932116279,
+        "p90_excess_loss": 1.083466866616613,
+        "p99_excess_loss": 3.0198459147134438
+      },
+      "full_history": {
+        "accuracy": 0.4947589098532495,
+        "brier": 0.7119184173676922,
+        "ece": 0.22293828084875683,
+        "log_loss": 1.712468958308609,
+        "macro_f1": 0.3915546622419533,
+        "weighted_f1": 0.4868422248922354
+      }
+    }
+  },
+  "base_seed_stability": {
+    "text": [
+      {
+        "harm_rate": 0.2903954802259887,
+        "mean_excess_loss": -0.10925334945687029,
+        "seed": 17
+      },
+      {
+        "harm_rate": 0.28135593220338984,
+        "mean_excess_loss": -0.11736427640334596,
+        "seed": 29
+      },
+      {
+        "harm_rate": 0.288135593220339,
+        "mean_excess_loss": -0.1287965464227535,
+        "seed": 43
+      },
+      {
+        "harm_rate": 0.28700564971751413,
+        "mean_excess_loss": -0.12134437318607665,
+        "seed": 71
+      },
+      {
+        "harm_rate": 0.29265536723163843,
+        "mean_excess_loss": -0.1205542768009912,
+        "seed": 101
+      }
+    ],
+    "text_audio": [
+      {
+        "harm_rate": 0.29322033898305083,
+        "mean_excess_loss": -0.032052230409399966,
+        "seed": 17
+      },
+      {
+        "harm_rate": 0.2966101694915254,
+        "mean_excess_loss": -0.017043932970225568,
+        "seed": 29
+      },
+      {
+        "harm_rate": 0.29265536723163843,
+        "mean_excess_loss": -0.024511060271243747,
+        "seed": 43
+      },
+      {
+        "harm_rate": 0.29774011299435027,
+        "mean_excess_loss": -0.001942305553721226,
+        "seed": 71
+      },
+      {
+        "harm_rate": 0.28700564971751413,
+        "mean_excess_loss": -0.030838066485352724,
+        "seed": 101
+      }
+    ],
+    "text_audio_video": [
+      {
+        "harm_rate": 0.3389830508474576,
+        "mean_excess_loss": 0.06532117687460003,
+        "seed": 17
+      },
+      {
+        "harm_rate": 0.33559322033898303,
+        "mean_excess_loss": 0.0637037020419899,
+        "seed": 29
+      },
+      {
+        "harm_rate": 0.34124293785310733,
+        "mean_excess_loss": 0.06563619800863554,
+        "seed": 43
+      },
+      {
+        "harm_rate": 0.3519774011299435,
+        "mean_excess_loss": 0.0834133431104055,
+        "seed": 71
+      },
+      {
+        "harm_rate": 0.34293785310734465,
+        "mean_excess_loss": 0.05130216628114954,
+        "seed": 101
+      }
+    ],
+    "text_video": [
+      {
+        "harm_rate": 0.3977401129943503,
+        "mean_excess_loss": 0.10164807692199881,
+        "seed": 17
+      },
+      {
+        "harm_rate": 0.37966101694915255,
+        "mean_excess_loss": 0.11955062697136686,
+        "seed": 29
+      },
+      {
+        "harm_rate": 0.4,
+        "mean_excess_loss": 0.11311661961446468,
+        "seed": 43
+      },
+      {
+        "harm_rate": 0.4011299435028249,
+        "mean_excess_loss": 0.15224211467896778,
+        "seed": 71
+      },
+      {
+        "harm_rate": 0.3864406779661017,
+        "mean_excess_loss": 0.09297682448009728,
+        "seed": 101
+      }
+    ]
+  },
+  "config": {
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260807,
+    "classifier": {
+      "alpha": 1e-05,
+      "average": true,
+      "class_weight": "balanced",
+      "loss": "log_loss",
+      "max_iter": 1500,
+      "penalty": "l2",
+      "tol": 0.0001
+    },
+    "crossfit_folds": 5,
+    "ece_bins": 15,
+    "frozen_on": "2026-08-07",
+    "gates": {
+      "multimodal_selector_increment": {
+        "min_all_harm_auc": 0.65,
+        "min_auc_increment_ci_low": 0.0,
+        "min_auc_increment_vs_text": 0.02,
+        "min_spearman_increment_ci_low": 0.0,
+        "min_spearman_increment_vs_text": 0.03
+      },
+      "natural_harm": {
+        "min_harm_rate": 0.2,
+        "min_harm_rate_ci_low": 0.1
+      },
+      "pairing_specificity": {
+        "min_actual_advantage_ci_low_nats": 0.0
+      },
+      "strict_q90_fallback": {
+        "max_policy_mean_excess_ci_high": 0.0,
+        "min_harm_rate_reduction_among_used": 0.05,
+        "min_history_coverage": 0.1
+      }
+    },
+    "media_projection": {
+      "audio_components": 96,
+      "iterated_power": 3,
+      "row_l2_normalize": true,
+      "svd_solver": "randomized",
+      "video_components": 96
+    },
+    "modality_subsets": {
+      "text": [
+        "text"
+      ],
+      "text_audio": [
+        "text",
+        "audio"
+      ],
+      "text_audio_video": [
+        "text",
+        "audio",
+        "video"
+      ],
+      "text_video": [
+        "text",
+        "video"
+      ]
+    },
+    "negative_control": {
+      "count_bins": [
+        1,
+        2,
+        3,
+        5,
+        9
+      ],
+      "draws": 20,
+      "seed": 20260807
+    },
+    "primary_base": "text_audio_video",
+    "protocol": "emotiontalk_multimodal_external_v1",
+    "risk_curve_coverages": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.75,
+      0.9
+    ],
+    "risk_model": {
+      "l2_regularization": 0.1,
+      "learning_rate": 0.05,
+      "max_iter": 200,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 30
+    },
+    "risk_quantile": 0.9,
+    "risk_seeds": [
+      17,
+      29,
+      43,
+      71,
+      101
+    ],
+    "scope": "Frozen EmotionTalk text/audio/video external confirmation; train-only cross-fitting and calibration; one validation evaluation; test sealed",
+    "sealed_split": "test_corpus",
+    "seeds": [
+      17,
+      29,
+      43,
+      71,
+      101
+    ],
+    "selector_calibration_fraction": 0.2,
+    "validation_policy": "Validation labels may be opened exactly once after train-only tests, bundle creation, and freeze-manifest hash attestation. No threshold, representation, or gate may be changed afterward.",
+    "vectorizer": {
+      "analyzer": "char",
+      "max_df": 0.995,
+      "max_features": 25000,
+      "min_df": 2,
+      "ngram_range": [
+        2,
+        5
+      ],
+      "sublinear_tf": true
+    }
+  },
+  "data": {
+    "eligible_validation": 1770,
+    "test_opened": false,
+    "train_rows": 15413,
+    "validation_labels_opened_once": true,
+    "validation_rows": 1908
+  },
+  "gates": {
+    "carma_method_route_go": {
+      "pass": false
+    },
+    "history_pairing_specificity": {
+      "pass": true,
+      "thresholds": {
+        "min_actual_advantage_ci_low_nats": 0.0
+      }
+    },
+    "multimodal_selector_increment": {
+      "pass": true,
+      "thresholds": {
+        "min_all_harm_auc": 0.65,
+        "min_auc_increment_ci_low": 0.0,
+        "min_auc_increment_vs_text": 0.02,
+        "min_spearman_increment_ci_low": 0.0,
+        "min_spearman_increment_vs_text": 0.03
+      }
+    },
+    "natural_harm_replicated": {
+      "pass": true,
+      "thresholds": {
+        "min_harm_rate": 0.2,
+        "min_harm_rate_ci_low": 0.1
+      }
+    },
+    "negative_transfer_benchmark_route_go": {
+      "pass": true
+    },
+    "strict_q90_nontrivial_safe_fallback": {
+      "pass": false,
+      "thresholds": {
+        "max_policy_mean_excess_ci_high": 0.0,
+        "min_harm_rate_reduction_among_used": 0.05,
+        "min_history_coverage": 0.1
+      }
+    }
+  },
+  "hashes": {
+    "bundle": "3f66f5383e9f79b8b6c756e069d003a0a8e396548ca2ba7e9a110430ec3b2204",
+    "config": "fdd5cd3065c33360eb25837feb4e791296183e514d6a74c8017e8d378465a90e",
+    "feature_config": "591d7c654d858514f25af5f6e11fa56ce15ed446f7b622040b9dd20210dad4c1",
+    "features": "d9d8c40c4f1325a68d0b9488c6a54846d29234606039135ac959aeeeedc439c2",
+    "freeze_manifest": "f50cde004b747d7e2e26452bf6ac5673bccd8b135ac6da09c9ef2af3087d44e4"
+  },
+  "interpretation_contract": [
+    "Engineering success does not imply the CARMA hypothesis passed.",
+    "All gates and ablations are reported regardless of direction.",
+    "Quality analyses are sensitivity analyses; no quality stratum was silently excluded.",
+    "The official validation split is the only external confirmation used here; test remains sealed.",
+    "Conformal coverage is marginal over calibration dialogue groups, not a per-speaker guarantee."
+  ],
+  "protocol": "emotiontalk_multimodal_external_v1",
+  "quality_sensitivity": {
+    "audio_channels": {
+      "mono": {
+        "cluster_bootstrap": {
+          "harm_rate": 0.208955223880597,
+          "harm_rate_ci_high": 0.26666666666666666,
+          "harm_rate_ci_low": 0.1,
+          "mean_excess_loss": -0.19954061681591628,
+          "mean_excess_loss_ci_high": -0.15289751769833582,
+          "mean_excess_loss_ci_low": -0.2315191795249609,
+          "mean_harm_nats": 0.7469308793671262,
+          "mean_harm_nats_ci_high": 1.0901656331854528,
+          "mean_harm_nats_ci_low": 0.035067058440984754
+        },
+        "harm_rate": 0.208955223880597,
+        "mean_excess": -0.19954061681591628,
+        "p90_excess": 0.36721522103617277,
+        "p99_excess": 2.1368648218222277,
+        "rows": 67
+      },
+      "stereo": {
+        "cluster_bootstrap": {
+          "harm_rate": 0.3440986494421609,
+          "harm_rate_ci_high": 0.3885669966318064,
+          "harm_rate_ci_low": 0.3038566137075503,
+          "mean_excess_loss": 0.06644508292148653,
+          "mean_excess_loss_ci_high": 0.1493769960338045,
+          "mean_excess_loss_ci_low": -0.014945017982331237,
+          "mean_harm_nats": 0.870914815519223,
+          "mean_harm_nats_ci_high": 1.0104944139768286,
+          "mean_harm_nats_ci_low": 0.7414389866666177
+        },
+        "harm_rate": 0.3440986494421609,
+        "mean_excess": 0.06644508292148653,
+        "p90_excess": 1.104832736227605,
+        "p99_excess": 3.581062921177707,
+        "rows": 1703
+      }
+    },
+    "audio_source_rate": {
+      "16000": {
+        "rows": 0
+      },
+      "44100": {
+        "cluster_bootstrap": {
+          "harm_rate": 0.3389830508474576,
+          "harm_rate_ci_high": 0.3812344074621889,
+          "harm_rate_ci_low": 0.29802303167587124,
+          "mean_excess_loss": 0.05637669767718937,
+          "mean_excess_loss_ci_high": 0.14172913560271558,
+          "mean_excess_loss_ci_low": -0.020499896019116736,
+          "mean_harm_nats": 0.8680218570090074,
+          "mean_harm_nats_ci_high": 0.9976577864309359,
+          "mean_harm_nats_ci_low": 0.748141047193232
+        },
+        "harm_rate": 0.3389830508474576,
+        "mean_excess": 0.05637669767718937,
+        "p90_excess": 1.0977420672773262,
+        "p99_excess": 3.520446840453887,
+        "rows": 1770
+      }
+    },
+    "face_detection": {
+      "all_frames": {
+        "cluster_bootstrap": {
+          "harm_rate": 0.3237822349570201,
+          "harm_rate_ci_high": 0.37221861489517905,
+          "harm_rate_ci_low": 0.28192633280614104,
+          "mean_excess_loss": 0.0007040634702792761,
+          "mean_excess_loss_ci_high": 0.10288748307044367,
+          "mean_excess_loss_ci_low": -0.08757552093863173,
+          "mean_harm_nats": 0.8354411583563057,
+          "mean_harm_nats_ci_high": 0.9923563758982034,
+          "mean_harm_nats_ci_low": 0.6938753486025936
+        },
+        "harm_rate": 0.3237822349570201,
+        "mean_excess": 0.0007040634702792761,
+        "p90_excess": 0.9862652774437124,
+        "p99_excess": 3.4059789126802817,
+        "rows": 1047
+      },
+      "none": {
+        "cluster_bootstrap": {
+          "harm_rate": 0.3090909090909091,
+          "harm_rate_ci_high": 0.44,
+          "harm_rate_ci_low": 0.20408163265306123,
+          "mean_excess_loss": 0.038274491297784825,
+          "mean_excess_loss_ci_high": 0.211037850131127,
+          "mean_excess_loss_ci_low": -0.09135707652418469,
+          "mean_harm_nats": 0.5982916721957432,
+          "mean_harm_nats_ci_high": 0.8976754855098238,
+          "mean_harm_nats_ci_low": 0.365258036061463
+        },
+        "harm_rate": 0.3090909090909091,
+        "mean_excess": 0.038274491297784825,
+        "p90_excess": 0.7324514603854453,
+        "p99_excess": 1.6690244034622659,
+        "rows": 55
+      },
+      "partial": {
+        "cluster_bootstrap": {
+          "harm_rate": 0.3652694610778443,
+          "harm_rate_ci_high": 0.425788537449337,
+          "harm_rate_ci_low": 0.31012515571941823,
+          "mean_excess_loss": 0.14512650211656378,
+          "mean_excess_loss_ci_high": 0.25046653777555017,
+          "mean_excess_loss_ci_low": 0.036838840824539705,
+          "mean_harm_nats": 0.9320803405544638,
+          "mean_harm_nats_ci_high": 1.1197815774906619,
+          "mean_harm_nats_ci_low": 0.7610269705933135
+        },
+        "harm_rate": 0.3652694610778443,
+        "mean_excess": 0.14512650211656378,
+        "p90_excess": 1.3088905915750586,
+        "p99_excess": 3.9234580203195404,
+        "rows": 668
+      }
+    }
+  },
+  "restricted_history_permutation_control": {
+    "actual_advantage_over_restricted_permutation_nats": {
+      "ci_high": 0.5524757739771553,
+      "ci_low": 0.33938319163953284,
+      "mean": 0.43387445703191224
+    },
+    "draws": 20,
+    "permutation_mean_excess_vs_current_nats": 0.4902511547091016,
+    "permutation_mean_harm_vs_current": 0.6062146892655367
+  },
+  "risk_coverage_policies": {
+    "text": {
+      "calibration_target_0.05": {
+        "calibration_risk_threshold": 0.19645199604117303,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.006779661016949152,
+          "harm_rate_ci_high": 0.011335219369149213,
+          "harm_rate_ci_low": 0.0029461164411930694,
+          "mean_excess_loss": 0.00036566653303382406,
+          "mean_excess_loss_ci_high": 0.0021781412127730845,
+          "mean_excess_loss_ci_low": -0.0009545630889343338,
+          "mean_harm_nats": 0.16576464094203774,
+          "mean_harm_nats_ci_high": 0.35234277810014575,
+          "mean_harm_nats_ci_low": 0.020640965275745438
+        },
+        "harm_rate_among_used": 0.2857142857142857,
+        "history_coverage": 0.023728813559322035,
+        "mean_excess_among_used": 0.015410232463568294,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6279516383429928,
+          "ece": 0.14927417126739678,
+          "log_loss": 1.499606978702189,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": 0.07302782808024999,
+        "p99_excess_among_used": 0.9020226335359789,
+        "population_harm_incidence": 0.006779661016949152
+      },
+      "calibration_target_0.1": {
+        "calibration_risk_threshold": 0.46337684416858044,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.010169491525423728,
+          "harm_rate_ci_high": 0.015393284793020257,
+          "harm_rate_ci_low": 0.0056624340414840844,
+          "mean_excess_loss": -0.001240284090850782,
+          "mean_excess_loss_ci_high": 0.0018418509656441468,
+          "mean_excess_loss_ci_low": -0.004146578013073319,
+          "mean_harm_nats": 0.2316088079549377,
+          "mean_harm_nats_ci_high": 0.4556718386320524,
+          "mean_harm_nats_ci_low": 0.05135840455105247
+        },
+        "harm_rate_among_used": 0.23076923076923078,
+        "history_coverage": 0.04406779661016949,
+        "mean_excess_among_used": -0.028144908215460056,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6281598807741525,
+          "ece": 0.15016730247854004,
+          "log_loss": 1.4981171817397803,
+          "macro_f1": 0.45768895062893644,
+          "weighted_f1": 0.5595046859719498
+        },
+        "p90_excess_among_used": 0.05741352721681442,
+        "p99_excess_among_used": 1.4267896800137692,
+        "population_harm_incidence": 0.010169491525423728
+      },
+      "calibration_target_0.15": {
+        "calibration_risk_threshold": 0.6492028880781033,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.01638418079096045,
+          "harm_rate_ci_high": 0.023575167869895976,
+          "harm_rate_ci_low": 0.009797848068103058,
+          "mean_excess_loss": -0.0018076120974574532,
+          "mean_excess_loss_ci_high": 0.0016020470943107837,
+          "mean_excess_loss_ci_low": -0.004723781765179909,
+          "mean_harm_nats": 0.20643157400714632,
+          "mean_harm_nats_ci_high": 0.3519690607607887,
+          "mean_harm_nats_ci_low": 0.08746446493755716
+        },
+        "harm_rate_among_used": 0.2457627118644068,
+        "history_coverage": 0.06666666666666667,
+        "mean_excess_among_used": -0.027114181461861796,
+        "metrics": {
+          "accuracy": 0.5618448637316562,
+          "brier": 0.6282240671776673,
+          "ece": 0.15065204827094542,
+          "log_loss": 1.4975908868908843,
+          "macro_f1": 0.45799852605025343,
+          "weighted_f1": 0.5600109000186936
+        },
+        "p90_excess_among_used": 0.10306879667995857,
+        "p99_excess_among_used": 1.1822682463451761,
+        "population_harm_incidence": 0.01638418079096045
+      },
+      "calibration_target_0.2": {
+        "calibration_risk_threshold": 0.7392162409379497,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.024858757062146894,
+          "harm_rate_ci_high": 0.03514216149044389,
+          "harm_rate_ci_low": 0.015446003469782667,
+          "mean_excess_loss": -0.002245667263542971,
+          "mean_excess_loss_ci_high": 0.003089888490644459,
+          "mean_excess_loss_ci_low": -0.00734232904719609,
+          "mean_harm_nats": 0.3491517751554852,
+          "mean_harm_nats_ci_high": 0.47621908666404783,
+          "mean_harm_nats_ci_low": 0.22599006598558535
+        },
+        "harm_rate_among_used": 0.2430939226519337,
+        "history_coverage": 0.10225988700564972,
+        "mean_excess_among_used": -0.021960392577188168,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6282206607680082,
+          "ece": 0.15423715030738896,
+          "log_loss": 1.4971845149600818,
+          "macro_f1": 0.4580745120281504,
+          "weighted_f1": 0.5592295162641533
+        },
+        "p90_excess_among_used": 0.15731767632635152,
+        "p99_excess_among_used": 1.5062637597905821,
+        "population_harm_incidence": 0.024858757062146894
+      },
+      "calibration_target_0.25": {
+        "calibration_risk_threshold": 0.8146904605004127,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.03898305084745763,
+          "harm_rate_ci_high": 0.0509223390133331,
+          "harm_rate_ci_low": 0.028127704275990047,
+          "mean_excess_loss": 0.00726351917832067,
+          "mean_excess_loss_ci_high": 0.018953187165802878,
+          "mean_excess_loss_ci_low": -0.0029272958470125863,
+          "mean_harm_nats": 0.5741450963133493,
+          "mean_harm_nats_ci_high": 0.7957749029952949,
+          "mean_harm_nats_ci_low": 0.3844087058731793
+        },
+        "harm_rate_among_used": 0.276,
+        "history_coverage": 0.14124293785310735,
+        "mean_excess_among_used": 0.05142571578251035,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6286520600050336,
+          "ece": 0.155288425481739,
+          "log_loss": 1.506005930055521,
+          "macro_f1": 0.4577704209528318,
+          "weighted_f1": 0.5593289039523723
+        },
+        "p90_excess_among_used": 0.33523008966397627,
+        "p99_excess_among_used": 2.9367377240579593,
+        "population_harm_incidence": 0.03898305084745763
+      },
+      "calibration_target_0.3": {
+        "calibration_risk_threshold": 0.869907810674694,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.04689265536723164,
+          "harm_rate_ci_high": 0.060989798602239416,
+          "harm_rate_ci_low": 0.03409075291118996,
+          "mean_excess_loss": 0.004409543644554257,
+          "mean_excess_loss_ci_high": 0.017617368529699876,
+          "mean_excess_loss_ci_low": -0.006595361885115815,
+          "mean_harm_nats": 0.5842064521202928,
+          "mean_harm_nats_ci_high": 0.7758659411408381,
+          "mean_harm_nats_ci_low": 0.41834148972793617
+        },
+        "harm_rate_among_used": 0.25382262996941896,
+        "history_coverage": 0.1847457627118644,
+        "mean_excess_among_used": 0.023868172020981755,
+        "metrics": {
+          "accuracy": 0.5644654088050315,
+          "brier": 0.6264326230926607,
+          "ece": 0.1545376814220188,
+          "log_loss": 1.5033583741358325,
+          "macro_f1": 0.4598147139320945,
+          "weighted_f1": 0.5623070049631665
+        },
+        "p90_excess_among_used": 0.33053248599463053,
+        "p99_excess_among_used": 2.67967921469978,
+        "population_harm_incidence": 0.04689265536723164
+      },
+      "calibration_target_0.4": {
+        "calibration_risk_threshold": 0.9540064103311146,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.07570621468926554,
+          "harm_rate_ci_high": 0.09459616410835922,
+          "harm_rate_ci_low": 0.058677470811478054,
+          "mean_excess_loss": 0.005822580829529932,
+          "mean_excess_loss_ci_high": 0.025804336838111418,
+          "mean_excess_loss_ci_low": -0.013395444159430066,
+          "mean_harm_nats": 0.5965842631721664,
+          "mean_harm_nats_ci_high": 0.7568195014355653,
+          "mean_harm_nats_ci_low": 0.44310852437185994
+        },
+        "harm_rate_among_used": 0.29321663019693656,
+        "history_coverage": 0.25819209039548024,
+        "mean_excess_among_used": 0.022551352446975877,
+        "metrics": {
+          "accuracy": 0.5670859538784067,
+          "brier": 0.6245746414614409,
+          "ece": 0.15497588569779236,
+          "log_loss": 1.504669210518121,
+          "macro_f1": 0.4614570530962484,
+          "weighted_f1": 0.5641287571810419
+        },
+        "p90_excess_among_used": 0.5210177018361724,
+        "p99_excess_among_used": 2.7761923369462185,
+        "population_harm_incidence": 0.07570621468926554
+      },
+      "calibration_target_0.5": {
+        "calibration_risk_threshold": 1.030733690599816,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.10677966101694915,
+          "harm_rate_ci_high": 0.1284788476746509,
+          "harm_rate_ci_low": 0.08669646518867304,
+          "mean_excess_loss": 0.017925983720229344,
+          "mean_excess_loss_ci_high": 0.04910967023350472,
+          "mean_excess_loss_ci_low": -0.009842803598226351,
+          "mean_harm_nats": 0.6820129814889402,
+          "mean_harm_nats_ci_high": 0.8661567047535332,
+          "mean_harm_nats_ci_low": 0.5273518816995316
+        },
+        "harm_rate_among_used": 0.3113673805601318,
+        "history_coverage": 0.34293785310734465,
+        "mean_excess_among_used": 0.052271814143008126,
+        "metrics": {
+          "accuracy": 0.570230607966457,
+          "brier": 0.6242546084126308,
+          "ece": 0.157911338039338,
+          "log_loss": 1.5158972100550903,
+          "macro_f1": 0.46412142832779285,
+          "weighted_f1": 0.5667768954204085
+        },
+        "p90_excess_among_used": 0.6757350883082397,
+        "p99_excess_among_used": 2.936271658533255,
+        "population_harm_incidence": 0.10677966101694915
+      },
+      "calibration_target_0.6": {
+        "calibration_risk_threshold": 1.0999676558936387,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.1384180790960452,
+          "harm_rate_ci_high": 0.16413550877314173,
+          "harm_rate_ci_low": 0.11358750365342773,
+          "mean_excess_loss": 0.025722606016229662,
+          "mean_excess_loss_ci_high": 0.061357466679390814,
+          "mean_excess_loss_ci_low": -0.008044531705325032,
+          "mean_harm_nats": 0.7276312312970014,
+          "mean_harm_nats_ci_high": 0.888059201014358,
+          "mean_harm_nats_ci_low": 0.5864562766949026
+        },
+        "harm_rate_among_used": 0.31210191082802546,
+        "history_coverage": 0.4435028248587571,
+        "mean_excess_among_used": 0.05799874222767707,
+        "metrics": {
+          "accuracy": 0.5697064989517819,
+          "brier": 0.6232886357858427,
+          "ece": 0.1666004136950115,
+          "log_loss": 1.5231299257070405,
+          "macro_f1": 0.4627858205087558,
+          "weighted_f1": 0.5657877789011607
+        },
+        "p90_excess_among_used": 0.7919907740846918,
+        "p99_excess_among_used": 3.011115303378848,
+        "population_harm_incidence": 0.1384180790960452
+      },
+      "calibration_target_0.75": {
+        "calibration_risk_threshold": 1.2268083807663823,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.20847457627118643,
+          "harm_rate_ci_high": 0.24405188790403673,
+          "harm_rate_ci_low": 0.17497028613212703,
+          "mean_excess_loss": 0.045215193046922564,
+          "mean_excess_loss_ci_high": 0.09928774023167926,
+          "mean_excess_loss_ci_low": -0.004510306344720874,
+          "mean_harm_nats": 0.804269517903431,
+          "mean_harm_nats_ci_high": 0.9410551382364435,
+          "mean_harm_nats_ci_low": 0.6851947152671845
+        },
+        "harm_rate_among_used": 0.3376029277218664,
+        "history_coverage": 0.6175141242937853,
+        "mean_excess_among_used": 0.07322130987470535,
+        "metrics": {
+          "accuracy": 0.5775681341719078,
+          "brier": 0.6233147971131158,
+          "ece": 0.17182123350819548,
+          "log_loss": 1.5412126715374004,
+          "macro_f1": 0.46689782519080986,
+          "weighted_f1": 0.5713113022065175
+        },
+        "p90_excess_among_used": 1.050668294138073,
+        "p99_excess_among_used": 3.1818654427154027,
+        "population_harm_incidence": 0.20847457627118643
+      },
+      "calibration_target_0.9": {
+        "calibration_risk_threshold": 1.4387379489569037,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.2790960451977401,
+          "harm_rate_ci_high": 0.3150990418846397,
+          "harm_rate_ci_low": 0.2420850771474003,
+          "mean_excess_loss": 0.05098223590837373,
+          "mean_excess_loss_ci_high": 0.11837204047281778,
+          "mean_excess_loss_ci_low": -0.013363237818334279,
+          "mean_harm_nats": 0.8350898308344714,
+          "mean_harm_nats_ci_high": 0.9647193135843961,
+          "mean_harm_nats_ci_low": 0.71380401415552
+        },
+        "harm_rate_among_used": 0.3381245722108145,
+        "history_coverage": 0.8254237288135593,
+        "mean_excess_among_used": 0.06176492645983674,
+        "metrics": {
+          "accuracy": 0.5922431865828093,
+          "brier": 0.6103516149532744,
+          "ece": 0.17179806745104284,
+          "log_loss": 1.5465626012359164,
+          "macro_f1": 0.47895716369703056,
+          "weighted_f1": 0.5838947269148403
+        },
+        "p90_excess_among_used": 1.0974348213654066,
+        "p99_excess_among_used": 3.5285892990585914,
+        "population_harm_incidence": 0.2790960451977401
+      },
+      "strict_conformal_q90_upper_below_zero": {
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0,
+          "harm_rate_ci_high": 0.0,
+          "harm_rate_ci_low": 0.0,
+          "mean_excess_loss": 0.0,
+          "mean_excess_loss_ci_high": 0.0,
+          "mean_excess_loss_ci_low": 0.0,
+          "mean_harm_nats": 0.0,
+          "mean_harm_nats_ci_high": 0.0,
+          "mean_harm_nats_ci_low": 0.0
+        },
+        "harm_rate_among_used": null,
+        "history_coverage": 0.0,
+        "mean_excess_among_used": null,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6279926157909784,
+          "ece": 0.14879883650820575,
+          "log_loss": 1.4992677597485884,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": null,
+        "p99_excess_among_used": null,
+        "population_harm_incidence": 0.0
+      }
+    },
+    "text_audio": {
+      "calibration_target_0.05": {
+        "calibration_risk_threshold": 0.0666140597689755,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0022598870056497176,
+          "harm_rate_ci_high": 0.004600411198849119,
+          "harm_rate_ci_low": 0.0005497149363926584,
+          "mean_excess_loss": -0.0012743321707413772,
+          "mean_excess_loss_ci_high": -0.0005012528723176148,
+          "mean_excess_loss_ci_low": -0.002337396853898518,
+          "mean_harm_nats": 0.01231937584229992,
+          "mean_harm_nats_ci_high": 0.026462324993640686,
+          "mean_harm_nats_ci_low": 0.004821670277180773
+        },
+        "harm_rate_among_used": 0.09523809523809523,
+        "history_coverage": 0.023728813559322035,
+        "mean_excess_among_used": -0.0537039986241009,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6277697728870624,
+          "ece": 0.1495688895040806,
+          "log_loss": 1.498085596256863,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": -0.0004643356198640687,
+        "p99_excess_among_used": 0.020558648071661363,
+        "population_harm_incidence": 0.0022598870056497176
+      },
+      "calibration_target_0.1": {
+        "calibration_risk_threshold": 0.286262450173029,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.006779661016949152,
+          "harm_rate_ci_high": 0.010280428519544148,
+          "harm_rate_ci_low": 0.003590556960748438,
+          "mean_excess_loss": -0.0017603819244817538,
+          "mean_excess_loss_ci_high": -0.0004144746568507078,
+          "mean_excess_loss_ci_low": -0.00341299685874816,
+          "mean_harm_nats": 0.10493803757726855,
+          "mean_harm_nats_ci_high": 0.19444819371660246,
+          "mean_harm_nats_ci_low": 0.03270533795329898
+        },
+        "harm_rate_among_used": 0.13953488372093023,
+        "history_coverage": 0.04858757062146893,
+        "mean_excess_among_used": -0.036231116352705865,
+        "metrics": {
+          "accuracy": 0.560796645702306,
+          "brier": 0.6278887085457723,
+          "ece": 0.1509536214744259,
+          "log_loss": 1.49763470104506,
+          "macro_f1": 0.45723380590559654,
+          "weighted_f1": 0.5591114556808485
+        },
+        "p90_excess_among_used": 0.011583132892494899,
+        "p99_excess_among_used": 0.3444650441051349,
+        "population_harm_incidence": 0.006779661016949152
+      },
+      "calibration_target_0.15": {
+        "calibration_risk_threshold": 0.43895182024550233,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.012994350282485875,
+          "harm_rate_ci_high": 0.018203413173912854,
+          "harm_rate_ci_low": 0.008195884911341586,
+          "mean_excess_loss": -0.0019083924420775877,
+          "mean_excess_loss_ci_high": 0.0010800020346833318,
+          "mean_excess_loss_ci_low": -0.0048789942860236295,
+          "mean_harm_nats": 0.19563443045157292,
+          "mean_harm_nats_ci_high": 0.35217766140077594,
+          "mean_harm_nats_ci_low": 0.09184733689614386
+        },
+        "harm_rate_among_used": 0.17829457364341086,
+        "history_coverage": 0.07288135593220339,
+        "mean_excess_among_used": -0.026184919554087832,
+        "metrics": {
+          "accuracy": 0.560272536687631,
+          "brier": 0.6278623850018875,
+          "ece": 0.15244926985491306,
+          "log_loss": 1.4974973956906867,
+          "macro_f1": 0.4569249332414427,
+          "weighted_f1": 0.5586971061152765
+        },
+        "p90_excess_among_used": 0.05666500064407676,
+        "p99_excess_among_used": 0.5497841765265483,
+        "population_harm_incidence": 0.012994350282485875
+      },
+      "calibration_target_0.2": {
+        "calibration_risk_threshold": 0.5448149908256169,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.020903954802259886,
+          "harm_rate_ci_high": 0.02845619294181768,
+          "harm_rate_ci_low": 0.014258245708758568,
+          "mean_excess_loss": 0.0007683820964631845,
+          "mean_excess_loss_ci_high": 0.007369217346477868,
+          "mean_excess_loss_ci_low": -0.004746561070683672,
+          "mean_harm_nats": 0.3762076751090135,
+          "mean_harm_nats_ci_high": 0.6172586853118597,
+          "mean_harm_nats_ci_low": 0.19867990378472047
+        },
+        "harm_rate_among_used": 0.21264367816091953,
+        "history_coverage": 0.09830508474576272,
+        "mean_excess_among_used": 0.007816300636435842,
+        "metrics": {
+          "accuracy": 0.560272536687631,
+          "brier": 0.6278518350750933,
+          "ece": 0.1531716907672631,
+          "log_loss": 1.499980567039333,
+          "macro_f1": 0.4569249332414427,
+          "weighted_f1": 0.5586971061152765
+        },
+        "p90_excess_among_used": 0.15692055111265876,
+        "p99_excess_among_used": 1.3697561635110305,
+        "population_harm_incidence": 0.020903954802259886
+      },
+      "calibration_target_0.25": {
+        "calibration_risk_threshold": 0.637368100568463,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0327683615819209,
+          "harm_rate_ci_high": 0.042398516381271276,
+          "harm_rate_ci_low": 0.023728585134085614,
+          "mean_excess_loss": 0.006713727838205621,
+          "mean_excess_loss_ci_high": 0.015718974742316122,
+          "mean_excess_loss_ci_low": -0.0017953435829818083,
+          "mean_harm_nats": 0.5163996995553948,
+          "mean_harm_nats_ci_high": 0.7817485824155389,
+          "mean_harm_nats_ci_low": 0.30907095906156934
+        },
+        "harm_rate_among_used": 0.25327510917030566,
+        "history_coverage": 0.12937853107344632,
+        "mean_excess_among_used": 0.05189213219923122,
+        "metrics": {
+          "accuracy": 0.559748427672956,
+          "brier": 0.6280736127360375,
+          "ece": 0.15488553448428993,
+          "log_loss": 1.5054959034978672,
+          "macro_f1": 0.4566144059301394,
+          "weighted_f1": 0.5580587995405435
+        },
+        "p90_excess_among_used": 0.272626281109091,
+        "p99_excess_among_used": 2.8466005557100873,
+        "population_harm_incidence": 0.0327683615819209
+      },
+      "calibration_target_0.3": {
+        "calibration_risk_threshold": 0.7077298511312542,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0423728813559322,
+          "harm_rate_ci_high": 0.053643338662542395,
+          "harm_rate_ci_low": 0.031561694653707124,
+          "mean_excess_loss": 0.009786201066537789,
+          "mean_excess_loss_ci_high": 0.022840408002386438,
+          "mean_excess_loss_ci_low": -0.0014545346723954385,
+          "mean_harm_nats": 0.551790846249575,
+          "mean_harm_nats_ci_high": 0.7952425231057532,
+          "mean_harm_nats_ci_low": 0.35041985819009897
+        },
+        "harm_rate_among_used": 0.2717391304347826,
+        "history_coverage": 0.15593220338983052,
+        "mean_excess_among_used": 0.06275933292670975,
+        "metrics": {
+          "accuracy": 0.560272536687631,
+          "brier": 0.6281604990443744,
+          "ece": 0.15563299646790635,
+          "log_loss": 1.5083461538197478,
+          "macro_f1": 0.45714663554224294,
+          "weighted_f1": 0.5585318220820797
+        },
+        "p90_excess_among_used": 0.3820903388380094,
+        "p99_excess_among_used": 3.036204020915571,
+        "population_harm_incidence": 0.0423728813559322
+      },
+      "calibration_target_0.4": {
+        "calibration_risk_threshold": 0.8401599510563154,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.061016949152542375,
+          "harm_rate_ci_high": 0.07531895570035654,
+          "harm_rate_ci_low": 0.04727033703942922,
+          "mean_excess_loss": 0.010591204418227146,
+          "mean_excess_loss_ci_high": 0.026360071929769188,
+          "mean_excess_loss_ci_low": -0.002891411293781973,
+          "mean_harm_nats": 0.5685353209855399,
+          "mean_harm_nats_ci_high": 0.7603676012478345,
+          "mean_harm_nats_ci_low": 0.4134337206800659
+        },
+        "harm_rate_among_used": 0.27906976744186046,
+        "history_coverage": 0.21864406779661016,
+        "mean_excess_among_used": 0.048440392300418716,
+        "metrics": {
+          "accuracy": 0.5618448637316562,
+          "brier": 0.6258650154909691,
+          "ece": 0.15599503707878748,
+          "log_loss": 1.509092933658579,
+          "macro_f1": 0.4585108999889202,
+          "weighted_f1": 0.5598126474852981
+        },
+        "p90_excess_among_used": 0.3830758661076852,
+        "p99_excess_among_used": 2.948354660901284,
+        "population_harm_incidence": 0.061016949152542375
+      },
+      "calibration_target_0.5": {
+        "calibration_risk_threshold": 0.9654471427095715,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.08870056497175141,
+          "harm_rate_ci_high": 0.10764710835257887,
+          "harm_rate_ci_low": 0.07093737586231977,
+          "mean_excess_loss": 0.009272233058724924,
+          "mean_excess_loss_ci_high": 0.030429834485912872,
+          "mean_excess_loss_ci_low": -0.011309379534095053,
+          "mean_harm_nats": 0.5660935401230126,
+          "mean_harm_nats_ci_high": 0.7152349457256907,
+          "mean_harm_nats_ci_low": 0.423956317378972
+        },
+        "harm_rate_among_used": 0.2940074906367041,
+        "history_coverage": 0.3016949152542373,
+        "mean_excess_among_used": 0.030733806205885967,
+        "metrics": {
+          "accuracy": 0.5665618448637316,
+          "brier": 0.6233782658397753,
+          "ece": 0.15625998453108286,
+          "log_loss": 1.5078693595986634,
+          "macro_f1": 0.46000077309267834,
+          "weighted_f1": 0.5640536094389518
+        },
+        "p90_excess_among_used": 0.4201305495749706,
+        "p99_excess_among_used": 2.9788451578545705,
+        "population_harm_incidence": 0.08870056497175141
+      },
+      "calibration_target_0.6": {
+        "calibration_risk_threshold": 1.0840001598812175,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.12937853107344632,
+          "harm_rate_ci_high": 0.15418384482666553,
+          "harm_rate_ci_low": 0.10520275034535903,
+          "mean_excess_loss": 0.027376648036196116,
+          "mean_excess_loss_ci_high": 0.06074888443509215,
+          "mean_excess_loss_ci_low": -0.005374233974575633,
+          "mean_harm_nats": 0.6578147051215368,
+          "mean_harm_nats_ci_high": 0.8129070690483053,
+          "mean_harm_nats_ci_low": 0.5095182225039813
+        },
+        "harm_rate_among_used": 0.31761442441054094,
+        "history_coverage": 0.4073446327683616,
+        "mean_excess_among_used": 0.06720758255765204,
+        "metrics": {
+          "accuracy": 0.5670859538784067,
+          "brier": 0.6232223490157753,
+          "ece": 0.1613708318927327,
+          "log_loss": 1.5246643357570095,
+          "macro_f1": 0.4596679477208017,
+          "weighted_f1": 0.5639559369011233
+        },
+        "p90_excess_among_used": 0.6326250942861542,
+        "p99_excess_among_used": 3.2901039824641383,
+        "population_harm_incidence": 0.12937853107344632
+      },
+      "calibration_target_0.75": {
+        "calibration_risk_threshold": 1.2704892510654757,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.19548022598870057,
+          "harm_rate_ci_high": 0.22750454784004143,
+          "harm_rate_ci_low": 0.16738046803257256,
+          "mean_excess_loss": 0.03635529711782569,
+          "mean_excess_loss_ci_high": 0.08303804682384497,
+          "mean_excess_loss_ci_low": -0.006349424405734217,
+          "mean_harm_nats": 0.7360503064276291,
+          "mean_harm_nats_ci_high": 0.8782519000413999,
+          "mean_harm_nats_ci_low": 0.6178084554336316
+        },
+        "harm_rate_among_used": 0.3292102759276879,
+        "history_coverage": 0.5937853107344633,
+        "mean_excess_among_used": 0.06122633291964934,
+        "metrics": {
+          "accuracy": 0.5780922431865828,
+          "brier": 0.6146113056146545,
+          "ece": 0.16306595500773668,
+          "log_loss": 1.5329935856912253,
+          "macro_f1": 0.4706685394778903,
+          "weighted_f1": 0.5733744124925826
+        },
+        "p90_excess_among_used": 0.8453857876421065,
+        "p99_excess_among_used": 3.417941043596816,
+        "population_harm_incidence": 0.19548022598870057
+      },
+      "calibration_target_0.9": {
+        "calibration_risk_threshold": 1.5337664198484433,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.28361581920903955,
+          "harm_rate_ci_high": 0.32191676594551843,
+          "harm_rate_ci_low": 0.24752400567131885,
+          "mean_excess_loss": 0.04977402883959635,
+          "mean_excess_loss_ci_high": 0.11265255200301066,
+          "mean_excess_loss_ci_low": -0.011066706707536893,
+          "mean_harm_nats": 0.8064722863065179,
+          "mean_harm_nats_ci_high": 0.922431933848591,
+          "mean_harm_nats_ci_low": 0.6981591973006821
+        },
+        "harm_rate_among_used": 0.33466666666666667,
+        "history_coverage": 0.847457627118644,
+        "mean_excess_among_used": 0.058733354030723696,
+        "metrics": {
+          "accuracy": 0.5953878406708596,
+          "brier": 0.607418079590377,
+          "ece": 0.16626477591957292,
+          "log_loss": 1.545441780212994,
+          "macro_f1": 0.487267182555635,
+          "weighted_f1": 0.5874991241346552
+        },
+        "p90_excess_among_used": 1.0101222854539291,
+        "p99_excess_among_used": 3.4060939885925423,
+        "population_harm_incidence": 0.28361581920903955
+      },
+      "strict_conformal_q90_upper_below_zero": {
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0,
+          "harm_rate_ci_high": 0.0,
+          "harm_rate_ci_low": 0.0,
+          "mean_excess_loss": 0.0,
+          "mean_excess_loss_ci_high": 0.0,
+          "mean_excess_loss_ci_low": 0.0,
+          "mean_harm_nats": 0.0,
+          "mean_harm_nats_ci_high": 0.0,
+          "mean_harm_nats_ci_low": 0.0
+        },
+        "harm_rate_among_used": null,
+        "history_coverage": 0.0,
+        "mean_excess_among_used": null,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6279926157909784,
+          "ece": 0.14879883650820575,
+          "log_loss": 1.4992677597485884,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": null,
+        "p99_excess_among_used": null,
+        "population_harm_incidence": 0.0
+      }
+    },
+    "text_audio_video": {
+      "calibration_target_0.05": {
+        "calibration_risk_threshold": 0.0034863686426801783,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0005649717514124294,
+          "harm_rate_ci_high": 0.0018327610136907536,
+          "harm_rate_ci_low": 0.0,
+          "mean_excess_loss": 0.0004310781427173429,
+          "mean_excess_loss_ci_high": 0.0014854568215310476,
+          "mean_excess_loss_ci_low": -6.452927552439061e-05,
+          "mean_harm_nats": 0.8340645986645638,
+          "mean_harm_nats_ci_high": 0.8340645986645638,
+          "mean_harm_nats_ci_low": 0.0
+        },
+        "harm_rate_among_used": 0.08333333333333333,
+        "history_coverage": 0.006779661016949152,
+        "mean_excess_among_used": 0.06358402605080808,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6280168652314763,
+          "ece": 0.14884574100023734,
+          "log_loss": 1.4996676592834992,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": -0.0004643356198640683,
+        "p99_excess_among_used": 0.742268811343652,
+        "population_harm_incidence": 0.0005649717514124294
+      },
+      "calibration_target_0.1": {
+        "calibration_risk_threshold": 0.08354226280354327,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.001694915254237288,
+          "harm_rate_ci_high": 0.0036453668828839744,
+          "harm_rate_ci_low": 0.0,
+          "mean_excess_loss": 0.00020587524647087372,
+          "mean_excess_loss_ci_high": 0.0012003832519913407,
+          "mean_excess_loss_ci_low": -0.00032431470290593395,
+          "mean_harm_nats": 0.2806173825275148,
+          "mean_harm_nats_ci_high": 0.8340645986645638,
+          "mean_harm_nats_ci_low": 0.0
+        },
+        "harm_rate_among_used": 0.08333333333333333,
+        "history_coverage": 0.020338983050847456,
+        "mean_excess_among_used": 0.010122199618151285,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6280037481067786,
+          "ece": 0.1490499432631603,
+          "log_loss": 1.4994587446470442,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": -0.0005514429062185332,
+        "p99_excess_among_used": 0.5442176274203131,
+        "population_harm_incidence": 0.001694915254237288
+      },
+      "calibration_target_0.15": {
+        "calibration_risk_threshold": 0.20777383271778974,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0062146892655367235,
+          "harm_rate_ci_high": 0.010716602605810284,
+          "harm_rate_ci_low": 0.002345903780056935,
+          "mean_excess_loss": 0.0013709299785260554,
+          "mean_excess_loss_ci_high": 0.005620783384923784,
+          "mean_excess_loss_ci_low": -0.0012098548595923673,
+          "mean_harm_nats": 0.3797318907460374,
+          "mean_harm_nats_ci_high": 0.8752224644152801,
+          "mean_harm_nats_ci_low": 0.005349879253200133
+        },
+        "harm_rate_among_used": 0.15492957746478872,
+        "history_coverage": 0.04011299435028248,
+        "mean_excess_among_used": 0.034176705098466445,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6278408163555063,
+          "ece": 0.14932605590636977,
+          "log_loss": 1.5005395344142025,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": 0.004821670277180773,
+        "p99_excess_among_used": 1.5061359603160382,
+        "population_harm_incidence": 0.0062146892655367235
+      },
+      "calibration_target_0.2": {
+        "calibration_risk_threshold": 0.320462784964385,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.012994350282485875,
+          "harm_rate_ci_high": 0.01899478348737224,
+          "harm_rate_ci_low": 0.00763807285546416,
+          "mean_excess_loss": 0.00418978851650903,
+          "mean_excess_loss_ci_high": 0.010891797988022516,
+          "mean_excess_loss_ci_low": -0.0007944663189611581,
+          "mean_harm_nats": 0.4677488834723363,
+          "mean_harm_nats_ci_high": 0.8893783840651204,
+          "mean_harm_nats_ci_low": 0.11823106856273141
+        },
+        "harm_rate_among_used": 0.21296296296296297,
+        "history_coverage": 0.061016949152542375,
+        "mean_excess_among_used": 0.0686659784650091,
+        "metrics": {
+          "accuracy": 0.5618448637316562,
+          "brier": 0.6278800699650012,
+          "ece": 0.1492525058601354,
+          "log_loss": 1.503154513246608,
+          "macro_f1": 0.45742483486837093,
+          "weighted_f1": 0.5600310713826792
+        },
+        "p90_excess_among_used": 0.030485817838840405,
+        "p99_excess_among_used": 1.929675348406327,
+        "population_harm_incidence": 0.012994350282485875
+      },
+      "calibration_target_0.25": {
+        "calibration_risk_threshold": 0.4306207405162438,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.02937853107344633,
+          "harm_rate_ci_high": 0.03714235193142995,
+          "harm_rate_ci_low": 0.021337357950180384,
+          "mean_excess_loss": 0.007180543019943322,
+          "mean_excess_loss_ci_high": 0.014598240260855407,
+          "mean_excess_loss_ci_low": 0.000650025616052619,
+          "mean_harm_nats": 0.38544215097853185,
+          "mean_harm_nats_ci_high": 0.6209621295864778,
+          "mean_harm_nats_ci_low": 0.20413350232975414
+        },
+        "harm_rate_among_used": 0.31137724550898205,
+        "history_coverage": 0.09435028248587571,
+        "mean_excess_among_used": 0.0761051565586807,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6281213304413285,
+          "ece": 0.15016716340364805,
+          "log_loss": 1.5059289553174038,
+          "macro_f1": 0.4570784123871935,
+          "weighted_f1": 0.5594598120903244
+        },
+        "p90_excess_among_used": 0.18821760269631974,
+        "p99_excess_among_used": 1.6716651361129973,
+        "population_harm_incidence": 0.02937853107344633
+      },
+      "calibration_target_0.3": {
+        "calibration_risk_threshold": 0.5304012963504283,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.04406779661016949,
+          "harm_rate_ci_high": 0.056188110826391635,
+          "harm_rate_ci_low": 0.03308531513004517,
+          "mean_excess_loss": 0.01731362498833827,
+          "mean_excess_loss_ci_high": 0.030203176059402034,
+          "mean_excess_loss_ci_low": 0.006184918904845606,
+          "mean_harm_nats": 0.534937955205834,
+          "mean_harm_nats_ci_high": 0.7907098231699643,
+          "mean_harm_nats_ci_low": 0.3199664736255251
+        },
+        "harm_rate_among_used": 0.3305084745762712,
+        "history_coverage": 0.13333333333333333,
+        "mean_excess_among_used": 0.12985218741253704,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6279947955019104,
+          "ece": 0.15092279245426582,
+          "log_loss": 1.5153291414201602,
+          "macro_f1": 0.45678202874502405,
+          "weighted_f1": 0.5593523054861463
+        },
+        "p90_excess_among_used": 0.327980810579781,
+        "p99_excess_among_used": 2.866414367325642,
+        "population_harm_incidence": 0.04406779661016949
+      },
+      "calibration_target_0.4": {
+        "calibration_risk_threshold": 0.7107077840189218,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.07288135593220339,
+          "harm_rate_ci_high": 0.08888948402071059,
+          "harm_rate_ci_low": 0.05812252592665293,
+          "mean_excess_loss": 0.020029394258396165,
+          "mean_excess_loss_ci_high": 0.03764746063243094,
+          "mean_excess_loss_ci_low": 0.0018651523763516813,
+          "mean_harm_nats": 0.5105525063897906,
+          "mean_harm_nats_ci_high": 0.6839599145240525,
+          "mean_harm_nats_ci_low": 0.3569546024535528
+        },
+        "harm_rate_among_used": 0.3421750663129973,
+        "history_coverage": 0.21299435028248587,
+        "mean_excess_among_used": 0.09403720911766901,
+        "metrics": {
+          "accuracy": 0.5634171907756813,
+          "brier": 0.6257530449674289,
+          "ece": 0.15063355879472884,
+          "log_loss": 1.5178484871266604,
+          "macro_f1": 0.4584909130672637,
+          "weighted_f1": 0.5612935912686491
+        },
+        "p90_excess_among_used": 0.33865531152019446,
+        "p99_excess_among_used": 3.035517625901301,
+        "population_harm_incidence": 0.07288135593220339
+      },
+      "calibration_target_0.5": {
+        "calibration_risk_threshold": 0.8716003031885691,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.10112994350282486,
+          "harm_rate_ci_high": 0.11962304812606324,
+          "harm_rate_ci_low": 0.0837908421056017,
+          "mean_excess_loss": 0.013957908314667759,
+          "mean_excess_loss_ci_high": 0.033728467061773605,
+          "mean_excess_loss_ci_low": -0.0067526139678584585,
+          "mean_harm_nats": 0.4855980678167083,
+          "mean_harm_nats_ci_high": 0.6167643241443935,
+          "mean_harm_nats_ci_low": 0.36734961646916686
+        },
+        "harm_rate_among_used": 0.3422562141491396,
+        "history_coverage": 0.29548022598870055,
+        "mean_excess_among_used": 0.04723804534791958,
+        "metrics": {
+          "accuracy": 0.5644654088050315,
+          "brier": 0.6233786130532161,
+          "ece": 0.1503157028519069,
+          "log_loss": 1.512216133814082,
+          "macro_f1": 0.4578554963378301,
+          "weighted_f1": 0.5620402120116459
+        },
+        "p90_excess_among_used": 0.35806753730039764,
+        "p99_excess_among_used": 2.8938578130550803,
+        "population_harm_incidence": 0.10112994350282486
+      },
+      "calibration_target_0.6": {
+        "calibration_risk_threshold": 1.0361318394425914,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.13954802259887006,
+          "harm_rate_ci_high": 0.16095878676897482,
+          "harm_rate_ci_low": 0.11960555839179131,
+          "mean_excess_loss": 0.02566495101758872,
+          "mean_excess_loss_ci_high": 0.054746734624111726,
+          "mean_excess_loss_ci_low": -0.0010445168950042277,
+          "mean_harm_nats": 0.5879669696955702,
+          "mean_harm_nats_ci_high": 0.7235222735820203,
+          "mean_harm_nats_ci_low": 0.464314448203297
+        },
+        "harm_rate_among_used": 0.34305555555555556,
+        "history_coverage": 0.4067796610169492,
+        "mean_excess_among_used": 0.06309300458490562,
+        "metrics": {
+          "accuracy": 0.5686582809224319,
+          "brier": 0.6211783146264102,
+          "ece": 0.15079473247531136,
+          "log_loss": 1.5230764407240247,
+          "macro_f1": 0.46276655299473024,
+          "weighted_f1": 0.5654393599251836
+        },
+        "p90_excess_among_used": 0.5819400585295146,
+        "p99_excess_among_used": 3.2917945024190756,
+        "population_harm_incidence": 0.13954802259887006
+      },
+      "calibration_target_0.75": {
+        "calibration_risk_threshold": 1.2776915122249084,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.2033898305084746,
+          "harm_rate_ci_high": 0.23013166206911073,
+          "harm_rate_ci_low": 0.17692307865269596,
+          "mean_excess_loss": 0.02721437753385192,
+          "mean_excess_loss_ci_high": 0.07031422154519107,
+          "mean_excess_loss_ci_low": -0.014722028680249808,
+          "mean_harm_nats": 0.6611586072995904,
+          "mean_harm_nats_ci_high": 0.7975449979201674,
+          "mean_harm_nats_ci_low": 0.5401315091164804
+        },
+        "harm_rate_among_used": 0.33994334277620397,
+        "history_coverage": 0.5983050847457627,
+        "mean_excess_among_used": 0.04548578681295364,
+        "metrics": {
+          "accuracy": 0.5775681341719078,
+          "brier": 0.6141784127503629,
+          "ece": 0.15043574946070748,
+          "log_loss": 1.5245138018004323,
+          "macro_f1": 0.4722097503402568,
+          "weighted_f1": 0.5728259583152158
+        },
+        "p90_excess_among_used": 0.6668188421666253,
+        "p99_excess_among_used": 3.4178933805658067,
+        "population_harm_incidence": 0.2033898305084746
+      },
+      "calibration_target_0.9": {
+        "calibration_risk_threshold": 1.5866268577556288,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.268361581920904,
+          "harm_rate_ci_high": 0.3021239926783464,
+          "harm_rate_ci_low": 0.2363216064786656,
+          "mean_excess_loss": 0.022740031262094458,
+          "mean_excess_loss_ci_high": 0.08646595711473748,
+          "mean_excess_loss_ci_low": -0.036526737361593266,
+          "mean_harm_nats": 0.7473897001033051,
+          "mean_harm_nats_ci_high": 0.8735632574624217,
+          "mean_harm_nats_ci_low": 0.6341038199325818
+        },
+        "harm_rate_among_used": 0.32894736842105265,
+        "history_coverage": 0.8158192090395481,
+        "mean_excess_among_used": 0.027873861034561766,
+        "metrics": {
+          "accuracy": 0.5911949685534591,
+          "brier": 0.6024286156982664,
+          "ece": 0.15677695934735517,
+          "log_loss": 1.520363071768456,
+          "macro_f1": 0.4821336830306411,
+          "weighted_f1": 0.5837034374643056
+        },
+        "p90_excess_among_used": 0.8462113050952491,
+        "p99_excess_among_used": 3.3707385472743523,
+        "population_harm_incidence": 0.268361581920904
+      },
+      "strict_conformal_q90_upper_below_zero": {
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0005649717514124294,
+          "harm_rate_ci_high": 0.0017657965810940121,
+          "harm_rate_ci_low": 0.0,
+          "mean_excess_loss": 0.0004387589039233996,
+          "mean_excess_loss_ci_high": 0.0014349622916620816,
+          "mean_excess_loss_ci_low": -5.576782639839168e-05,
+          "mean_harm_nats": 0.8340645986645638,
+          "mean_harm_nats_ci_high": 0.8340645986645638,
+          "mean_harm_nats_ci_low": 0.0
+        },
+        "harm_rate_among_used": 0.1111111111111111,
+        "history_coverage": 0.005084745762711864,
+        "mean_excess_among_used": 0.08628925110493525,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6280170318503041,
+          "ece": 0.14883867111724175,
+          "log_loss": 1.4996747845179514,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": 0.16628465812158363,
+        "p99_excess_among_used": 0.7672866046102658,
+        "population_harm_incidence": 0.0005649717514124294
+      }
+    },
+    "text_video": {
+      "calibration_target_0.05": {
+        "calibration_risk_threshold": 0.034451988650976005,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0,
+          "harm_rate_ci_high": 0.0,
+          "harm_rate_ci_low": 0.0,
+          "mean_excess_loss": -2.250917001947893e-05,
+          "mean_excess_loss_ci_high": -3.3523860046039382e-06,
+          "mean_excess_loss_ci_low": -5.027111854827509e-05,
+          "mean_harm_nats": 0.0,
+          "mean_harm_nats_ci_high": 0.0,
+          "mean_harm_nats_ci_low": 0.0
+        },
+        "harm_rate_among_used": 0.0,
+        "history_coverage": 0.005084745762711864,
+        "mean_excess_among_used": -0.00442680343716419,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6279922227723168,
+          "ece": 0.1488195880938192,
+          "log_loss": 1.4992468786003,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": -0.0006167733709843818,
+        "p99_excess_among_used": -0.0004599802555463451,
+        "population_harm_incidence": 0.0
+      },
+      "calibration_target_0.1": {
+        "calibration_risk_threshold": 0.255453154893046,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.002824858757062147,
+          "harm_rate_ci_high": 0.006207938129332993,
+          "harm_rate_ci_low": 0.0005378947407932914,
+          "mean_excess_loss": 0.0012020172171636886,
+          "mean_excess_loss_ci_high": 0.004586631044012254,
+          "mean_excess_loss_ci_low": -0.0005739101929576301,
+          "mean_harm_nats": 0.5634097340546399,
+          "mean_harm_nats_ci_high": 1.3990789842795213,
+          "mean_harm_nats_ci_low": 0.0018571538084154841
+        },
+        "harm_rate_among_used": 0.14285714285714285,
+        "history_coverage": 0.01977401129943503,
+        "mean_excess_among_used": 0.060787727839420824,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6280045681732821,
+          "ece": 0.14915872896437066,
+          "log_loss": 1.5003828386135676,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": 0.004301098589105215,
+        "p99_excess_among_used": 1.5798835876763038,
+        "population_harm_incidence": 0.002824858757062147
+      },
+      "calibration_target_0.15": {
+        "calibration_risk_threshold": 0.43463500779717634,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.00847457627118644,
+          "harm_rate_ci_high": 0.01373817476195244,
+          "harm_rate_ci_low": 0.004006242132620654,
+          "mean_excess_loss": 0.002250768328214214,
+          "mean_excess_loss_ci_high": 0.0068477719289406274,
+          "mean_excess_loss_ci_low": -0.0012429303584902188,
+          "mean_harm_nats": 0.43894538454934307,
+          "mean_harm_nats_ci_high": 0.7874967284745075,
+          "mean_harm_nats_ci_low": 0.06392291622481587
+        },
+        "harm_rate_among_used": 0.21428571428571427,
+        "history_coverage": 0.03954802259887006,
+        "mean_excess_among_used": 0.056912284870559424,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6280555072293724,
+          "ece": 0.14945695554893398,
+          "log_loss": 1.5013557366568377,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": 0.0792136538111002,
+        "p99_excess_among_used": 1.6583729436683838,
+        "population_harm_incidence": 0.00847457627118644
+      },
+      "calibration_target_0.2": {
+        "calibration_risk_threshold": 0.54474711595266,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.012994350282485875,
+          "harm_rate_ci_high": 0.019688945131858496,
+          "harm_rate_ci_low": 0.0073451934944856224,
+          "mean_excess_loss": 0.0006360190189102575,
+          "mean_excess_loss_ci_high": 0.006820698827604084,
+          "mean_excess_loss_ci_low": -0.005110261753926861,
+          "mean_harm_nats": 0.4535556452962294,
+          "mean_harm_nats_ci_high": 0.7112134090636485,
+          "mean_harm_nats_ci_low": 0.1893706457376438
+        },
+        "harm_rate_among_used": 0.23469387755102042,
+        "history_coverage": 0.05536723163841808,
+        "mean_excess_among_used": 0.011487282280317921,
+        "metrics": {
+          "accuracy": 0.5628930817610063,
+          "brier": 0.6270958887933131,
+          "ece": 0.14889008269269666,
+          "log_loss": 1.499857777391917,
+          "macro_f1": 0.4602115682476609,
+          "weighted_f1": 0.5613971972513001
+        },
+        "p90_excess_among_used": 0.24954591142172,
+        "p99_excess_among_used": 1.5343124808519968,
+        "population_harm_incidence": 0.012994350282485875
+      },
+      "calibration_target_0.25": {
+        "calibration_risk_threshold": 0.6298817514561532,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0192090395480226,
+          "harm_rate_ci_high": 0.026472029988465966,
+          "harm_rate_ci_low": 0.012994492217764515,
+          "mean_excess_loss": 0.0013372403109558853,
+          "mean_excess_loss_ci_high": 0.008435197907587158,
+          "mean_excess_loss_ci_low": -0.005683195951622073,
+          "mean_harm_nats": 0.4385016984330415,
+          "mean_harm_nats_ci_high": 0.6550168840087962,
+          "mean_harm_nats_ci_low": 0.21887918944657125
+        },
+        "harm_rate_among_used": 0.2537313432835821,
+        "history_coverage": 0.07570621468926554,
+        "mean_excess_among_used": 0.01766354739098444,
+        "metrics": {
+          "accuracy": 0.5623689727463312,
+          "brier": 0.6266849743100585,
+          "ece": 0.1494218917410438,
+          "log_loss": 1.5005082814207018,
+          "macro_f1": 0.45870385126855245,
+          "weighted_f1": 0.5607465342451231
+        },
+        "p90_excess_among_used": 0.2339192540499262,
+        "p99_excess_among_used": 1.6036322235124978,
+        "population_harm_incidence": 0.0192090395480226
+      },
+      "calibration_target_0.3": {
+        "calibration_risk_threshold": 0.70964211082407,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.030508474576271188,
+          "harm_rate_ci_high": 0.03985684320922913,
+          "harm_rate_ci_low": 0.022347934009625592,
+          "mean_excess_loss": 0.0015780386972300063,
+          "mean_excess_loss_ci_high": 0.014691461368929615,
+          "mean_excess_loss_ci_low": -0.010650320693258806,
+          "mean_harm_nats": 0.544404890004532,
+          "mean_harm_nats_ci_high": 0.8314848694313444,
+          "mean_harm_nats_ci_low": 0.30638533230925924
+        },
+        "harm_rate_among_used": 0.27979274611398963,
+        "history_coverage": 0.10903954802259887,
+        "mean_excess_among_used": 0.014472168363197457,
+        "metrics": {
+          "accuracy": 0.5649895178197065,
+          "brier": 0.6255353916935529,
+          "ece": 0.14891003504844733,
+          "log_loss": 1.5007316635714905,
+          "macro_f1": 0.4606858223862716,
+          "weighted_f1": 0.5630748949620715
+        },
+        "p90_excess_among_used": 0.43484412711131987,
+        "p99_excess_among_used": 1.7091372846155193,
+        "population_harm_incidence": 0.030508474576271188
+      },
+      "calibration_target_0.4": {
+        "calibration_risk_threshold": 0.8506494233508495,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0576271186440678,
+          "harm_rate_ci_high": 0.07435611810452607,
+          "harm_rate_ci_low": 0.04313054320254446,
+          "mean_excess_loss": -0.001905196991524107,
+          "mean_excess_loss_ci_high": 0.019980145687682586,
+          "mean_excess_loss_ci_low": -0.025019333343218913,
+          "mean_harm_nats": 0.6250675942408952,
+          "mean_harm_nats_ci_high": 0.8358004330690797,
+          "mean_harm_nats_ci_low": 0.43304763418937364
+        },
+        "harm_rate_among_used": 0.281767955801105,
+        "history_coverage": 0.20451977401129945,
+        "mean_excess_among_used": -0.009315465953032216,
+        "metrics": {
+          "accuracy": 0.5670859538784067,
+          "brier": 0.6220103181831849,
+          "ece": 0.15005768337954953,
+          "log_loss": 1.497500360023747,
+          "macro_f1": 0.462866749796901,
+          "weighted_f1": 0.564922128351884
+        },
+        "p90_excess_among_used": 0.4817213085573481,
+        "p99_excess_among_used": 2.952074904036876,
+        "population_harm_incidence": 0.0576271186440678
+      },
+      "calibration_target_0.5": {
+        "calibration_risk_threshold": 0.9805790026410115,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.08644067796610169,
+          "harm_rate_ci_high": 0.10694976789509868,
+          "harm_rate_ci_low": 0.06903894067841344,
+          "mean_excess_loss": -0.0060047067058607625,
+          "mean_excess_loss_ci_high": 0.02307971671649364,
+          "mean_excess_loss_ci_low": -0.03457692913373915,
+          "mean_harm_nats": 0.6515445243600658,
+          "mean_harm_nats_ci_high": 0.8305910280234753,
+          "mean_harm_nats_ci_low": 0.475230111769401
+        },
+        "harm_rate_among_used": 0.2903225806451613,
+        "history_coverage": 0.29774011299435027,
+        "mean_excess_among_used": -0.02016761075782456,
+        "metrics": {
+          "accuracy": 0.5723270440251572,
+          "brier": 0.6173052938092634,
+          "ece": 0.15023369842219356,
+          "log_loss": 1.4936973557290008,
+          "macro_f1": 0.4684623257656048,
+          "weighted_f1": 0.5696162069687145
+        },
+        "p90_excess_among_used": 0.4337022831427482,
+        "p99_excess_among_used": 3.384569921635435,
+        "population_harm_incidence": 0.08644067796610169
+      },
+      "calibration_target_0.6": {
+        "calibration_risk_threshold": 1.1144738548382618,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.1288135593220339,
+          "harm_rate_ci_high": 0.15238812340106805,
+          "harm_rate_ci_low": 0.10583151894608034,
+          "mean_excess_loss": 0.005240906350811028,
+          "mean_excess_loss_ci_high": 0.04162826119438101,
+          "mean_excess_loss_ci_low": -0.030193247117270134,
+          "mean_harm_nats": 0.7021634951425346,
+          "mean_harm_nats_ci_high": 0.8701662553569505,
+          "mean_harm_nats_ci_low": 0.5456175407051551
+        },
+        "harm_rate_among_used": 0.30440587449933243,
+        "history_coverage": 0.4231638418079096,
+        "mean_excess_among_used": 0.012385052391102153,
+        "metrics": {
+          "accuracy": 0.5812368972746331,
+          "brier": 0.6133613882330211,
+          "ece": 0.1488758964276947,
+          "log_loss": 1.5041296068350327,
+          "macro_f1": 0.47521617175015063,
+          "weighted_f1": 0.5773476623470576
+        },
+        "p90_excess_among_used": 0.6364334969117712,
+        "p99_excess_among_used": 3.407723330816839,
+        "population_harm_incidence": 0.1288135593220339
+      },
+      "calibration_target_0.75": {
+        "calibration_risk_threshold": 1.3078336795732202,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.19943502824858758,
+          "harm_rate_ci_high": 0.22711607194823197,
+          "harm_rate_ci_low": 0.17175994531322797,
+          "mean_excess_loss": 0.015766754239677456,
+          "mean_excess_loss_ci_high": 0.06280953576182297,
+          "mean_excess_loss_ci_low": -0.03314329269385561,
+          "mean_harm_nats": 0.7658875239004981,
+          "mean_harm_nats_ci_high": 0.8973705288714775,
+          "mean_harm_nats_ci_low": 0.6388013614346345
+        },
+        "harm_rate_among_used": 0.31801801801801804,
+        "history_coverage": 0.6271186440677966,
+        "mean_excess_among_used": 0.025141581084891076,
+        "metrics": {
+          "accuracy": 0.5875262054507338,
+          "brier": 0.6074552444857756,
+          "ece": 0.15591057856054544,
+          "log_loss": 1.5138941512602389,
+          "macro_f1": 0.4821445188747853,
+          "weighted_f1": 0.5823151340478903
+        },
+        "p90_excess_among_used": 0.7816476799785298,
+        "p99_excess_among_used": 3.4867683448593585,
+        "population_harm_incidence": 0.19943502824858758
+      },
+      "calibration_target_0.9": {
+        "calibration_risk_threshold": 1.5682655940649608,
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.2830508474576271,
+          "harm_rate_ci_high": 0.316819188030806,
+          "harm_rate_ci_low": 0.24986570479131842,
+          "mean_excess_loss": 0.03801415746769122,
+          "mean_excess_loss_ci_high": 0.10714449853476928,
+          "mean_excess_loss_ci_low": -0.02727851200344573,
+          "mean_harm_nats": 0.845519669515067,
+          "mean_harm_nats_ci_high": 0.9788036430962814,
+          "mean_harm_nats_ci_low": 0.7235645599360143
+        },
+        "harm_rate_among_used": 0.326171875,
+        "history_coverage": 0.8677966101694915,
+        "mean_excess_among_used": 0.0438053767694098,
+        "metrics": {
+          "accuracy": 0.5974842767295597,
+          "brier": 0.6023108043458698,
+          "ece": 0.1671067264176574,
+          "log_loss": 1.5345324655755348,
+          "macro_f1": 0.48764956698762496,
+          "weighted_f1": 0.5896756564808164
+        },
+        "p90_excess_among_used": 1.0241594623951493,
+        "p99_excess_among_used": 3.5512072396271788,
+        "population_harm_incidence": 0.2830508474576271
+      },
+      "strict_conformal_q90_upper_below_zero": {
+        "cluster_bootstrap_policy_minus_current": {
+          "harm_rate": 0.0,
+          "harm_rate_ci_high": 0.0,
+          "harm_rate_ci_low": 0.0,
+          "mean_excess_loss": 0.0,
+          "mean_excess_loss_ci_high": 0.0,
+          "mean_excess_loss_ci_low": 0.0,
+          "mean_harm_nats": 0.0,
+          "mean_harm_nats_ci_high": 0.0,
+          "mean_harm_nats_ci_low": 0.0
+        },
+        "harm_rate_among_used": null,
+        "history_coverage": 0.0,
+        "mean_excess_among_used": null,
+        "metrics": {
+          "accuracy": 0.5613207547169812,
+          "brier": 0.6279926157909784,
+          "ece": 0.14879883650820575,
+          "log_loss": 1.4992677597485884,
+          "macro_f1": 0.4576913381207114,
+          "weighted_f1": 0.5597400469867184
+        },
+        "p90_excess_among_used": null,
+        "p99_excess_among_used": null,
+        "population_harm_incidence": 0.0
+      }
+    }
+  },
+  "selector_increment_paired_cluster_bootstrap": {
+    "auc_increment": 0.08705698005697993,
+    "auc_increment_ci_high": 0.12352672863753139,
+    "auc_increment_ci_low": 0.050762085620473504,
+    "spearman_increment": 0.17777202614085383,
+    "spearman_increment_ci_high": 0.25482323830380893,
+    "spearman_increment_ci_low": 0.09614854986339967
+  },
+  "selector_metrics": {
+    "text": {
+      "calibration_upper_coverage": 0.9007238883143743,
+      "conformal_correction_nats": 0.05759857074910801,
+      "harm_auc": 0.5902849002849003,
+      "harm_balanced_accuracy_at_0_5": 0.5552136752136753,
+      "mean_prediction_spearman": 0.010164951556647905,
+      "validation_upper_coverage": 0.9056497175141243
+    },
+    "text_audio": {
+      "calibration_upper_coverage": 0.9007238883143743,
+      "conformal_correction_nats": -0.005161400788056526,
+      "harm_auc": 0.6380071225071225,
+      "harm_balanced_accuracy_at_0_5": 0.5921794871794872,
+      "mean_prediction_spearman": 0.11535442505723305,
+      "validation_upper_coverage": 0.9073446327683616
+    },
+    "text_audio_video": {
+      "calibration_upper_coverage": 0.9007238883143743,
+      "conformal_correction_nats": -0.01319395533527216,
+      "harm_auc": 0.6773418803418803,
+      "harm_balanced_accuracy_at_0_5": 0.6199358974358974,
+      "mean_prediction_spearman": 0.18793697769750173,
+      "validation_upper_coverage": 0.9220338983050848
+    },
+    "text_video": {
+      "calibration_upper_coverage": 0.9007238883143743,
+      "conformal_correction_nats": 0.01548980424164198,
+      "harm_auc": 0.588648148148148,
+      "harm_balanced_accuracy_at_0_5": 0.5520299145299146,
+      "mean_prediction_spearman": 0.0535373169641476,
+      "validation_upper_coverage": 0.915819209039548
+    }
+  },
+  "stage": "single_frozen_validation_complete"
+}

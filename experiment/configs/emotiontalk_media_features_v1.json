@@ -1,0 +1,53 @@
+{
+  "dataset": "BAAI/Emotiontalk",
+  "dataset_revision": "adbc17fc944e8cf2873643906160c6ca0259ab61",
+  "allowed_splits": ["train_corpus", "val_corpus"],
+  "sealed_split": "test_corpus",
+  "input_policy": {
+    "audio": "raw Audio.tar WAV bytes only",
+    "video": "direct Multimodal.tar MP4 bytes only",
+    "text": "not extracted in this phase; later use frozen official transcription.csv",
+    "forbidden": [
+      "all archive JSON fields",
+      "audio.csv content/captions",
+      "emotion_result and annotator emotion fields",
+      "modality-specific target labels"
+    ]
+  },
+  "audio": {
+    "repo_id": "microsoft/wavlm-base-plus",
+    "revision": "4c66d4806a428f2e922ccfa1a962776e232d487b",
+    "pretraining": "self-supervised speech representation; no EmotionTalk labels",
+    "preprocess": "stereo mean, float32 normalization, polyphase resampling 44.1 kHz to 16 kHz",
+    "representation": "last hidden state temporal mean concatenated with temporal population std",
+    "dimension": 1536
+  },
+  "video": {
+    "repo_id": "facebook/dinov2-small",
+    "revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+    "pretraining": "self-supervised visual representation; no EmotionTalk labels",
+    "frames_per_video": 4,
+    "frame_positions": [0.1, 0.3666666667, 0.6333333333, 0.9],
+    "crop": "largest OpenCV Haar frontal face with 30% margin; full-frame fallback retained and flagged",
+    "representation": "CLS token frame mean concatenated with frame population std",
+    "dimension": 768
+  },
+  "numeric": {
+    "inference": "CUDA autocast float16",
+    "stored_features": "float32",
+    "seed": 20260807,
+    "deterministic_repeat_gate": "max absolute difference must equal 0 on benchmark sample"
+  },
+  "benchmark_gate": {
+    "artifact": "experiment/artifacts/emotiontalk_encoder_benchmark_v1.json",
+    "finite": "6/6 audio and 6/6 video",
+    "audio_peak_cuda_mib": 497.08251953125,
+    "video_peak_cuda_mib": 130.4677734375,
+    "audio_repeat_max_abs_difference": 0.0,
+    "video_repeat_max_abs_difference": 0.0,
+    "observed_face_detection_rate": 0.9166666667,
+    "decision": "PASS"
+  },
+  "missingness_policy": "No silent imputation. Keep resumable work files and fail final export if any allowed-split key lacks either modality or contains non-finite features.",
+  "validation_policy": "Feature extraction is label-blind. Validation labels remain unused until the single frozen Phase 19 evaluation."
+}

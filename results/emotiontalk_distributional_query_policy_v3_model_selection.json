@@ -1,0 +1,1226 @@
+{
+  "access_contract": {
+    "external_nontrain_rows_used": 0,
+    "label_container_format": "single pickled train_corpus object mapping",
+    "label_container_rows_deserialized": 15413,
+    "lineage_report_sha256": "130c7612ca42cf91d165bffa92d474fb1c886f297ac371450e065f7ddddda690",
+    "non_open_label_keys_indexed_for_training_or_metrics": 0,
+    "non_open_label_rows_deserialized": 2966,
+    "non_open_role_rows_used": 0,
+    "required_remediation_for_strict_seal": "pre-materialize and hash an open-role-only label sidecar before sealing roles",
+    "roles_used": [
+      "base_and_utility_fit",
+      "model_selection"
+    ],
+    "row_level_output": false,
+    "strict_epistemic_non_open_label_deserialization_seal_satisfied": false,
+    "upstream_protocol": "bidirectional_emotion_utility_v1",
+    "upstream_role_exclusion_verified": true,
+    "upstream_row_level_output_emitted": false
+  },
+  "alignment_audit": {
+    "cached_target_label_recovery_matches_open_role_labels": true,
+    "distributional_and_query_cache_views_bitwise_equal": true,
+    "environment_drift_is_not_interpreted_as_performance_difference": true,
+    "equal_size_group_tie_order_is_version_sensitive": true,
+    "feature_names_and_cluster_codes_equal_cache": true,
+    "fit_checkpoint_cluster_count": 378,
+    "fit_checkpoint_cluster_pure_partition": true,
+    "fit_checkpoint_exact_nonoverlapping_cover": true,
+    "fit_checkpoint_fold_count": 5,
+    "fit_checkpoint_positions_are_frozen_authority": true,
+    "fit_checkpoint_positions_unique_within_fold": true,
+    "fit_checkpoint_task_count": 58976,
+    "frozen_position_count_by_fold": {
+      "fold_1.npz": 11780,
+      "fold_2.npz": 11768,
+      "fold_3.npz": 11786,
+      "fold_4.npz": 11836,
+      "fold_5.npz": 11806
+    },
+    "frozen_position_sha256_by_fold": {
+      "fold_1.npz": "7f583180af3e1b2c091f6a922cc7d3a8429adcfe445d1959f3efc2712ae223bd",
+      "fold_2.npz": "0ba26002153d64d144a880b38d8bc727659bea70a6c342363457edfe242591fc",
+      "fold_3.npz": "d856f38b83b63e5c27507fbf34c61864418e46dd5f284cd9f49863133a7f872a",
+      "fold_4.npz": "9bfd1b3475701c3906dabaa95a7f1f745efe8a3959d96559c00b48b86183b6c2",
+      "fold_5.npz": "89f487e7e338167604c34dda66e5a2b18f912a5af26132ec07f31ffedca0ba93"
+    },
+    "nll_identity": "strategy pooled_nll - matching current-base pooled_nll == mean_excess_nll_vs_current",
+    "nll_identity_absolute_tolerance": 1e-12,
+    "nll_identity_joint_cells_checked": 125,
+    "nll_identity_maximum_absolute_error": 6.661338147750939e-16,
+    "nll_identity_maximum_absolute_error_by_strategy": {
+      "coverage_matched_recency": 4.579669976578771e-16,
+      "distributional_backward_selected_history": 5.204170427930421e-16,
+      "distributional_forward_selected_history": 4.0939474033052647e-16,
+      "distributional_pseudo_selected_history": 5.759281940243e-16,
+      "distributional_true_selected_history": 6.661338147750939e-16
+    },
+    "nll_identity_satisfied": true,
+    "position_hash_canonicalization": "ordered little-endian int64 task offsets in frozen task order",
+    "recomputed_59d_features_bitwise_equal_cache": true,
+    "runtime_regenerated_fold_assignment_matches_frozen": true,
+    "runtime_regenerated_fold_assignment_mismatched_tasks": 0,
+    "runtime_regenerated_fold_assignment_role": "sensitivity only; never used to assemble frozen probabilities",
+    "runtime_regenerated_position_sha256_by_fold": {
+      "fold_1.npz": "7f583180af3e1b2c091f6a922cc7d3a8429adcfe445d1959f3efc2712ae223bd",
+      "fold_2.npz": "0ba26002153d64d144a880b38d8bc727659bea70a6c342363457edfe242591fc",
+      "fold_3.npz": "d856f38b83b63e5c27507fbf34c61864418e46dd5f284cd9f49863133a7f872a",
+      "fold_4.npz": "9bfd1b3475701c3906dabaa95a7f1f745efe8a3959d96559c00b48b86183b6c2",
+      "fold_5.npz": "89f487e7e338167604c34dda66e5a2b18f912a5af26132ec07f31ffedca0ba93"
+    },
+    "selection_checkpoint_canonical_complete_order": true
+  },
+  "claim_boundary": "This is an open-role one-prediction-per-query development terminal check of distributional repair 1/3 using the frozen linear multimodal base. It is not validation/test evidence, not confirmation of the new causal backbone, and not a final top-conference claim. The upstream pickled train-label container is fully deserialized before only open-role keys are indexed.",
+  "environment": {
+    "numpy": "2.3.1",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "scikit_learn": "1.7.2",
+    "scipy": "1.16.2"
+  },
+  "experiment_counts": {
+    "base_seeds": 5,
+    "fit_rows": 9817,
+    "fit_sampled_tasks": 58976,
+    "primary_joint_seed_grid": 25,
+    "selection_queries": 2630,
+    "selection_sampled_tasks": 16212,
+    "task_feature_count": 59,
+    "utility_models": 4,
+    "utility_seeds": 5
+  },
+  "fixed_strategies": {
+    "all_history": {
+      "base_seed_ensemble_diagnostic": {
+        "actual_history_coverage": 0.9285171102661597,
+        "cvar90_excess_nll_vs_current": 1.4588268221488763,
+        "harm_rate_vs_current": 0.3247148288973384,
+        "mean_candidate_fraction_selected": 0.9285171102661597,
+        "mean_excess_nll_vs_current": -0.02938449428599013,
+        "mean_selected_history_count": 7.734980988593156,
+        "p90_excess_nll_vs_current": 0.6483707302576684,
+        "pooled_accuracy": 0.6536121673003802,
+        "pooled_brier": 0.5202525789231234,
+        "pooled_macro_f1": 0.5401803053740876,
+        "pooled_nll": 1.555726259574751,
+        "pooled_weighted_f1": 0.6352515953157626,
+        "queries": 2630
+      },
+      "five_base_seed_primary": {
+        "base_seed_count": 5,
+        "estimand": "mean metric across five independently fitted base seeds",
+        "metrics": {
+          "actual_history_coverage": {
+            "mean": 0.9285171102661597,
+            "std": 0.0
+          },
+          "cvar90_excess_nll_vs_current": {
+            "mean": 1.5141555659942607,
+            "std": 0.0478355405446138
+          },
+          "harm_rate_vs_current": {
+            "mean": 0.32585551330798485,
+            "std": 0.0031925581033738944
+          },
+          "mean_candidate_fraction_selected": {
+            "mean": 0.9285171102661597,
+            "std": 0.0
+          },
+          "mean_excess_nll_vs_current": {
+            "mean": -0.02656716219640203,
+            "std": 0.014238965354260988
+          },
+          "mean_selected_history_count": {
+            "mean": 7.734980988593156,
+            "std": 0.0
+          },
+          "p90_excess_nll_vs_current": {
+            "mean": 0.6553787318274782,
+            "std": 0.0316607791399117
+          },
+          "pooled_accuracy": {
+            "mean": 0.6527756653992396,
+            "std": 0.004018563525662469
+          },
+          "pooled_brier": {
+            "mean": 0.5242212371504881,
+            "std": 0.0028737068322117684
+          },
+          "pooled_macro_f1": {
+            "mean": 0.5414355372264261,
+            "std": 0.005951763733457606
+          },
+          "pooled_nll": {
+            "mean": 1.5847375956739893,
+            "std": 0.016923806378029337
+          },
+          "pooled_weighted_f1": {
+            "mean": 0.634769619299858,
+            "std": 0.004574823388446814
+          }
+        }
+      }
+    },
+    "current_only": {
+      "base_seed_ensemble_diagnostic": {
+        "actual_history_coverage": 0.0,
+        "cvar90_excess_nll_vs_current": 0.0,
+        "harm_rate_vs_current": 0.0,
+        "mean_candidate_fraction_selected": 0.0,
+        "mean_excess_nll_vs_current": 0.0,
+        "mean_selected_history_count": 0.0,
+        "p90_excess_nll_vs_current": 0.0,
+        "pooled_accuracy": 0.6486692015209126,
+        "pooled_brier": 0.5316389771299946,
+        "pooled_macro_f1": 0.532890803335388,
+        "pooled_nll": 1.5851107538607414,
+        "pooled_weighted_f1": 0.630481097033555,
+        "queries": 2630
+      },
+      "five_base_seed_primary": {
+        "base_seed_count": 5,
+        "estimand": "mean metric across five independently fitted base seeds",
+        "metrics": {
+          "actual_history_coverage": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "cvar90_excess_nll_vs_current": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "harm_rate_vs_current": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "mean_candidate_fraction_selected": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "mean_excess_nll_vs_current": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "mean_selected_history_count": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "p90_excess_nll_vs_current": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "pooled_accuracy": {
+            "mean": 0.6452471482889734,
+            "std": 0.002858041136572825
+          },
+          "pooled_brier": {
+            "mean": 0.5355513613678333,
+            "std": 0.003123674076172068
+          },
+          "pooled_macro_f1": {
+            "mean": 0.5315893385869703,
+            "std": 0.006017831721637828
+          },
+          "pooled_nll": {
+            "mean": 1.611304757870391,
+            "std": 0.02614516057294743
+          },
+          "pooled_weighted_f1": {
+            "mean": 0.6276127093145882,
+            "std": 0.0033729929108986248
+          }
+        }
+      }
+    }
+  },
+  "policy_contract": {
+    "base_seed_probability_ensemble_role": "secondary diagnostic only",
+    "empty_selection_fallback": "current_only",
+    "nll_identity": "pooled_nll and mean_excess_nll_vs_current use the same clipped per-query true-class loss",
+    "nll_probability_floor": 1e-12,
+    "persistent_deletion": false,
+    "predictions_per_selection_query_per_strategy": 1,
+    "primary_seed_estimand": "mean across the 5 utility-seed x 5 independently fitted base-seed grid",
+    "recency_baseline": "same selected-candidate count per query as distributional true bidirectional",
+    "reversibility": "each query reconstructs its set from immutable strict-past history",
+    "score_family": "sign_by_severity_expected_utility",
+    "score_reduction": "mean across coalition draws for each query-candidate pair",
+    "selection_rule": "aggregated query-candidate score > fit query-candidate frozen threshold",
+    "target_fit_pair_coverage": 0.25,
+    "threshold_fit_unit": "fit group-OOF query-candidate score averaged across coalition draws"
+  },
+  "repair_contract": {
+    "analysis_role": "open_role_model_selection_repair_1_of_3",
+    "component_model": {
+      "early_stopping": true,
+      "estimator": "sklearn_hist_gradient_boosting",
+      "l2_regularization": 0.1,
+      "learning_rate": 0.06,
+      "max_bins": 127,
+      "max_depth": null,
+      "max_iter": 60,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 50,
+      "minimum_conditional_rows": 100,
+      "n_iter_no_change": 6,
+      "tolerance": 1e-05,
+      "validation_fraction": 0.1
+    },
+    "generation_api": "distributional_utility_repair.generate_seed_predictions",
+    "group_oof_folds": 5,
+    "model_names": [
+      "distributional_forward_only",
+      "distributional_backward_only",
+      "distributional_pseudo_bidirectional",
+      "distributional_true_bidirectional"
+    ],
+    "protocol": "emotiontalk_distributional_utility_repair_v1",
+    "utility_seeds": [
+      17,
+      29,
+      43,
+      71,
+      101
+    ]
+  },
+  "reproducibility_manifest_sha256": "8cfa48108dae11def5b352de91f4e8f7f80afbf136da19ef3b094e6bf85c44a2",
+  "schema_version": "emotiontalk_open_role_distributional_query_policy_v3",
+  "source_hashes": {
+    "base_config_sha256": "fdd5cd3065c33360eb25837feb4e791296183e514d6a74c8017e8d378465a90e",
+    "checkpoints_sha256": {
+      "fold_1.npz": "54f4ce343c448bff536238658b56e85c00707f64cbedba6e60221dda3f9764de",
+      "fold_2.npz": "12ab1df55f2e8d933ba7c97fddba0657b23bcc3c8c916b903d31360e5b139db8",
+      "fold_3.npz": "0ac481dad6a1c82fc2d9d134dc7eb5e551ca838c7a96613c07b40f452ce2d597",
+      "fold_4.npz": "7230500ad49cb94fcdc2ce9a14331ed87d9d32353a6deb4706bb8668a4ae3797",
+      "fold_5.npz": "6971c140c2c051efe2bbb1a6ff9a1bef11688e8a7e08eaefa986cac18cb13a41",
+      "selection.npz": "29c88252df6f6e38de6c4b3195ec044fc322a149c0a3ed1c2f795e37f099c6ed"
+    },
+    "distributional_dependency_sha256": "60a42c64e7f093d5e0a8b9911cfa9e486da7477c03324db3e2f8302a3d868da8",
+    "feature_config_sha256": "591d7c654d858514f25af5f6e11fa56ce15ed446f7b622040b9dd20210dad4c1",
+    "feature_sha256": "d9d8c40c4f1325a68d0b9488c6a54846d29234606039135ac959aeeeedc439c2",
+    "implementation_sha256": "cbb49efca7866bce7bff15abd4b5d567d13e164944343721a8c52ac9d6d8261b",
+    "label_archive_sha256": "e89f1f52cd7bd48d4246b725bdd1d3976ab541db6fbef6e06b018625edd56810",
+    "lineage_report_sha256": "130c7612ca42cf91d165bffa92d474fb1c886f297ac371450e065f7ddddda690",
+    "private_cache_sha256": "d754d9d3af36fddc9c3f935983ecd77c921163c1d33f5615e46871bed47901c9",
+    "query_policy_dependency_sha256": "9e38350cb5db5ac8209fd7cac8b492d4b45b69372748ee62b160d9ddbcf61243",
+    "repair_config_sha256": "b18fd7732d76893168a23a1db5d5689914d161dec9a47570b255a8ff39c60343",
+    "runner_sha256": "23a490f19a456f7a3e2fa65e38d31a3e624fbd3406967b355065d9b40c4fdb72",
+    "transcription_sha256": "a2b641caa92076a94a40f5c8d7b0e60d9adea99b295c72268a7c542dcc2ad3c9",
+    "utility_config_sha256": "447689af6b7061604011f13c616591f969a9eb683963cae8d05829e17d5ec64c"
+  },
+  "status": "open_role_distributional_query_terminal_check_complete_with_label_container_limitation",
+  "utility_seed_strategy_summaries": {
+    "coverage_matched_recency": {
+      "base_seed_count": 5,
+      "base_seed_ensemble_diagnostic": {
+        "meets_four_of_five": true,
+        "metrics": {
+          "actual_history_coverage": {
+            "mean": 0.5889733840304182,
+            "std": 0.007575991956338868
+          },
+          "cvar90_excess_nll_vs_current": {
+            "mean": 1.3887331972096457,
+            "std": 0.03698845484952812
+          },
+          "harm_rate_vs_current": {
+            "mean": 0.25984790874524716,
+            "std": 0.0020227279206494813
+          },
+          "mean_candidate_fraction_selected": {
+            "mean": 0.14462340584059688,
+            "std": 0.0016341169038855607
+          },
+          "mean_excess_nll_vs_current": {
+            "mean": -0.024826851802047734,
+            "std": 0.005235513038100324
+          },
+          "mean_selected_history_count": {
+            "mean": 1.0604562737642584,
+            "std": 0.011972658930672044
+          },
+          "p90_excess_nll_vs_current": {
+            "mean": 0.4902413025689022,
+            "std": 0.012849504977221439
+          },
+          "pooled_accuracy": {
+            "mean": 0.6557414448669202,
+            "std": 0.0013603455376424401
+          },
+          "pooled_brier": {
+            "mean": 0.5259104526657132,
+            "std": 0.0029031422000109675
+          },
+          "pooled_macro_f1": {
+            "mean": 0.5508823128357396,
+            "std": 0.0010299704390007223
+          },
+          "pooled_nll": {
+            "mean": 1.5602839020586934,
+            "std": 0.005235513038100394
+          },
+          "pooled_weighted_f1": {
+            "mean": 0.6405766153425706,
+            "std": 0.0013939655267941053
+          }
+        },
+        "success_definition": {
+          "mean_excess_nll_vs_current_strictly_below_zero": true,
+          "minimum_actual_history_coverage": 0.1,
+          "minimum_macro_f1_gain_vs_current": 0.002
+        },
+        "successful_utility_seeds_out_of_five": 5,
+        "utility_seed_count": 5
+      },
+      "dependence_note": "The 25 grid cells share fitted models; reported standard deviations are descriptive and are not a 25-independent-sample standard error.",
+      "joint_seed_grid_count": 25,
+      "meets_four_of_five": true,
+      "metrics_across_25_seed_combinations": {
+        "actual_history_coverage": {
+          "mean": 0.5889733840304183,
+          "std": 0.006915902816607487
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.4498083329923768,
+          "std": 0.0378070493755189
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.25893536121673,
+          "std": 0.0034761947153111507
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.14462340584059688,
+          "std": 0.0014917378164310384
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.020013279559188333,
+          "std": 0.007891541139021805
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0604562737642587,
+          "std": 0.010929492282741265
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.5031442801083081,
+          "std": 0.021364973867365935
+        },
+        "pooled_accuracy": {
+          "mean": 0.653019011406844,
+          "std": 0.0031124562711878343
+        },
+        "pooled_brier": {
+          "mean": 0.5304602282502303,
+          "std": 0.004067830680604971
+        },
+        "pooled_macro_f1": {
+          "mean": 0.54874227129575,
+          "std": 0.004692988649109658
+        },
+        "pooled_nll": {
+          "mean": 1.5912914783112029,
+          "std": 0.020281380096212984
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6382352234712141,
+          "std": 0.003446280509220997
+        }
+      },
+      "metrics_across_five_utility_seed_means": {
+        "actual_history_coverage": {
+          "mean": 0.5889733840304182,
+          "std": 0.007575991956338868
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.449808332992377,
+          "std": 0.036609823531414946
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.25893536121673,
+          "std": 0.0026859289752774653
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.14462340584059688,
+          "std": 0.0016341169038855607
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.02001327955918833,
+          "std": 0.005320101781247487
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0604562737642584,
+          "std": 0.011972658930672044
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.5031442801083081,
+          "std": 0.018054465509856225
+        },
+        "pooled_accuracy": {
+          "mean": 0.6530190114068442,
+          "std": 0.0017033202033647247
+        },
+        "pooled_brier": {
+          "mean": 0.5304602282502302,
+          "std": 0.0028772206805264653
+        },
+        "pooled_macro_f1": {
+          "mean": 0.54874227129575,
+          "std": 0.0014011166792526355
+        },
+        "pooled_nll": {
+          "mean": 1.5912914783112027,
+          "std": 0.0053201017812473834
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6382352234712141,
+          "std": 0.0016104822122460414
+        }
+      },
+      "primary_estimand": "mean metric across the 5 utility-seed x 5 base-seed grid",
+      "success_definition": {
+        "mean_excess_nll_vs_current_strictly_below_zero": true,
+        "minimum_actual_history_coverage": 0.1,
+        "minimum_macro_f1_gain_vs_current": 0.002,
+        "unit": "each utility seed averaged across the five base seeds"
+      },
+      "successful_utility_seeds_out_of_five": 5,
+      "utility_seed_count": 5
+    },
+    "distributional_backward_selected_history": {
+      "base_seed_count": 5,
+      "base_seed_ensemble_diagnostic": {
+        "meets_four_of_five": false,
+        "metrics": {
+          "actual_history_coverage": {
+            "mean": 0.572851711026616,
+            "std": 0.006841993759255091
+          },
+          "cvar90_excess_nll_vs_current": {
+            "mean": 1.3225557806719526,
+            "std": 0.023685646580768306
+          },
+          "harm_rate_vs_current": {
+            "mean": 0.28114068441064644,
+            "std": 0.003929432907304576
+          },
+          "mean_candidate_fraction_selected": {
+            "mean": 0.1630222099100635,
+            "std": 0.0027889944506815103
+          },
+          "mean_excess_nll_vs_current": {
+            "mean": -0.06028444545672688,
+            "std": 0.00498258390585854
+          },
+          "mean_selected_history_count": {
+            "mean": 1.0857794676806083,
+            "std": 0.01851949141864115
+          },
+          "p90_excess_nll_vs_current": {
+            "mean": 0.4450356538685605,
+            "std": 0.019190653743075308
+          },
+          "pooled_accuracy": {
+            "mean": 0.6463878326996197,
+            "std": 0.0012023869430297948
+          },
+          "pooled_brier": {
+            "mean": 0.5249061631357359,
+            "std": 0.0009696066615550329
+          },
+          "pooled_macro_f1": {
+            "mean": 0.5334577472964531,
+            "std": 0.002122751528831421
+          },
+          "pooled_nll": {
+            "mean": 1.5248263084040141,
+            "std": 0.004982583905858583
+          },
+          "pooled_weighted_f1": {
+            "mean": 0.6284817864034331,
+            "std": 0.0016731796990128904
+          }
+        },
+        "success_definition": {
+          "mean_excess_nll_vs_current_strictly_below_zero": true,
+          "minimum_actual_history_coverage": 0.1,
+          "minimum_macro_f1_gain_vs_current": 0.002
+        },
+        "successful_utility_seeds_out_of_five": 1,
+        "utility_seed_count": 5
+      },
+      "dependence_note": "The 25 grid cells share fitted models; reported standard deviations are descriptive and are not a 25-independent-sample standard error.",
+      "fit_oof_frozen_threshold": {
+        "query_candidate_pairs": 38407,
+        "realized_pair_coverage_mean": 0.25000650923008827,
+        "realized_pair_coverage_std": 0.0,
+        "target_coverage": 0.25,
+        "threshold_mean": 0.024911953398817473,
+        "threshold_std": 0.00041954347408290106,
+        "unit": "query-candidate score averaged across coalition draws"
+      },
+      "joint_seed_grid_count": 25,
+      "meets_four_of_five": true,
+      "metrics_across_25_seed_combinations": {
+        "actual_history_coverage": {
+          "mean": 0.5728517110266159,
+          "std": 0.006245857200422641
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.381713591230739,
+          "std": 0.03412252945635679
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.27677566539923953,
+          "std": 0.005179715856655574
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.1630222099100635,
+          "std": 0.0025459919556583208
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.05576213621548295,
+          "std": 0.007648845247488963
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0857794676806085,
+          "std": 0.016905905339188513
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.461580035697259,
+          "std": 0.026283496039698998
+        },
+        "pooled_accuracy": {
+          "mean": 0.6443346007604563,
+          "std": 0.002150895151898243
+        },
+        "pooled_brier": {
+          "mean": 0.5301671443360426,
+          "std": 0.00375181707815399
+        },
+        "pooled_macro_f1": {
+          "mean": 0.5347992313648745,
+          "std": 0.004378228501712674
+        },
+        "pooled_nll": {
+          "mean": 1.555542621654908,
+          "std": 0.020711631956499374
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6272495847617386,
+          "std": 0.0027743885775075782
+        }
+      },
+      "metrics_across_five_utility_seed_means": {
+        "actual_history_coverage": {
+          "mean": 0.572851711026616,
+          "std": 0.006841993759255091
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.381713591230739,
+          "std": 0.025046507573106537
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.2767756653992396,
+          "std": 0.003838835694085635
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.1630222099100635,
+          "std": 0.0027889944506815103
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.05576213621548295,
+          "std": 0.004985038533086858
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0857794676806083,
+          "std": 0.01851949141864115
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.46158003569725903,
+          "std": 0.021493993285369675
+        },
+        "pooled_accuracy": {
+          "mean": 0.6443346007604562,
+          "std": 0.0010440707389921268
+        },
+        "pooled_brier": {
+          "mean": 0.5301671443360425,
+          "std": 0.0009737987365926737
+        },
+        "pooled_macro_f1": {
+          "mean": 0.5347992313648745,
+          "std": 0.0013319860255983395
+        },
+        "pooled_nll": {
+          "mean": 1.555542621654908,
+          "std": 0.004985038533086926
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6272495847617386,
+          "std": 0.00110662031199345
+        }
+      },
+      "primary_estimand": "mean metric across the 5 utility-seed x 5 base-seed grid",
+      "success_definition": {
+        "mean_excess_nll_vs_current_strictly_below_zero": true,
+        "minimum_actual_history_coverage": 0.1,
+        "minimum_macro_f1_gain_vs_current": 0.002,
+        "unit": "each utility seed averaged across the five base seeds"
+      },
+      "successful_utility_seeds_out_of_five": 4,
+      "utility_seed_count": 5
+    },
+    "distributional_forward_selected_history": {
+      "base_seed_count": 5,
+      "base_seed_ensemble_diagnostic": {
+        "meets_four_of_five": false,
+        "metrics": {
+          "actual_history_coverage": {
+            "mean": 0.5798479087452472,
+            "std": 0.009509504943269792
+          },
+          "cvar90_excess_nll_vs_current": {
+            "mean": 1.31290867374724,
+            "std": 0.01746554751925138
+          },
+          "harm_rate_vs_current": {
+            "mean": 0.27908745247148287,
+            "std": 0.00664583965511351
+          },
+          "mean_candidate_fraction_selected": {
+            "mean": 0.16139527108947252,
+            "std": 0.0017457197328588049
+          },
+          "mean_excess_nll_vs_current": {
+            "mean": -0.05214868416844439,
+            "std": 0.005033768148914028
+          },
+          "mean_selected_history_count": {
+            "mean": 1.0886692015209125,
+            "std": 0.011748372628690874
+          },
+          "p90_excess_nll_vs_current": {
+            "mean": 0.44872479842306817,
+            "std": 0.012338058978031667
+          },
+          "pooled_accuracy": {
+            "mean": 0.6471482889733841,
+            "std": 0.0011406844106464087
+          },
+          "pooled_brier": {
+            "mean": 0.5283543330197742,
+            "std": 0.0012162285947761977
+          },
+          "pooled_macro_f1": {
+            "mean": 0.5359705250567961,
+            "std": 0.0016928969936605893
+          },
+          "pooled_nll": {
+            "mean": 1.5329620696922968,
+            "std": 0.005033768148914052
+          },
+          "pooled_weighted_f1": {
+            "mean": 0.6299842231969841,
+            "std": 0.0008257556495244938
+          }
+        },
+        "success_definition": {
+          "mean_excess_nll_vs_current_strictly_below_zero": true,
+          "minimum_actual_history_coverage": 0.1,
+          "minimum_macro_f1_gain_vs_current": 0.002
+        },
+        "successful_utility_seeds_out_of_five": 3,
+        "utility_seed_count": 5
+      },
+      "dependence_note": "The 25 grid cells share fitted models; reported standard deviations are descriptive and are not a 25-independent-sample standard error.",
+      "fit_oof_frozen_threshold": {
+        "query_candidate_pairs": 38407,
+        "realized_pair_coverage_mean": 0.25000650923008827,
+        "realized_pair_coverage_std": 0.0,
+        "target_coverage": 0.25,
+        "threshold_mean": 0.023926716119423645,
+        "threshold_std": 0.000396109945312434,
+        "unit": "query-candidate score averaged across coalition draws"
+      },
+      "joint_seed_grid_count": 25,
+      "meets_four_of_five": true,
+      "metrics_across_25_seed_combinations": {
+        "actual_history_coverage": {
+          "mean": 0.5798479087452472,
+          "std": 0.008680950613559583
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.3740756844521758,
+          "std": 0.031123052920837765
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.27682129277566536,
+          "std": 0.006704929065322416
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.16139527108947252,
+          "std": 0.0015936167946144335
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.046851750450061666,
+          "std": 0.007649058562974201
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0886692015209125,
+          "std": 0.010724747837850428
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.48033067563763454,
+          "std": 0.02573076925842871
+        },
+        "pooled_accuracy": {
+          "mean": 0.6452471482889733,
+          "std": 0.002156489166942136
+        },
+        "pooled_brier": {
+          "mean": 0.533759947746995,
+          "std": 0.0038653367675406626
+        },
+        "pooled_macro_f1": {
+          "mean": 0.5349863591009013,
+          "std": 0.005077343499443907
+        },
+        "pooled_nll": {
+          "mean": 1.5644530074203293,
+          "std": 0.02094732086674843
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6281564416989568,
+          "std": 0.002717547748127117
+        }
+      },
+      "metrics_across_five_utility_seed_means": {
+        "actual_history_coverage": {
+          "mean": 0.5798479087452472,
+          "std": 0.009509504943269792
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.374075684452176,
+          "std": 0.019085937407633004
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.27682129277566536,
+          "std": 0.00651631604230958
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.16139527108947252,
+          "std": 0.0017457197328588049
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.046851750450061666,
+          "std": 0.005124738173328568
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0886692015209125,
+          "std": 0.011748372628690874
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.4803306756376345,
+          "std": 0.01042950217845422
+        },
+        "pooled_accuracy": {
+          "mean": 0.6452471482889734,
+          "std": 0.0008949507449383827
+        },
+        "pooled_brier": {
+          "mean": 0.533759947746995,
+          "std": 0.0011852906843167414
+        },
+        "pooled_macro_f1": {
+          "mean": 0.5349863591009013,
+          "std": 0.0021695483062144105
+        },
+        "pooled_nll": {
+          "mean": 1.5644530074203291,
+          "std": 0.0051247381733285444
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6281564416989568,
+          "std": 0.0007407474943992171
+        }
+      },
+      "primary_estimand": "mean metric across the 5 utility-seed x 5 base-seed grid",
+      "success_definition": {
+        "mean_excess_nll_vs_current_strictly_below_zero": true,
+        "minimum_actual_history_coverage": 0.1,
+        "minimum_macro_f1_gain_vs_current": 0.002,
+        "unit": "each utility seed averaged across the five base seeds"
+      },
+      "successful_utility_seeds_out_of_five": 4,
+      "utility_seed_count": 5
+    },
+    "distributional_pseudo_selected_history": {
+      "base_seed_count": 5,
+      "base_seed_ensemble_diagnostic": {
+        "meets_four_of_five": false,
+        "metrics": {
+          "actual_history_coverage": {
+            "mean": 0.5885931558935361,
+            "std": 0.010495949613568251
+          },
+          "cvar90_excess_nll_vs_current": {
+            "mean": 1.3056078434667386,
+            "std": 0.03629284099396682
+          },
+          "harm_rate_vs_current": {
+            "mean": 0.27961977186311787,
+            "std": 0.006416737067598166
+          },
+          "mean_candidate_fraction_selected": {
+            "mean": 0.15872134507402796,
+            "std": 0.003288353403085909
+          },
+          "mean_excess_nll_vs_current": {
+            "mean": -0.05639521012158546,
+            "std": 0.004563781478627798
+          },
+          "mean_selected_history_count": {
+            "mean": 1.0990874524714829,
+            "std": 0.02370349646413969
+          },
+          "p90_excess_nll_vs_current": {
+            "mean": 0.44281371192748875,
+            "std": 0.0160291669219173
+          },
+          "pooled_accuracy": {
+            "mean": 0.645703422053232,
+            "std": 0.0016442394152425459
+          },
+          "pooled_brier": {
+            "mean": 0.5290402413473817,
+            "std": 0.0014313912124679737
+          },
+          "pooled_macro_f1": {
+            "mean": 0.5353799979860255,
+            "std": 0.003732533044632335
+          },
+          "pooled_nll": {
+            "mean": 1.5287155437391557,
+            "std": 0.0045637814786277575
+          },
+          "pooled_weighted_f1": {
+            "mean": 0.628815914403323,
+            "std": 0.001956968605804618
+          }
+        },
+        "success_definition": {
+          "mean_excess_nll_vs_current_strictly_below_zero": true,
+          "minimum_actual_history_coverage": 0.1,
+          "minimum_macro_f1_gain_vs_current": 0.002
+        },
+        "successful_utility_seeds_out_of_five": 3,
+        "utility_seed_count": 5
+      },
+      "dependence_note": "The 25 grid cells share fitted models; reported standard deviations are descriptive and are not a 25-independent-sample standard error.",
+      "fit_oof_frozen_threshold": {
+        "query_candidate_pairs": 38407,
+        "realized_pair_coverage_mean": 0.25000650923008827,
+        "realized_pair_coverage_std": 0.0,
+        "target_coverage": 0.25,
+        "threshold_mean": 0.017401836038336192,
+        "threshold_std": 0.00020905547277106599,
+        "unit": "query-candidate score averaged across coalition draws"
+      },
+      "joint_seed_grid_count": 25,
+      "meets_four_of_five": false,
+      "metrics_across_25_seed_combinations": {
+        "actual_history_coverage": {
+          "mean": 0.5885931558935362,
+          "std": 0.009581447276314936
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.3672089354299939,
+          "std": 0.0414578740107731
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.27739923954372625,
+          "std": 0.0068696537697078095
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.158721345074028,
+          "std": 0.0030018422265317177
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.05120580810647721,
+          "std": 0.007558098676851654
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0990874524714829,
+          "std": 0.021638232841922088
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.47616157165095685,
+          "std": 0.024458305844084916
+        },
+        "pooled_accuracy": {
+          "mean": 0.643680608365019,
+          "std": 0.002621277075259177
+        },
+        "pooled_brier": {
+          "mean": 0.534522168489645,
+          "std": 0.004026465466403288
+        },
+        "pooled_macro_f1": {
+          "mean": 0.5343818182739459,
+          "std": 0.005589076670433946
+        },
+        "pooled_nll": {
+          "mean": 1.560098949763914,
+          "std": 0.020747604210297206
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6269504255336744,
+          "std": 0.0031977041369079915
+        }
+      },
+      "metrics_across_five_utility_seed_means": {
+        "actual_history_coverage": {
+          "mean": 0.5885931558935361,
+          "std": 0.010495949613568251
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.3672089354299932,
+          "std": 0.035268667370366824
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.27739923954372625,
+          "std": 0.0062453325109478935
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.15872134507402796,
+          "std": 0.003288353403085909
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.051205808106477214,
+          "std": 0.0044782773718784336
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0990874524714829,
+          "std": 0.02370349646413969
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.4761615716509569,
+          "std": 0.013337052448565307
+        },
+        "pooled_accuracy": {
+          "mean": 0.6436806083650188,
+          "std": 0.0017920003242575093
+        },
+        "pooled_brier": {
+          "mean": 0.5345221684896451,
+          "std": 0.00140341316913277
+        },
+        "pooled_macro_f1": {
+          "mean": 0.5343818182739459,
+          "std": 0.002823356001616144
+        },
+        "pooled_nll": {
+          "mean": 1.560098949763914,
+          "std": 0.004478277371878471
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6269504255336744,
+          "std": 0.0019590214841974387
+        }
+      },
+      "primary_estimand": "mean metric across the 5 utility-seed x 5 base-seed grid",
+      "success_definition": {
+        "mean_excess_nll_vs_current_strictly_below_zero": true,
+        "minimum_actual_history_coverage": 0.1,
+        "minimum_macro_f1_gain_vs_current": 0.002,
+        "unit": "each utility seed averaged across the five base seeds"
+      },
+      "successful_utility_seeds_out_of_five": 3,
+      "utility_seed_count": 5
+    },
+    "distributional_true_selected_history": {
+      "base_seed_count": 5,
+      "base_seed_ensemble_diagnostic": {
+        "meets_four_of_five": true,
+        "metrics": {
+          "actual_history_coverage": {
+            "mean": 0.5889733840304182,
+            "std": 0.007575991956338868
+          },
+          "cvar90_excess_nll_vs_current": {
+            "mean": 1.2776101773217405,
+            "std": 0.026872763218151234
+          },
+          "harm_rate_vs_current": {
+            "mean": 0.2685171102661597,
+            "std": 0.006103816386246044
+          },
+          "mean_candidate_fraction_selected": {
+            "mean": 0.14462340584059688,
+            "std": 0.0016341169038855607
+          },
+          "mean_excess_nll_vs_current": {
+            "mean": -0.05777223363301134,
+            "std": 0.004032251792974985
+          },
+          "mean_selected_history_count": {
+            "mean": 1.0604562737642584,
+            "std": 0.011972658930672044
+          },
+          "p90_excess_nll_vs_current": {
+            "mean": 0.4655114102230538,
+            "std": 0.012804976424760556
+          },
+          "pooled_accuracy": {
+            "mean": 0.6448669201520912,
+            "std": 0.0015444939932767654
+          },
+          "pooled_brier": {
+            "mean": 0.5312590213870558,
+            "std": 0.0011705514708820856
+          },
+          "pooled_macro_f1": {
+            "mean": 0.5346259736621093,
+            "std": 0.0023483848248772327
+          },
+          "pooled_nll": {
+            "mean": 1.5273385202277299,
+            "std": 0.004032251792974942
+          },
+          "pooled_weighted_f1": {
+            "mean": 0.627754551798567,
+            "std": 0.0018846325531249072
+          }
+        },
+        "success_definition": {
+          "mean_excess_nll_vs_current_strictly_below_zero": true,
+          "minimum_actual_history_coverage": 0.1,
+          "minimum_macro_f1_gain_vs_current": 0.002
+        },
+        "successful_utility_seeds_out_of_five": 4,
+        "utility_seed_count": 5
+      },
+      "dependence_note": "The 25 grid cells share fitted models; reported standard deviations are descriptive and are not a 25-independent-sample standard error.",
+      "fit_oof_frozen_threshold": {
+        "query_candidate_pairs": 38407,
+        "realized_pair_coverage_mean": 0.25000650923008827,
+        "realized_pair_coverage_std": 0.0,
+        "target_coverage": 0.25,
+        "threshold_mean": 0.009871615117137222,
+        "threshold_std": 0.00020222465739854975,
+        "unit": "query-candidate score averaged across coalition draws"
+      },
+      "joint_seed_grid_count": 25,
+      "meets_four_of_five": false,
+      "metrics_across_25_seed_combinations": {
+        "actual_history_coverage": {
+          "mean": 0.5889733840304183,
+          "std": 0.006915902816607487
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.339359161739445,
+          "std": 0.0352305536627627
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.2660380228136882,
+          "std": 0.005405974128686625
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.14462340584059688,
+          "std": 0.0014917378164310384
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.052719178366630606,
+          "std": 0.007560049639195613
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0604562737642587,
+          "std": 0.010929492282741265
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.4735110891994552,
+          "std": 0.026808509237276613
+        },
+        "pooled_accuracy": {
+          "mean": 0.6406996197718631,
+          "std": 0.002054874243439575
+        },
+        "pooled_brier": {
+          "mean": 0.5368260298160058,
+          "std": 0.004257672717757356
+        },
+        "pooled_macro_f1": {
+          "mean": 0.53145362213063,
+          "std": 0.004201483629430887
+        },
+        "pooled_nll": {
+          "mean": 1.5585855795037604,
+          "std": 0.020454113614669138
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6238506152763036,
+          "std": 0.002598820671857015
+        }
+      },
+      "metrics_across_five_utility_seed_means": {
+        "actual_history_coverage": {
+          "mean": 0.5889733840304182,
+          "std": 0.007575991956338868
+        },
+        "cvar90_excess_nll_vs_current": {
+          "mean": 1.339359161739445,
+          "std": 0.027440900112947496
+        },
+        "harm_rate_vs_current": {
+          "mean": 0.2660380228136882,
+          "std": 0.005281641187917013
+        },
+        "mean_candidate_fraction_selected": {
+          "mean": 0.14462340584059688,
+          "std": 0.0016341169038855607
+        },
+        "mean_excess_nll_vs_current": {
+          "mean": -0.052719178366630606,
+          "std": 0.004153349008991045
+        },
+        "mean_selected_history_count": {
+          "mean": 1.0604562737642584,
+          "std": 0.011972658930672044
+        },
+        "p90_excess_nll_vs_current": {
+          "mean": 0.47351108919945534,
+          "std": 0.011811566409636612
+        },
+        "pooled_accuracy": {
+          "mean": 0.6406996197718632,
+          "std": 0.0014128941946760021
+        },
+        "pooled_brier": {
+          "mean": 0.5368260298160058,
+          "std": 0.0011824830862538348
+        },
+        "pooled_macro_f1": {
+          "mean": 0.53145362213063,
+          "std": 0.002307767534422491
+        },
+        "pooled_nll": {
+          "mean": 1.5585855795037604,
+          "std": 0.004153349008991222
+        },
+        "pooled_weighted_f1": {
+          "mean": 0.6238506152763037,
+          "std": 0.001662166874124003
+        }
+      },
+      "primary_estimand": "mean metric across the 5 utility-seed x 5 base-seed grid",
+      "success_definition": {
+        "mean_excess_nll_vs_current_strictly_below_zero": true,
+        "minimum_actual_history_coverage": 0.1,
+        "minimum_macro_f1_gain_vs_current": 0.002,
+        "unit": "each utility seed averaged across the five base seeds"
+      },
+      "successful_utility_seeds_out_of_five": 0,
+      "utility_seed_count": 5
+    }
+  }
+}

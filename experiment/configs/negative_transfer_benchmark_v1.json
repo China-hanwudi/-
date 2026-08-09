@@ -1,0 +1,61 @@
+{
+  "protocol": "negative_transfer_benchmark_v1",
+  "scope": "Aggregate-only diagnostic benchmark for history-induced negative transfer; no test-set tuning",
+  "status": "exploratory_on_existing_validation_or_dev; confirmatory_only_after_model_and_threshold_freeze",
+  "history_bins": [1, 2, 3, 5, 10],
+  "coverage_targets": [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 0.60, 0.75, 0.90],
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260807,
+  "adapters": {
+    "emotiontalk_multimodal_external_v1": {
+      "history_count": "history_count",
+      "excess_loss": "excess_loss",
+      "cluster": ["group", "dialogue"],
+      "selectors": {
+        "text": {
+          "mean": "text_predicted_mean",
+          "harm_probability": "text_predicted_harm",
+          "upper": "text_predicted_upper"
+        },
+        "text_audio": {
+          "mean": "text_audio_predicted_mean",
+          "harm_probability": "text_audio_predicted_harm",
+          "upper": "text_audio_predicted_upper"
+        },
+        "text_video": {
+          "mean": "text_video_predicted_mean",
+          "harm_probability": "text_video_predicted_harm",
+          "upper": "text_video_predicted_upper"
+        },
+        "text_audio_video": {
+          "mean": "text_audio_video_predicted_mean",
+          "harm_probability": "text_audio_video_predicted_harm",
+          "upper": "text_audio_video_predicted_upper"
+        }
+      }
+    },
+    "meld_audio_text_risk_v1": {
+      "history_count": "history_count",
+      "excess_loss": "excess_nll",
+      "cluster": "Dialogue_ID",
+      "selectors": {
+        "text": {
+          "mean": "text_predicted_mean",
+          "harm_probability": "text_predicted_harm",
+          "upper": "text_predicted_upper"
+        },
+        "text_audio": {
+          "mean": "audio_predicted_mean",
+          "harm_probability": "audio_predicted_harm",
+          "upper": "audio_predicted_upper"
+        }
+      }
+    }
+  },
+  "reporting_contract": {
+    "allowed_output": "aggregate metrics, confidence intervals, anonymous history-depth strata",
+    "forbidden_output": "query keys, dialogue ids, speaker ids, text, labels, media paths, per-query predictions",
+    "primary_cluster_unit": "dialogue",
+    "claim_boundary": "Existing validation/dev analyses are exploratory. Confirmation requires an untouched split or independently licensed dataset."
+  }
+}
