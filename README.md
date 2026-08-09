@@ -84,19 +84,17 @@ MELD + EmotionTalk + IEMOCAP 外部确认（正负结果均报告）
 
 ## 数据与发布边界
 
-完整规定见 [DATA_BOUNDARY.md](DATA_BOUNDARY.md)（2026-08-09 已修订）。
+完整规定见 [DATA_BOUNDARY.md](DATA_BOUNDARY.md)（科研协作版）。
 
-**可以上传：**自行编写的代码与配置；合成测试；官方下载脚本与校验清单；聚合统计与科研图；**团队自有 N3 checkpoint / 指标卡**（建议 `模型/artifacts/`，大文件用 Git LFS）。
+**鼓励上传：**代码与配置；开源许可允许的预训练权重（本仓已放 EmoBERTa-base）；自训 N3 checkpoint；聚合指标；合成测试。
 
-**仍然禁止上传（第三方许可，改协议也不能放开）：**
+**底线禁止：**未获再分发权时镜像 MELD/EmotionTalk/IEMOCAP 等原始数据包；密钥与未脱敏隐私材料。
 
-- MELD、EmotionTalk、IEMOCAP 等的原始或再分发文本、标签、音视频与压缩包；
-- 可还原单条样本的逐查询表、说话人/对话键、媒体索引；
-- 密钥、Cookie、私钥、授权邮件原文。
+原始数据请用 [`datasets/`](datasets/) 在仓库外下载。自有/开源权重放 `模型/artifacts/`。
 
 ### 协作者如何取得数据
 
-本项目采用“官方来源下载＋本地校验”，不把原始数据复制到公开 GitHub。详细目录规范、固定 revision、封存角色和校验方式见 [官方数据获取与本地目录规范](datasets/README.md)。
+本项目对**原始数据集**仍采用“官方来源下载＋本地校验”。详细目录规范见 [官方数据获取与本地目录规范](datasets/README.md)。开源预训练权重可直接使用本仓 `模型/artifacts/pretrained/`。
 
 ```powershell
 # 默认只取 MELD train/dev 标注；test 保持 evaluator-only

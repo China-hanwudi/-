@@ -18,8 +18,10 @@ DEFAULT_LABELS = (
     "surprise",
 )
 
-ALLOWED_TEXT_TOWERS = frozenset({"composer_n3", "xlm_roberta_large"})
-DEFAULT_HF_TEXT_MODEL = "FacebookAI/xlm-roberta-large"
+ALLOWED_TEXT_TOWERS = frozenset({"composer_n3", "emoberta_base", "xlm_roberta_large"})
+DEFAULT_HF_TEXT_MODEL = "tae898/emoberta-base"
+_PKG_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_LOCAL_EMOBERTA = _PKG_ROOT / "artifacts" / "pretrained" / "emoberta-base"
 
 
 @dataclass
@@ -38,8 +40,9 @@ class N3TrainConfig:
     parameter_budget: int = 2_000_000
     relation_rank: int = 32
     gate_hidden: int = 64
-    text_tower: str = "composer_n3"  # or "xlm_roberta_large"
+    text_tower: str = "composer_n3"  # or emoberta_base / xlm_roberta_large
     hf_text_model_id: str = DEFAULT_HF_TEXT_MODEL
+    hf_text_local_path: str = str(DEFAULT_LOCAL_EMOBERTA)
     emotion_label_order: tuple[str, ...] = field(default_factory=lambda: DEFAULT_LABELS)
     lr: float = 3e-4
     weight_decay: float = 1e-2
@@ -61,6 +64,20 @@ class N3TrainConfig:
         if len(self.emotion_label_order) != self.num_classes:
             raise ValueError("emotion_label_order length must equal num_classes")
 
+    def resolved_text_model_source(self) -> str:
+        """Prefer vendored EmoBERTa snapshot when present."""
+        if self.text_tower == "emoberta_base":
+            local = Path(self.hf_text_local_path)
+            has_weights = any(local.glob("*.bin")) or any(local.glob("*.safetensors"))
+            if local.is_dir() and has_weights:
+                return str(local)
+            if DEFAULT_LOCAL_EMOBERTA.is_dir() and (
+                any(DEFAULT_LOCAL_EMOBERTA.glob("*.bin"))
+                or any(DEFAULT_LOCAL_EMOBERTA.glob("*.safetensors"))
+            ):
+                return str(DEFAULT_LOCAL_EMOBERTA)
+        return self.hf_text_model_id
+
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
         data["emotion_label_order"] = list(self.emotion_label_order)
@@ -74,7 +91,7 @@ class N3TrainConfig:
         train = raw.get("training", {})
         weights = train.get("loss_weights", {})
         llm = raw.get("builtin_llm", {})
-        optional = llm.get("optional_text_tower", {})
+        optional = llm.get("optional_text_tower") or llm.get("recommended_text_tower") or {}
         default_mode = str(llm.get("default_mode", "composer_n3"))
         if default_mode in ALLOWED_TEXT_TOWERS:
             text_tower = default_mode
@@ -82,6 +99,12 @@ class N3TrainConfig:
             text_tower = str(optional["tower_key"])
         else:
             text_tower = "composer_n3"
+        local = optional.get("local_path")
+        local_path = (
+            str((_PKG_ROOT / local).resolve())
+            if local and not Path(str(local)).is_absolute()
+            else str(local or DEFAULT_LOCAL_EMOBERTA)
+        )
         return cls(
             text_dim=int(dims.get("text_dim", 256)),
             audio_dim=int(dims.get("audio_dim", 1536)),
@@ -94,6 +117,7 @@ class N3TrainConfig:
             parameter_budget=int(arch.get("parameter_budget", 2_000_000)),
             text_tower=text_tower,
             hf_text_model_id=str(optional.get("model_id", DEFAULT_HF_TEXT_MODEL)),
+            hf_text_local_path=local_path,
             emotion_label_order=tuple(raw.get("emotion_label_order", DEFAULT_LABELS)),
             lr=float(train.get("lr", 3e-4)),
             weight_decay=float(train.get("weight_decay", 1e-2)),

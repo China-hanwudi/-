@@ -1,9 +1,8 @@
 """Six-way modality encoders for N3.
 
-Default ``composer_n3`` mode uses learnable projectors over pre-extracted
-features (compatible with this repo's sidecar / SVD+WavLM+DINO pipeline).
-Optional ``xlm_roberta_large`` swaps the text projector for a frozen
-XLM-RoBERTa-large tower (multilingual CN/EN, MIT-licensed on Hugging Face).
+Default ``composer_n3`` uses learnable projectors over pre-extracted features.
+Optional ``emoberta_base`` loads the vendored ERC encoder under
+``模型/artifacts/pretrained/emoberta-base`` (MIT, MELD/IEMOCAP-oriented).
 """
 
 from __future__ import annotations
@@ -16,6 +15,7 @@ from torch import Tensor, nn
 from .config import N3TrainConfig
 
 HF_TEXT_TOWERS = {
+    "emoberta_base": "tae898/emoberta-base",
     "xlm_roberta_large": "FacebookAI/xlm-roberta-large",
 }
 
@@ -35,9 +35,9 @@ class ModalityProjector(nn.Module):
 
 
 class OptionalHFTextTower(nn.Module):
-    """Frozen Hugging Face encoder -> d_model. Loaded only when enabled."""
+    """Frozen Hugging Face encoder -> d_model."""
 
-    def __init__(self, model_id: str, d_model: int) -> None:
+    def __init__(self, model_source: str, d_model: int) -> None:
         super().__init__()
         try:
             from transformers import AutoModel, AutoTokenizer
@@ -46,8 +46,8 @@ class OptionalHFTextTower(nn.Module):
                 "HF text towers require transformers. "
                 "pip install transformers safetensors sentencepiece"
             ) from exc
-        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
-        self.backbone = AutoModel.from_pretrained(model_id)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_source)
+        self.backbone = AutoModel.from_pretrained(model_source)
         for p in self.backbone.parameters():
             p.requires_grad = False
         hidden = int(self.backbone.config.hidden_size)
@@ -78,9 +78,9 @@ class SixWayEncoders(nn.Module):
         self.audio_proj = ModalityProjector(cfg.audio_dim, cfg.d_model, cfg.dropout)
         self.video_proj = ModalityProjector(cfg.video_dim, cfg.d_model, cfg.dropout)
         self.hf_text: OptionalHFTextTower | None = None
-        if cfg.text_tower in HF_TEXT_TOWERS or cfg.text_tower == "xlm_roberta_large":
-            model_id = cfg.hf_text_model_id or HF_TEXT_TOWERS["xlm_roberta_large"]
-            self.hf_text = OptionalHFTextTower(model_id, cfg.d_model)
+        if cfg.text_tower in HF_TEXT_TOWERS:
+            source = cfg.resolved_text_model_source()
+            self.hf_text = OptionalHFTextTower(source, cfg.d_model)
 
     def forward(
         self,
