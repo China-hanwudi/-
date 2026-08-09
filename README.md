@@ -1,95 +1,130 @@
-# CARMA-Affect：纵向个性化情感预测中的历史负迁移与安全回退
+# N3 情感历史效用控制：六路建模 × 双向边际效用 × 真实分类增益
 
-> 研究快照：2026-08-08<br>
-> 当前结论：**历史负迁移问题成立；现有严格安全回退方法尚未成功。**<br>
-> 数据边界：EmotionTalk validation 已完成一次性冻结评估；EmotionTalk test 与 MELD test 均保持封存。
+> **当前研究主线：N3 正向方法。** 本分支已经上传冻结协议、实验框架、接口合同、合成测试与可编辑流程图；它们证明框架可实现、边界可审计，**尚不等于已经证明真实数据性能提升**。<br>
+> **HarmBench/ERC 的定位：**辅助评估、负迁移诊断与安全合同，不是当前主方法。<br>
+> **最终判据：**N3 必须在严格冻结、无泄漏的真实情感分类实验中提高预注册指标；只提高效用预测 AUC、降低 RMSE 或通过工程测试都不算方法成功。
 
-本项目研究一个比“如何利用更多对话历史”更窄、更可证伪的问题：
+N3 面向多模态对话情感识别，核心问题是：面对某条当前话语，应当从同一说话人的严格过去历史中保留哪些文本、音频和视频信息，哪些信息会造成负迁移，以及何时必须安全回退到只看当前话语的分类器。
 
-> 在不知道当前真实情感标签的条件下，能否预测加入同说话人历史后会改善还是损害当前情感预测，并在损害风险较高时可靠地回退到 current-only 模型？
+![N3 情感历史效用控制流程](assets/n3_emotion_history_utility_workflow_20260809.png)
 
-当前证据支持把研究推进为“历史负迁移 benchmark／诊断协议”，但**不支持**把现有 CARMA-Affect 写成已经成功的顶会方法。
+可编辑源图：[PPTX](assets/n3_emotion_history_utility_workflow_20260809.pptx)。完整定义与冻结门见 [N3 候选方案：老师要求对照与冻结协议](docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md)。
 
-教师提出的三点已被整合为一条新的、可证伪的方法路线：**不同集合双向效用 × 情感理论约束 × 六流 3×3 关系 × 校准可逆回退**。新流程、冻结协议和核心计算接口已经落地，但真实 train-only OOF 子集实验尚未完成，因此仍不宣称新方法有效。
+## N3 实验框架
 
-![CARMA-Affect 新科研全流程](assets/carma_affect_full_research_workflow_20260808.png)
-
-完整定义、实验门槛、相关论文映射和讲解稿见[教师三点整合后的科研全流程](docs/10_教师三点整合后的科研全流程_2026-08-08.md)。
-
-![EmotionTalk 三模态外部确认结果](assets/emotiontalk_external_confirmation.png)
-
-## 当前科学结论
-
-| 问题或判门 | 结果 | 主要证据 |
+| 阶段 | 核心处理 | 输出与作用 |
 |---|---|---|
-| 自然历史是否会伤害部分查询？ | **PASS** | EmotionTalk 三模态历史伤害率 33.90%，dialogue 聚类 95% CI 29.99%–38.18% |
-| 多模态信号能否提高伤害预测？ | **PASS** | 三模态 selector harm AUC 0.6773；较文本提高 0.0871，95% CI 0.0508–0.1235 |
-| 严格 q90 回退能否安全且非平凡地使用历史？ | **FAIL** | 仅使用 9/1,770 条历史，覆盖率 0.51%；策略均值 regret 的 95% CI 上界仍大于 0 |
-| 真实历史配对是否具有特异性？ | **PASS** | 真实历史较 20 次受限置换历史平均降低 NLL 0.4339 nats，95% CI 0.3394–0.5525 |
-| CARMA 方法论文路线 | **STOP** | 当前安全回退未通过预冻结门 |
-| 历史负迁移 benchmark 路线 | **GO** | MELD 与 EmotionTalk 均复现逐查询伤害和尾部风险 |
+| 1. 六路输入 | 当前 `T_t/A_t/V_t` 与严格过去历史 `T_h/A_h/V_h` 分路保持，不先把三模态压成一个历史向量 | 六路可独立审计的当前/历史表示 |
+| 2. 情感领域建模 | 文本、音频、视频优先采用情感识别领域编码器；同时构造离散情绪后验、VAD、情感惯性、转折、恢复、跨模态冲突、时间、说话人和质量变量 | 明确把情感理论和情感领域模型放入表示层与门控层 |
+| 3. 共享 3×3 关系 | 建模 T–T、T–A、T–V、A–T、A–A、A–V、V–T、V–A、V–V 九种当前—历史关系，并使用共享主体控制参数量 | 当前三模态与历史三模态的同模态、跨模态关系 |
+| 4. 双向边际效用 | 分别估计文本、音频、视频的加入收益与删除风险，再估计联合效用和不可加的协同/冲突残差 | `U_T/U_A/U_V`、`U_joint` 与 `U_cross` |
+| 5. 两级风险门控 | 先做模态级门控，允许只保留一条历史中的可靠模态；再做整条历史的联合风险门控，不满足冻结条件时回退 current-only | 受控历史表示、最终情绪概率和类别 |
 
-完整结果与限制见[EmotionTalk 三模态外部确认报告](docs/05_EmotionTalk三模态外部确认结果.md)。
+### 双向边际效用处理什么
 
-## 当前实际使用的模型
+它不是只对“已经融合好的历史向量”做一次比较。N3 同时包含两层比较：
 
-当前跑通的验证系统不是单一端到端 Transformer，而是可审计的组合流水线：
+1. **模态级效用：**只改变候选历史的一种模态，分别计算文本、音频、视频历史的前向加入收益和后向删除风险；
+2. **联合级效用：**同时改变该候选的三种模态，判断融合后的整体收益，并用 `U_cross` 表示联合效用不能被三个单模态效用简单相加解释的协同或冲突。
 
-1. 文本：中文字符 2–5 gram TF-IDF；
-2. 音频：冻结的 `microsoft/wavlm-base-plus`，时间均值与标准差得到 1,536 维表示，再在训练折内 PCA 到 96 维；
-3. 视频：冻结的 `facebook/dinov2-small`，每段均匀抽 4 帧，使用人脸裁剪或全帧回退，CLS 均值与标准差得到 768 维表示，再 PCA 到 96 维；
-4. 情感预测器：5 个随机种子集成的 `SGDClassifier(loss="log_loss")`，即 L2 正则化的线性多分类逻辑回归；
-5. 风险 selector：5 种子 `HistGradientBoosting` 均值回归、q90 分位数回归和伤害分类器；
-6. 安全门控：独立 calibration 上的 conformal q90 风险上界；只有预测上界小于 0 才使用历史，否则回退 current-only。
+对候选历史 `h` 的模态 `m∈{T,A,V}`，冻结比较中其余模态和历史背景：
 
-方法细节、输入特征和防泄漏合同见[当前实验方法与模型](docs/02_当前实验方法与模型.md)。
-
-## 两个已完成的真实数据阶段
-
-| 阶段 | 数据与模态 | 有历史评估查询 | 关键结果 | 决策 |
-|---|---|---:|---|---|
-| MELD Pilot | 官方文本＋真实音频轻量特征 | 765 | 历史伤害率 43.27%；轻量音频未提高 selector；严格 q90 全拒绝 | 方法 STOP，benchmark REVISE/GO |
-| EmotionTalk 外部确认 | 官方文本＋WavLM音频＋DINOv2视频 | 1,770 | 历史伤害率 33.90%；三模态提高 selector；严格 q90 仅覆盖 0.51% 且安全性未证实 | 方法 STOP，benchmark GO |
-
-这两个阶段回答的是“问题是否真实且可预测”，不是临床有效性、真实长期心理状态或可穿戴部署效果。
-
-## 仓库结构
-
-| 路径 | 内容 |
-|---|---|
-| [`docs/`](docs/) | 核心问题、研究定位、方法、数据集、进度、完整实验报告 |
-| [`experiment/`](experiment/) | 当前 EmotionTalk 三模态验证代码、冻结配置和无数据合同测试 |
-| [`results/`](results/) | 聚合结果 JSON、作图源数据和证据说明 |
-| [`assets/`](assets/) | 目标方法框架图、实际流程图和冻结结果图 |
-| [`output/pdf/`](output/pdf/) | 新科研全流程图的 PDF 版本 |
-| [`DATA_BOUNDARY.md`](DATA_BOUNDARY.md) | 不得上传的数据、权重、特征和许可边界 |
-
-建议阅读顺序：
-
-1. [核心问题与研究定位](docs/01_核心问题与研究定位.md)
-2. [当前实验方法与模型](docs/02_当前实验方法与模型.md)
-3. [数据集与许可状态](docs/03_数据集与许可状态.md)
-4. [EmotionTalk 三模态外部确认结果](docs/05_EmotionTalk三模态外部确认结果.md)
-5. [当前进度与下一步](docs/06_当前进度与下一步.md)
-6. [教师三点整合后的科研全流程](docs/10_教师三点整合后的科研全流程_2026-08-08.md)
-
-## 最小代码验证
-
-仓库不包含任何原始数据。无需数据即可运行合同测试：
-
-```powershell
-python -m pip install -r experiment/requirements-multimodal.txt
-python -m pytest experiment/tests -q
+```text
+M_m_forward  = loss(q; S_m) - loss(q; S_m + h^m)
+M_m_backward = loss(q; R_m) - loss(q; R_m - h^m)
+U_m = (M_m_forward, M_m_backward)
 ```
 
-完整复现需研究者自行按数据集许可取得 EmotionTalk 文件和预训练编码器。具体命令见 [`experiment/README.md`](experiment/README.md)。
+其中 `M_forward > 0` 表示加入该模态有益，`M_backward > 0` 表示删除后更好、继续保留该模态存在风险。前向背景与后向背景必须来自预注册的不同集合状态，禁止用同一差值改符号伪造“双向”。
 
-## 结果解释边界
+## 为什么这是情感领域方法
 
-- 工程全流程跑通不等于方法假设成功；
-- validation 一次性冻结结果不能继续调阈值后仍称为确认性证据；
-- test 尚未打开；
-- EmotionTalk 是演员对话，不能直接外推到临床、自然长期生活或可穿戴场景；
-- 本仓库不包含原始文本、音频、视频、逐查询记录、模型 bundle 或派生特征。
+N3 的任务、表示、理论约束和成功标准都绑定情感识别，而不是通用历史筛选：
 
-本仓库当前用于科研协作与结果审计。所有论文主张仍需导师和共同作者复核。
+- 主任务始终是当前话语的情绪分类，主损失为 `L_emotion`；
+- 三路编码器优先采用情感微调文本模型、SER/emotion2vec 类音频模型及 AffectNet/FERPlus/AU 类视觉模型，通用编码器仅作为公平基线；
+- VAD、情感惯性、情感转折、情感恢复和跨模态情绪冲突直接进入 3×3 关系层与门控层；
+- 最终成功必须体现为真实 Accuracy、Weighted-F1 等情感分类指标提升，并通过去情感编码器、去 VAD、去转折、去冲突等消融验证。
+
+因此，即使一个通用 selector 能预测“某段历史是否有用”，如果完整 N3 不能提高真实情感分类，它也不能支持本项目的核心主张。
+
+## 确认性实验路径
+
+```text
+按 speaker/dialogue/session 分组交叉拟合
+    ↓
+只在 fit 内生成 N3 效用监督和 OOF 预测
+    ↓
+冻结源码、配置、指标、效应阈值、统计合同与 protocol SHA
+    ↓
+生成不含评估标签的 outcome-free 预测产物
+    ↓
+由一次性 label-only evaluator 计算最终结果
+    ↓
+MELD + EmotionTalk + IEMOCAP 外部确认（正负结果均报告）
+```
+
+主要规则：
+
+- 以 speaker、dialogue 或 session 为统计和切分单位，禁止把同一人物或会话泄漏到训练与评估两侧；
+- MELD 主指标预注册为 Weighted-F1，同时报告 Accuracy、Macro-F1、NLL、Brier、ECE、历史伤害率、CVaR 和风险—覆盖；
+- 至少 5 个随机种子，并使用分组配对区间判断提升是否稳定；
+- 完整 N3 必须优于 independent current-only 和最强历史基线，并在移除情感编码器、模态级/联合双向效用或 3×3 关系后出现预期下降；
+- 已观察的模型选择结果只作探索性证据，不能在继续调参后包装成确认性成功。
+
+## 数据集与当前角色
+
+| 数据集 | N3 中的角色 | 当前状态 | 官方入口 |
+|---|---|---|---|
+| MELD | 标准英文多方对话基准；建立 train/development 证据 | 文本＋真实音频 Pilot 已完成；官方 test 继续封存 | [GitHub](https://github.com/declare-lab/MELD) |
+| EmotionTalk | 中文三模态外部证据与较深同说话人历史 | train/validation 已形成探索性证据；official test 继续封存 | [GitHub](https://github.com/NKU-HLT/EmotionTalk) · [Hugging Face](https://huggingface.co/datasets/BAAI/Emotiontalk) |
+| IEMOCAP | 计划中的第三个独立确认集；适合 session/speaker 隔离及情感转折/恢复 | 尚未运行；必须先获得 USC 官方授权并冻结标签协议 | [USC](https://sail.usc.edu/iemocap/) · [Release](https://sail.usc.edu/iemocap/iemocap_release.htm) |
+
+数据集的详细许可状态与备用顺序见 [数据集与许可状态](docs/03_数据集与许可状态.md)。IEMOCAP 不是可从非官方仓库随意下载或重新分发的数据；无学校邮箱不改变其授权要求。
+
+## 数据与发布边界
+
+本仓库是代码、协议和聚合证据仓库，不是数据集镜像。完整规定见 [DATA_BOUNDARY.md](DATA_BOUNDARY.md)。
+
+**禁止上传：**
+
+- MELD、EmotionTalk、IEMOCAP 等数据集的原始或重分发文本、标签、音频、视频和压缩包；
+- 逐查询记录、说话人/对话标识、媒体索引、可恢复单条样本的信息；
+- 派生音视频特征、模型权重、训练 bundle、checkpoints；
+- release form、DUA、授权邮件、私人路径、截图、密码、Cookie、token 或私钥。
+
+**可以上传：**自行编写的代码、冻结配置、合成合同测试、数据获取/许可说明、不含个体信息的聚合统计和科研流程图。
+
+## 快速验证框架
+
+在 Windows PowerShell 中：
+
+```powershell
+python -m venv .venv
+$python = (Resolve-Path '.venv\Scripts\python.exe').Path
+& $python -m pip install --upgrade pip
+& $python -m pip install -r experiment\requirements-harmbench.txt
+& $python -m pytest experiment\tests\test_harmbench_erc*.py -q
+```
+
+当前已完成的框架测试结果为 **418 passed**，另有一个非阻断的 sklearn 零方差警告。该结果证明现有接口、泄漏防护和合同测试通过，不代表 N3 已经取得真实数据分类增益。
+
+## 关键文件
+
+- [N3 要求对照与冻结协议](docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md)：六路表示、3×3 交互、双向效用、两级门控、成功门和外部确认规则；
+- [前三项创新新颖性审计](docs/13_CARMA-Affect_前三项创新_新颖性审计_2026-08-07.md)：创新边界、相关工作映射与不可过度声称的内容；
+- [N3/HarmBench 候选冻结配置](experiment/configs/harmbench_erc_v2_candidate.json)：当前机器可检验的候选配置；
+- [依赖清单](experiment/requirements-harmbench.txt)：框架测试依赖；
+- [数据与发布边界](DATA_BOUNDARY.md)：允许和禁止进入公开仓库的内容。
+
+## 当前实现边界
+
+截至 2026-08-09：
+
+- N3 协议、框架图、配置合同和合成/防泄漏测试已经进入本分支；
+- 六路真实 producer、三类情感领域编码器及完整真实数据训练流水线尚未全部完成；
+- MELD 与 EmotionTalk 的官方 test 仍保持封存；
+- IEMOCAP 尚未运行，必须先取得官方许可；
+- 因此当前可以表述为“**N3 实验框架已搭建并冻结关键合同**”，不能表述为“**N3 已被证明有效**”。
+
+本分支的下一阶段目标是实现真实六路 producer 与训练管线，在不读取封存标签的前提下完成 fit-only/group-OOF 开发，冻结后再执行一次性确认性评估。
