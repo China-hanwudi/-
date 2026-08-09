@@ -5,7 +5,7 @@
 - 默认骨干：**ComposerN3**（按本仓库冻结协议设计的六路网络，无需下载外部权重即可训练冒烟）
 - 增强文本塔：**XLM-RoBERTa-large**（`FacebookAI/xlm-roberta-large`，MIT，中英多语，比原先 Qwen2.5-0.5B 强得多）
 
-> 不上传权重、特征或原始数据。遵守根目录 [`DATA_BOUNDARY.md`](../DATA_BOUNDARY.md)。
+> 边界见根目录 [`DATA_BOUNDARY.md`](../DATA_BOUNDARY.md)：**自有 checkpoint** 可放到 [`artifacts/`](artifacts/)；第三方原始数据与可还原样本特征仍禁止上传。
 
 ## 「权重」是什么？（和「调参」不是一回事）
 

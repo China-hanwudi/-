@@ -46,7 +46,7 @@ EmotionTalk/
 *.7z
 *.rar
 
-# Derived features, per-query outputs, and model bundles
+# Derived features, per-query outputs, and model bundles (default ignore)
 *.npz
 *.npy
 *.joblib
@@ -58,6 +58,14 @@ EmotionTalk/
 experiment/artifacts/
 experiment/models/
 experiment/checkpoints/
+
+# Allow team-owned N3 release artifacts only (see DATA_BOUNDARY.md)
+!模型/artifacts/
+!模型/artifacts/**/*.pt
+!模型/artifacts/**/*.pth
+!模型/artifacts/**/*.safetensors
+!模型/artifacts/**/*.json
+!模型/artifacts/**/*.md
 
 # Private working documents and screenshots
 *.docx

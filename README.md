@@ -84,16 +84,15 @@ MELD + EmotionTalk + IEMOCAP 外部确认（正负结果均报告）
 
 ## 数据与发布边界
 
-本仓库是代码、协议和聚合证据仓库，不是数据集镜像。完整规定见 [DATA_BOUNDARY.md](DATA_BOUNDARY.md)。
+完整规定见 [DATA_BOUNDARY.md](DATA_BOUNDARY.md)（2026-08-09 已修订）。
 
-**禁止上传：**
+**可以上传：**自行编写的代码与配置；合成测试；官方下载脚本与校验清单；聚合统计与科研图；**团队自有 N3 checkpoint / 指标卡**（建议 `模型/artifacts/`，大文件用 Git LFS）。
 
-- MELD、EmotionTalk、IEMOCAP 等数据集的原始或重分发文本、标签、音频、视频和压缩包；
-- 逐查询记录、说话人/对话标识、媒体索引、可恢复单条样本的信息；
-- 派生音视频特征、模型权重、训练 bundle、checkpoints；
-- release form、DUA、授权邮件、私人路径、截图、密码、Cookie、token 或私钥。
+**仍然禁止上传（第三方许可，改协议也不能放开）：**
 
-**可以上传：**自行编写的代码、冻结配置、合成合同测试、官方下载脚本、固定版本与 SHA-256 清单、数据获取/许可说明、不含个体信息的聚合统计和科研流程图。
+- MELD、EmotionTalk、IEMOCAP 等的原始或再分发文本、标签、音视频与压缩包；
+- 可还原单条样本的逐查询表、说话人/对话键、媒体索引；
+- 密钥、Cookie、私钥、授权邮件原文。
 
 ### 协作者如何取得数据
 
@@ -112,7 +111,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File datasets\scripts\download_of
   -Destination (Join-Path $dataRoot 'EmotionTalk\adbc17fc944e8cf2873643906160c6ca0259ab61')
 ```
 
-加入 `-IncludeMedia` 才会下载大体积音视频；MELD 的 `-IncludeTest` 只允许指定 evaluator 使用。下载所得 archive、标签和媒体仍被 `.gitignore` 排除，不得暂存或提交。
+加入 `-IncludeMedia` 才会下载大体积音视频；MELD 的 `-IncludeTest` 只允许指定 evaluator 使用。下载所得 **原始** archive、标签和媒体仍不得提交进本仓；训好的**自有权重**按 `DATA_BOUNDARY.md` 可放入 `模型/artifacts/`。
 
 ## 快速验证框架
 
