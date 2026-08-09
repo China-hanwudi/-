@@ -2,7 +2,8 @@
 
 Default ``composer_n3`` mode uses learnable projectors over pre-extracted
 features (compatible with this repo's sidecar / SVD+WavLM+DINO pipeline).
-Optional ``qwen2.5-0.5b`` swaps the text projector for a frozen Qwen tower.
+Optional ``xlm_roberta_large`` swaps the text projector for a frozen
+XLM-RoBERTa-large tower (multilingual CN/EN, MIT-licensed on Hugging Face).
 """
 
 from __future__ import annotations
@@ -13,6 +14,10 @@ import torch
 from torch import Tensor, nn
 
 from .config import N3TrainConfig
+
+HF_TEXT_TOWERS = {
+    "xlm_roberta_large": "FacebookAI/xlm-roberta-large",
+}
 
 
 class ModalityProjector(nn.Module):
@@ -29,8 +34,8 @@ class ModalityProjector(nn.Module):
         return self.net(x)
 
 
-class OptionalQwenTextTower(nn.Module):
-    """Frozen Qwen2.5 text tower -> d_model. Loaded only when enabled."""
+class OptionalHFTextTower(nn.Module):
+    """Frozen Hugging Face encoder -> d_model. Loaded only when enabled."""
 
     def __init__(self, model_id: str, d_model: int) -> None:
         super().__init__()
@@ -38,11 +43,11 @@ class OptionalQwenTextTower(nn.Module):
             from transformers import AutoModel, AutoTokenizer
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
-                "text_tower=qwen2.5-0.5b requires transformers. "
-                "pip install transformers safetensors"
+                "HF text towers require transformers. "
+                "pip install transformers safetensors sentencepiece"
             ) from exc
-        self.tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-        self.backbone = AutoModel.from_pretrained(model_id, trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+        self.backbone = AutoModel.from_pretrained(model_id)
         for p in self.backbone.parameters():
             p.requires_grad = False
         hidden = int(self.backbone.config.hidden_size)
@@ -72,9 +77,10 @@ class SixWayEncoders(nn.Module):
         self.text_proj = ModalityProjector(cfg.text_dim, cfg.d_model, cfg.dropout)
         self.audio_proj = ModalityProjector(cfg.audio_dim, cfg.d_model, cfg.dropout)
         self.video_proj = ModalityProjector(cfg.video_dim, cfg.d_model, cfg.dropout)
-        self.qwen: OptionalQwenTextTower | None = None
-        if cfg.text_tower == "qwen2.5-0.5b":
-            self.qwen = OptionalQwenTextTower(cfg.qwen_model_id, cfg.d_model)
+        self.hf_text: OptionalHFTextTower | None = None
+        if cfg.text_tower in HF_TEXT_TOWERS or cfg.text_tower == "xlm_roberta_large":
+            model_id = cfg.hf_text_model_id or HF_TEXT_TOWERS["xlm_roberta_large"]
+            self.hf_text = OptionalHFTextTower(model_id, cfg.d_model)
 
     def forward(
         self,
@@ -82,10 +88,10 @@ class SixWayEncoders(nn.Module):
         texts_current: list[str] | None = None,
         texts_history: list[str] | None = None,
     ) -> dict[str, Tensor]:
-        if self.qwen is not None and texts_current is not None and texts_history is not None:
+        if self.hf_text is not None and texts_current is not None and texts_history is not None:
             device = batch["T_t"].device
-            z_tt = self.qwen.forward_texts(texts_current, device)
-            z_th = self.qwen.forward_texts(texts_history, device)
+            z_tt = self.hf_text.forward_texts(texts_current, device)
+            z_th = self.hf_text.forward_texts(texts_history, device)
         else:
             z_tt = self.text_proj(batch["T_t"])
             z_th = self.text_proj(batch["T_h"])

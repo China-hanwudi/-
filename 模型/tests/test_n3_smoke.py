@@ -51,7 +51,14 @@ def test_config_from_json() -> None:
     path = ROOT / "configs" / "n3_train_v1.json"
     cfg = N3TrainConfig.from_json(path)
     assert cfg.text_tower == "composer_n3"
+    assert cfg.hf_text_model_id == "FacebookAI/xlm-roberta-large"
     assert cfg.num_classes == 7
+
+
+def test_xlm_tower_config_validates() -> None:
+    cfg = N3TrainConfig(text_tower="xlm_roberta_large")
+    cfg.validate()
+    assert "xlm-roberta-large" in cfg.hf_text_model_id
 
 
 def test_smoke_train() -> None:

@@ -3,6 +3,7 @@ numpy>=1.24
 torch>=2.1
 pytest>=7.0
 
-# Optional: enable text_tower=qwen2.5-0.5b (weights must stay outside git)
+# Optional: enable text_tower=xlm_roberta_large (weights download locally, never commit)
 # transformers>=4.44
 # safetensors>=0.4
+# sentencepiece>=0.1.99

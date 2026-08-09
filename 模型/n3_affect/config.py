@@ -18,6 +18,9 @@ DEFAULT_LABELS = (
     "surprise",
 )
 
+ALLOWED_TEXT_TOWERS = frozenset({"composer_n3", "xlm_roberta_large"})
+DEFAULT_HF_TEXT_MODEL = "FacebookAI/xlm-roberta-large"
+
 
 @dataclass
 class N3TrainConfig:
@@ -35,8 +38,8 @@ class N3TrainConfig:
     parameter_budget: int = 2_000_000
     relation_rank: int = 32
     gate_hidden: int = 64
-    text_tower: str = "composer_n3"  # or "qwen2.5-0.5b"
-    qwen_model_id: str = "Qwen/Qwen2.5-0.5B-Instruct"
+    text_tower: str = "composer_n3"  # or "xlm_roberta_large"
+    hf_text_model_id: str = DEFAULT_HF_TEXT_MODEL
     emotion_label_order: tuple[str, ...] = field(default_factory=lambda: DEFAULT_LABELS)
     lr: float = 3e-4
     weight_decay: float = 1e-2
@@ -53,7 +56,7 @@ class N3TrainConfig:
             raise ValueError("d_model must be divisible by num_heads")
         if self.num_classes != 7:
             raise ValueError("N3 train config currently requires 7 emotion classes")
-        if self.text_tower not in {"composer_n3", "qwen2.5-0.5b"}:
+        if self.text_tower not in ALLOWED_TEXT_TOWERS:
             raise ValueError(f"unknown text_tower: {self.text_tower}")
         if len(self.emotion_label_order) != self.num_classes:
             raise ValueError("emotion_label_order length must equal num_classes")
@@ -72,8 +75,13 @@ class N3TrainConfig:
         weights = train.get("loss_weights", {})
         llm = raw.get("builtin_llm", {})
         optional = llm.get("optional_text_tower", {})
-        default_mode = llm.get("default_mode", "composer_n3")
-        text_tower = "composer_n3" if default_mode == "composer_n3" else "qwen2.5-0.5b"
+        default_mode = str(llm.get("default_mode", "composer_n3"))
+        if default_mode in ALLOWED_TEXT_TOWERS:
+            text_tower = default_mode
+        elif optional.get("tower_key") in ALLOWED_TEXT_TOWERS:
+            text_tower = str(optional["tower_key"])
+        else:
+            text_tower = "composer_n3"
         return cls(
             text_dim=int(dims.get("text_dim", 256)),
             audio_dim=int(dims.get("audio_dim", 1536)),
@@ -85,7 +93,7 @@ class N3TrainConfig:
             num_classes=int(arch.get("num_classes", 7)),
             parameter_budget=int(arch.get("parameter_budget", 2_000_000)),
             text_tower=text_tower,
-            qwen_model_id=str(optional.get("model_id", "Qwen/Qwen2.5-0.5B-Instruct")),
+            hf_text_model_id=str(optional.get("model_id", DEFAULT_HF_TEXT_MODEL)),
             emotion_label_order=tuple(raw.get("emotion_label_order", DEFAULT_LABELS)),
             lr=float(train.get("lr", 3e-4)),
             weight_decay=float(train.get("weight_decay", 1e-2)),
