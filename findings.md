@@ -1,5 +1,12 @@
 # CARMA-Affect Research Findings
 
+## HarmBench-ERC v1 当前验证状态（2026-08-09）
+
+- 新增核心与公开层首轮专项测试为 `38 passed`；独立审计随后复现 exact-freeze、可变 payload、production profile、概率错序和 public 跨字段一致性缺口。修复后的合同＋inference＋public 联合回归为 `66 passed`。这些结果只证明合同、数值和 schema 行为，不是模型性能证据。
+- production inference 已强制 5 seeds / 10,000 replicates / seed 20260810 / finite fraction 0.95，并由当前 repository draft canonical SHA `0e30c634ac3b0ebd10b3238ad307d9cb276b7691d108d1cb30b9c5867a699512` 锁定；generic 2-seed/100-replicate plan 继续只供单元测试，不能进入 production API。
+- 每个概率 tensor 现以 canonical float64 SHA 绑定 ordered row/cluster alignment SHA、实际 seed ID/顺序、model/strategy、shared plan、protocol 和 inference spec；调用方必须提交 producer-pinned array SHA。该机制防止 evaluator 在保留原 row IDs 时静默消费错序矩阵。
+- public writer 独立审计的 cell/contrast SHA 不一致、finite_fraction 伪造、负/小数 replicates、coverage 越界、CI 反序、任意 protocol SHA、弱隐私布尔和 UNC 路径均已纳入 fail-closed 回归；16 线程竞争仍恰好一个赢家。
+
 ## N2 双数据集 joint model-selection 最终冻结（2026-08-09）
 
 - joint run 与正式 verifier 均 exit 0；private artifact / receipt / public report SHA-256 分别为 `27f0485028b1fa86490797089247f47eef8638d72343b9762f5613e57418302d`、`b4243d523a55eb5facc837ac5f0bde34fb940d19fa1b32d321702b3405257237`、`47ec55d4b1a60be5b574812fd0c82713685efc07083734ab86c1e890421d36a5`。
@@ -659,3 +666,13 @@
 - 严格 q90 gate 预注册要求：历史覆盖率至少 10%、策略平均 excess regret 的聚类 95% CI 上界不大于 0、被使用历史的伤害率至少下降 5%。当前冻结结果未过门。
 - 当前实现只判断聚合历史整体是否有害，尚缺逐候选效用、集合非加性交互、逐步集合构造与可逆重用；这正是方法重构的核心缺口。
 - test split 在代码与配置中 fail-closed；EmotionTalk validation 已消耗，不得继续以其结果调参后声称确认性结论。
+
+## 2026-08-09 — HarmBench 开放角色模型路线恢复
+
+- `harmbench_erc_v1` 的合同、production bootstrap、概率张量/行序绑定与 aggregate-only public writer 已实现；专项联合回归为 `79 passed`，synthetic JSON 只证明合同闭环，不是模型性能证据。
+- 仓库已有 EmotionTalk/MELD 的 `OpenRoleCorpus` loader、严格过去同说话人历史、独立 current-only 语义和 N2 causal Transformer 实现；后续无需读取 calibration、internal holdout、validation 或 official test 即可构造新的开放角色模型族。
+- 冻结候选 roster 采用三种实质不同的归纳偏置：线性池化、DeepSets 非线性集合池化、因果 GRU 时序编码；旧 causal Transformer 仅保留为已失败强基线，不再进行 Repair 4 或按 N2 selection 结果调参。
+- 公开依赖已有 PyTorch、scikit-learn 与 HistGradientBoosting；新路线应先在合成 corpus 上验证严格过去、current-only 物理隔离、seed/row-order/概率 receipt，再启动任何真实开放角色训练。
+- 当前 HarmBench 四模块只覆盖协议、指标、共享 bootstrap/概率 panel 和 public writer；还没有将 `OpenRoleCorpus` 训练成五 seed probability panel 的模型 producer，这正是进入真实开放角色实验前的缺口。
+- `OpenRoleCorpus` 定义位于 `emotiontalk_causal_backbone_runner.py`，MELD loader 直接复用同一类型；因此三模型族可共享一个数据源无关的训练器，并由两个 dataset adapter 只负责受控加载与 provenance。
+- Windows Store 系统 Python 3.11 不含 scikit-learn；已重新定位到旧研究工程内此前审计过的独立 `.venv`，后续测试与训练统一使用该环境，避免临时修改系统环境造成不可复现差异。

@@ -1,5 +1,26 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-09 — HarmBench 开放角色模型阶段启动
+
+- 已确认长期 goal 继续 active；沿用 N2 双数据集 NO-GO、后续角色封存、禁止 Repair 4 与真实受限数据云 GPT 的边界。
+- HarmBench exact contract、production inference、probability/alignment receipts、public writer 与 synthetic-only E2E 已完成；最新联合专项为 `79 passed`，synthetic 产物仅为合同证据。
+- 只读仓库审计确认真实开放角色 manifest/sidecar 均存在且字节散列与公开 manifest 一致；EmotionTalk fit/selection 为 9,549/2,682 行，MELD 为 6,606/1,419 行，审计未打开任何 NPZ 内容或 sealed/test 标签。
+- 冻结候选模型方向为线性池化、DeepSets 与 causal GRU，各家族必须独立训练 current-only；旧 N2 causal Transformer 仅作为冻结失败基线。
+- 已启动纯合成 strict-past context 合同实现；下一步先完成数据能力分离、context roster、三家族 probability producer 与泄漏/seed/row-order/checkpoint 测试，再运行真实 fit→selection prediction-only 链。
+- Windows Store Python 因缺少 scikit-learn 在 collection 阶段停止；切换到此前审计的科研 `.venv` 后，HarmBench contract/metrics/inference/public 四模块联合回归为 `79 passed in 67.04s`。
+
+## 2026-08-09 — HarmBench-ERC v1 续接与合同收紧
+
+- 从已冻结的 N2 双数据集 NO-GO 继续，未启封 calibration、internal holdout、validation 或 official test，也未启动 Repair 4。
+- 回收已在运行的 HarmBench contract/metrics/inference/public 专项测试：`38 passed in 46.14s`。
+- 当前只授权修复冻结合同与 production wrapper 的审计缺口；随后运行 synthetic-only 端到端合同。真实受限数据云 GPT 仍为 NO-GO，GPT 路线仅保留合规、冻结、可复现的未来基线接口。
+- 已按持久计划恢复历史状态并运行 session catchup；未发现额外未同步上下文。当前长期 goal 已存在且保持 active，不新建或替换目标。
+- 冻结合同现对 NLL floor、0/0.05 harm thresholds、tail alpha、10,000 reps/seed 20260810、shared draws、95% CI、finite fraction、public privacy 与 official-test fail-closed 整块做 exact-key/value 验证；合同 payload 改为深度不可变，防止 stored SHA 与 live payload 分离。
+- 明确区分 production profile（5 seeds、10,000 reps）与 S0 synthetic profile（500 reps、同 seed 20260810）；production plan 不暴露 replicate/seed override，并绑定 protocol SHA、spec SHA、实际 seed ID/顺序与共享 plan SHA。
+- 新增 production probability tensor receipt：每个 seed×query×class 数组的 canonical SHA 与 ordered-row/cluster alignment、seed IDs、model/strategy、plan/contract 共同绑定；query 轴、seed 轴、单值或 row ID 改动均 fail closed。
+- 公开 writer 增加 cell/contrast alignment 同一性、exact integer、finite-replicate fraction、0.95 gate、point/null/CI 一致性、rate 范围、固定 protocol SHA 与完整隐私布尔值；UNC/device/home/drive-relative 路径扫描补齐，并发 writer 保持唯一赢家。
+- 合同＋inference＋public 联合回归为 `66 passed in 42.92s`。
+
 ## 2026-08-09 — 双数据集 evaluator、独立审计与 joint freeze 最终闭环
 
 - MELD 首次正式 evaluator 以 exit 0 在 911.986 秒完成；独立 verifier 与 SHA 三方绑定通过。`model_selection_gate_passed=false`，prospective power `0.8127` 且 power gate=true；七门全部失败，H1–H5 仅 H3 经 Holm 校正拒绝。

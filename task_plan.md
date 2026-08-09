@@ -100,7 +100,7 @@ reject_if: candidate fails to improve query Macro-F1 without positive excess NLL
 
 ## Next Step
 
-N2 两个单数据集 evaluator 与 joint freeze 已全部完成、验签并冻结为 NO-GO。当前唯一下一动作是在不复用已观察 selection 作为确认数据的前提下，完成一次证据驱动的新路线选择并冻结新的 protocol id：优先评估可用全新数据集/角色上的历史负迁移 benchmark 与独立模型族；若没有合法的新确认数据，先把两数据集的强基线支配、跨数据集异质性、重尾 regret、history-harm 与 fail-closed 协议整理为可审计的否证论文证据包。calibration、internal holdout、validation 与 external test 继续封存；禁止 Repair 4、禁止按结果修改 N2 后重看同一 selection。
+`harmbench_erc_v1` 的 exact development contract、production inference、probability/alignment receipts、public writer 与 synthetic-only E2E 已完成。当前唯一下一动作是实现并冻结开放角色的数据能力分离、strict-past context roster，以及 `hb_linear_pool_v1`、`hb_deepsets_pool_v1`、`hb_causal_gru_v1` 三个实质不同且各自独立 current-only 的模型家族；先以合成 corpus 验证泄漏、seed、row-order、checkpoint 与 probability-panel 合同，再训练 EmotionTalk/MELD 的 fit 角色并仅生成 selection prediction-only 工件。calibration、internal holdout、validation 与 official test 继续封存；禁止 Repair 4、禁止按结果修改 N2 后重看同一 selection，真实受限数据继续禁止发送给 GPT/API。
 
 ## Confirmatory Evidence Gate
 
@@ -193,6 +193,10 @@ Status: pending
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| 恢复后首次用 Windows Store 系统 Python 运行 HarmBench 专项时缺少 `scikit-learn`，3 个测试模块在 collection 阶段失败 | 1 | 未执行测试主体、未修改结果；该环境此前已知只供轻量脚本，改为定位并使用旧实验已审计的独立 `.venv`，不在系统 Python 临时安装依赖 |
+| production probability seed-axis mutation 测试首版把同一 seed 概率复制 5 次，反转 seed 轴数值不变而未触发 SHA 差异 | 1 | 仅合成测试失败、无科研结果；把 fixture 改为五个可区分且仍满足 simplex 的概率面板后，query/seed/bit 三类 mutation 均被拒绝 |
+| row-order mutation 已正确 fail closed，但测试正则预期 `alignment changed`，实现统一报 `production binding changed` | 1 | 仅错误消息断言不匹配；保持更一般的实现错误，不放宽验证，测试改为匹配 `binding changed` 后通过 |
+| 在 `functions.exec` 的 JavaScript 组装 PowerShell 行数命令时，两次因 JS 字符串/PowerShell 反引号混用触发脚本解析错误 | 2 | 两次均未执行 shell、未修改文件；改用 JS 数组生成路径列表，并以 `[char]9` 代替 PowerShell 反引号制表符后成功。后续嵌套脚本避免在 JS template literal 中直接写 PowerShell backtick |
 | 首次 MELD/full strategy 只读审计命令在内插表达式中混用赋值与管道，触发 PowerShell `Missing closing ')'` parser error | 1 | 无文件修改；把 stderr 读取拆为独立变量后重跑，只读审计成功，不重复原语法 |
 | 当前 Windows PowerShell 的 `ConvertFrom-Json` 不支持 `-Depth` 参数 | 2 | 未修改任何文件；改用无 `-Depth` 的定向字段读取，并再次登记禁止重复该参数 |
 | 首次组合 planning patch 使用了错误的 findings/progress 标题锚点 | 1 | `apply_patch` 原子拒绝且无部分写入；读取真实 UTF-8 标题后分文件重试 |
