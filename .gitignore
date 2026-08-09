@@ -23,6 +23,8 @@ secrets/
 # Raw, licensed, controlled, or participant-derived data
 data/
 data_raw/
+datasets/local/
+datasets/downloads/
 external/
 raw/
 media/

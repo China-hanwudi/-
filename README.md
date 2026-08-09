@@ -93,7 +93,26 @@ MELD + EmotionTalk + IEMOCAP 外部确认（正负结果均报告）
 - 派生音视频特征、模型权重、训练 bundle、checkpoints；
 - release form、DUA、授权邮件、私人路径、截图、密码、Cookie、token 或私钥。
 
-**可以上传：**自行编写的代码、冻结配置、合成合同测试、数据获取/许可说明、不含个体信息的聚合统计和科研流程图。
+**可以上传：**自行编写的代码、冻结配置、合成合同测试、官方下载脚本、固定版本与 SHA-256 清单、数据获取/许可说明、不含个体信息的聚合统计和科研流程图。
+
+### 协作者如何取得数据
+
+本项目采用“官方来源下载＋本地校验”，不把原始数据复制到公开 GitHub。详细目录规范、固定 revision、封存角色和校验方式见 [官方数据获取与本地目录规范](datasets/README.md)。
+
+```powershell
+# 默认只取 MELD train/dev 标注；test 保持 evaluator-only
+$dataRoot = 'D:\N3_data'
+powershell -NoProfile -ExecutionPolicy Bypass -File datasets\scripts\download_official_data.ps1 `
+  -Dataset MELD `
+  -Destination (Join-Path $dataRoot 'MELD\e8cedf27b5d2877e198332c957127e16eb214afe')
+
+# EmotionTalk 需先执行 hf auth login 并由本人接受 gated 条款
+powershell -NoProfile -ExecutionPolicy Bypass -File datasets\scripts\download_official_data.ps1 `
+  -Dataset EmotionTalk `
+  -Destination (Join-Path $dataRoot 'EmotionTalk\adbc17fc944e8cf2873643906160c6ca0259ab61')
+```
+
+加入 `-IncludeMedia` 才会下载大体积音视频；MELD 的 `-IncludeTest` 只允许指定 evaluator 使用。下载所得 archive、标签和媒体仍被 `.gitignore` 排除，不得暂存或提交。
 
 ## 快速验证框架
 
