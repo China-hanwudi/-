@@ -2,17 +2,17 @@
 
 ## Goal
 
-在不访问当前/未来评估标签、不泄漏人物或时间信息的前提下，建立并验证 N3 候选方案：当前以冻结 Qwen3-Omni 分别表示当前与历史的文本、音频和视频，通过共享参数的 3×3 当前—历史交互、模态级与联合级真实双向边际效用以及两级安全门控，选择能够真正提高当前情感分类性能的历史信息；情感专用编码器保留为后续 baseline/消融。最终结论必须来自冻结协议后的未观察数据角色或预注册外部确认数据；HarmBench 只保留为辅助 benchmark/备选论文路线。
+在不访问当前/未来评估标签、不泄漏人物或时间信息的前提下，建立并验证 N3 候选方案：原始当前/历史三模态 `x` 先经冻结 Qwen3-Omni 分模态、分候选得到 hidden `e`，再由可训练 Projector 得到真正的 N3 输入 `z`；从冻结 `e` 起由全部可学习上游 group-OOF 的状态 producer 构造逐候选情感动力学 `a_k`，并按 `R_k^0→phi_k=Phi(R_k^0,a_k,masks)→R_k` 条件化关系、模态级/联合级真实双向边际效用以及两级安全门控。`phi_k` 必须直接进入条件化关系、效用、模态门和候选联合门。情感专用编码器只保留为替代表征 baseline。最终结论必须来自冻结协议下的数据集内评估；HarmBench 只保留为辅助 benchmark/备选论文路线。
 
 ## Current execution plan — Phase A / Phase B（2026-08-13）
 
 > **当前唯一执行计划。** 本节与 [`docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md`](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md) 共同构成当前口径。下方 2026-08-09 的 `Current Phase`、`Next Step`、`N3 Mainline Phases` 以及 N2/HarmBench 计划均为历史快照；冲突项不再执行。
 
-### Phase A — Qwen 三模态管线与 emotion-only 基线（in_progress）
+### Phase A — Qwen 三模态管线与独立 A0/A1 CE 基线（in_progress）
 
-- [x] 冻结表示合同：后续由 `Qwen3-Omni-30B-A3B-Instruct` 分别离线提取文本、音频和视频；三路缓存及 provenance 必须独立保留，禁止只保存混合向量。此勾选仅表示方案已冻结，不表示全量特征已完成。
-- [x] 冻结 `ModalityProjector → d_model=128`、严格过去 `K=3`、`[B,3]` / `[B,K]` / `[B,K,3]` 三类 mask 和无合法历史时的逐样本 current-only 精确回退合同。
-- [x] 冻结 emotion-only 配置：`utility_loss_weight=0`、`vad_loss_weight=0`；dev Weighted-F1 选择 best；Phase A train+dev 后 `STOP_BEFORE_TEST_A`，Phase B 冻结后才进入最终 `STOP_BEFORE_TEST`。
+- [x] 冻结表示合同：`raw x → frozen Qwen hidden e → trainable Projector z`；Qwen 按文本/音频/视频及每个当前/历史候选分别抽取，三路 `e` cache 与 provenance 独立保存，禁止只保存混合向量。此勾选仅表示方案已冻结，不表示全量特征已完成。
+- [x] 冻结 `Z_current=[B,3,128]`、`Z_history=[B,K=3,3,128]`、`[B,3]` / `[B,K]` / `[B,K,3]` 三类 mask；先取严格过去最近 K=3、oldest→newest、固定左 padding。
+- [x] 冻结独立 A0 current-only CE 与无参数 mask-safe history mean 的 A1 plain-history CE；无历史在 A1 classifier 前硬切 A0 logits/probabilities。Phase A runtime graph 关闭 posterior/VAD/confidence、`a/phi`、learned history attention、utility 和两级 gate；dev Weighted-F1 选择 best，结束于 `STOP_BEFORE_TEST_A`。
 - [x] 冻结 MELD 与 IEMOCAP 已解压后的数据集专用逐 Gate 执行单：[`docs/15_MELD_已解压数据后续执行全流程_2026-08-13.md`](docs/15_MELD_已解压数据后续执行全流程_2026-08-13.md) 与 [`docs/16_IEMOCAP_已解压数据后续执行全流程_2026-08-13.md`](docs/16_IEMOCAP_已解压数据后续执行全流程_2026-08-13.md)。此勾选只表示操作合同已冻结；已解压不等于可训练或任何 Gate 已通过。
 - [ ] 按数据集分别完成：单样本 T/A/V 证明 → 32 train/8 dev 冒烟 → 全量特征及 provenance 审计 → train+dev。
 - [ ] MELD 先修复旧 `invalid_preliminary_run`；IEMOCAP 先完成 manifest/标签/Session 五折/视频时间戳 preflight；EmotionTalk 到盘后先完成归档、解压和 manifest 审计。
@@ -20,10 +20,11 @@
 
 ### Phase B — 完整 N3 情感历史效用实验（pending）
 
-- [ ] 对每个 `h_k, k=1..3` 分别计算当前 T/A/V 与该候选历史 T/A/V 的 3×3 关系；禁止先聚合三条历史再只计算一次 3×3。
-- [ ] 接入 VAD、情感惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量，并为每一项保留可检验消融。
-- [ ] 实现逐候选、逐模态与联合级真实双向边际效用；前向背景 `S` 与后向背景 `R` 必须不同，禁止符号翻转式伪双向。
-- [ ] 实现模态级和候选联合级两级门控及 independent current-only 精确回退。
+- [ ] 从冻结 `e` 起对状态 Projector/head/calibrator 全部可学习上游做 dialogue/session group-OOF；dev/outer 只用 fit 后冻结 producer。fit gold 只作训练损失和 OOF evaluator outcome；dev gold 只进 metric/best evaluator，test/outer gold 只进授权 write-once evaluator，均不作 forward 输入。
+- [ ] 只从严格过去预测轨迹计算 same-speaker actor inertia/recovery、interaction shift、current/history conflict，并与 posterior/VAD/confidence、时间、`same_speaker`、质量和 masks 构成逐候选 `a_k`。
+- [ ] 对每个 `h_k` 先算 `R_k^0`，再 `phi_k=Phi(R_k^0,a_k,masks)` 和条件化 `R_k`；禁止先聚合三条历史，候选轴保留到效用与门控。
+- [ ] 实现 `S_set≠R_set` 的逐候选模态级/联合级真实双向效用，并用干预测试证明同一 `phi_k` 直接影响条件化关系、效用、模态门和候选联合门四条路径。
+- [ ] 实现模态级和候选联合级两级门控；失败时硬切绑定的独立 A0-best logits/probabilities，禁止 N3 空历史近似或概率混合。
 - [ ] 在每个数据集内采用至少 5 seeds、按 dialogue/session/speaker 分组的配对 95% CI，并完成预注册强基线和完整消融。
 - [ ] MELD、EmotionTalk、IEMOCAP 使用同一冻结框架但分别训练、验证和评估；不合并数据集，不默认用一套权重零样本跑三个数据集。
 - [ ] MELD/EmotionTalk 的正式 test 分别独立授权、仅运行一次且 write-once；IEMOCAP 使用预注册外层 Session 五折 OOF 汇总并按 `(fold, role)` 隔离。任何评估结果都不得回流调参。
@@ -32,8 +33,8 @@
 
 详细合同见 [`docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md`](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md)。本节优先于 2026-08-09 及更早记录；旧记录不得删除或改写。
 
-- [x] 冻结当前主干为 `Qwen3-Omni-30B-A3B-Instruct`；文本、音频、视频均由其离线抽取，同时保持 `T_t/A_t/V_t/T_h/A_h/V_h` 分路和原始隐藏维度缓存。
-- [x] 冻结 N3 输入合同：`K=3` 严格过去；`current_modality_mask[B,3]`、`history_mask[B,K]`、`history_modality_mask[B,K,3]`；无历史逐样本精确回退 current-only；内部 `ModalityProjector` 输出 `d_model=128`。
+- [x] 冻结当前主干为 `Qwen3-Omni-30B-A3B-Instruct`；文本、音频、视频均由其按当前/候选分别离线抽取，明确 `x/e/z` 三层，分路缓存 frozen hidden `e` 与 provenance。
+- [x] 冻结 N3 输入合同：三个 Projector 输出 `Z_current=[B,3,128]`、`Z_history=[B,K=3,3,128]`；`current_modality_mask[B,3]`、`history_mask[B,K]`、`history_modality_mask[B,K,3]`；无历史逐样本精确回退 current-only。
 - [x] 冻结第一轮训练为 emotion-only：`utility_loss_weight=0`、`vad_loss_weight=0`；按 dev Weighted-F1 选择 best；Phase A train+dev 后必须 `STOP_BEFORE_TEST_A`，不得提前评估。
 - [x] 将 MELD 旧运行标记为 `invalid_preliminary_run`：只作故障诊断，不进论文、不用于调参；主要缺陷为 Qwen 只编码文本、视频 94.71% 全零、随机冻结文本投影、伪 VAD/utility target、错误 best 规则及自动 test。
 - [ ] MELD 按 `docs/15` 依序完成：只读/代码能力 Gate → 数据与 manifest → 单样本 Qwen 三模态证明 → 32 train/8 dev 冒烟 → 全量特征审计 → emotion-only train+dev → `STOP_BEFORE_TEST_A` → Phase B B0–B4 → `STOP_BEFORE_TEST`；正式 CLI 缺失时先实现并测试，不得运行 synthetic/旧入口替代。
@@ -51,7 +52,7 @@
 - HarmBench 仅保留为：历史负迁移评价工具、旧 N2 失败原因分析、N3 辅助 benchmark，以及正向方法失败时的备选论文路线；不得替代 N3。
 - 已结束的 10,000 次 bootstrap / 100,000 次 randomization 只封存一次；禁止重复运行，禁止继续扩展 HarmBench 真实实验。
 - 既有 N2、HarmBench、selector repair 与负结果证据全部保留，不删除、不覆盖、不改写。
-- IEMOCAP 预注册为 N3 的第三个独立外部确认数据集，只能在 N3 结构、超参数、效用阈值和统计合同冻结后运行，不得用于模型选择或调参，结果无论正负均报告。
+- **历史口径（superseded）：**IEMOCAP 当时预注册为第三个独立外部确认数据集；当前已由 `docs/16` 的 outer-Session 五折、逐 fold train/dev/outer 隔离协议取代。
 - IEMOCAP 若因授权或预注册六路协议不可满足而失败，替代顺序固定为 `CPED → M3ED`；只按预先定义的许可/数据可行性门切换，禁止按结果选数据集。
 - 在新的 protocol ID、模型、指标、效应阈值、统计方法和公开模板完全冻结前，MELD/EmotionTalk official test、validation、calibration、internal holdout 与任何未观察标签继续封存；真实受限数据禁止发送给 GPT/API/外部服务。
 
@@ -224,7 +225,7 @@ Status: pending
 
 Status: pending
 
-- IEMOCAP 仅在冻结后作为第三独立外部确认集运行；不得调参，正负结果均报告。
+- **历史口径（superseded）：**IEMOCAP 当时被视为第三独立外部确认集；当前执行以 `docs/16` 的 outer-Session 五折协议为准。
 - IEMOCAP 授权/六路协议失败时，按 `CPED → M3ED` 固定顺序替代。
 - 不因任何中间性能改变模型、阈值、标签映射、统计或数据集顺序。
 

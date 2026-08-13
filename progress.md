@@ -1,5 +1,15 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-13 — `x/e/z`、情感状态与 N3 连接语义纠正
+
+- Phase A 进一步冻结为独立 A0 current-only CE 与无参数 mask-safe history mean 的 A1 plain-history CE；候选先取最近 K=3、oldest→newest、固定左 padding。无历史在 A1 classifier 前硬切 A0-best，Phase B 风险/质量拒绝也原样返回绑定 A0 logits/probabilities，禁止空历史近似或概率混合。
+- 统一冻结三层表示：原始媒体 `x` 只进入冻结 Qwen，分模态/分候选 hidden `e` 与 provenance 在仓库外独立缓存；三个可训练 Projector 产生 `Z_current=[B,3,128]`、`Z_history=[B,K=3,3,128]`，只有 `z` 进入 N3。
+- Phase B 新增从冻结 `e` 开始、全部可学习上游 group-OOF 的状态 producer；其 posterior、VAD 与置信度及严格过去 actor dynamics/interaction shift/current-history conflict 组成逐候选 `a_k`。
+- 计算顺序冻结为基础 `R_k^0 → phi_k=Phi(R_k^0,a_k,masks) → 条件化 R_k`；用连接测试证明同一 `phi_k` 直接进入条件化关系、`S_set≠R_set` 双向效用、模态门与候选联合门四条路径，候选轴不提前聚合。
+- gold 标签只允许用于训练角色内监督、`L_emotion` 与 group-OOF utility target；禁止作为推理输入或用 dev/test gold 类别查 VAD。情感专用编码器只作替代表征 baseline。
+- 当前代码仍是文本 Qwen、A/V sidecar 投影和 synthetic trainer；上述内容属于目标协议/待实现链，不代表训练或性能已完成。
+- 评估口径同步纠正：MELD/EmotionTalk official test 独立授权且 write-once；IEMOCAP 允许 outcome-blind producer 预处理 outer 媒体/`e` 并分项计数，但 outer label/metric 在对应 fold 评估前不可达，五折结果一次冻结汇总且不回流。
+
 ## 2026-08-13 — MELD/IEMOCAP 已解压后执行单冻结
 
 - 新增并冻结 MELD 与 IEMOCAP 两份数据集专用逐 Gate 操作单，分别覆盖已解压后的批准路径/只读 preflight、数据/manifest、Qwen 三模态证明、32 train/8 dev 冒烟、全量特征、Phase A/Phase B、评估和归档边界。
@@ -38,7 +48,7 @@
 - 更新 `task_plan.md`：目标、当前阶段、唯一下一动作、成功门和阶段划分均切换到 N3；旧 N2/HarmBench 阶段保留为历史记录。两个 ZeroMQ DLL 继续明确禁止暂存。
 - 新增 `docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md`：完成老师四条要求对照、Task Contract、六路情感变量进入位置、共享 3×3、模态/联合真实双向效用、两级门控、训练目标、15 项基线/消融、合取成功门和停止条件。
 - 根据老师原始公式校正 N3 backward 符号：`ell(R)-ell(R-h)>0` 表示删除有益/保留有害；N2 既有 `ell(R-h)-ell(R)>0` 表示保留有益。旧证据不改写，任何 N3 复用必须显式取负并记录来源。
-- IEMOCAP 预注册为 N3 第三个独立外部确认集：只可在结构、超参数、效用阈值、统计合同、权重和源码全部冻结后运行，不用于模型选择/调参，正负结果均报告；授权/六路协议失败时固定按 CPED→M3ED 顺序替代。
+- **当时的历史预注册口径（已由 2026-08-13 `docs/16` 取代）：**IEMOCAP 曾被定义为第三个独立外部确认集，授权/六路协议失败时固定按 CPED→M3ED 顺序替代；当前已取得授权，改按 outer-Session 五折及逐 fold 角色隔离执行。
 - 当前进行情感领域编码器及 IEMOCAP/CPED/M3ED 的许可、数据结构、标签、speaker/session 隔离、六路覆盖和 8GB 显存/16GB 内存/约 53.5 GiB 磁盘可行性审计。任何未观察标签继续封存，真实受限数据继续禁止发送 GPT/API。
 
 ## 2026-08-09 — 会话恢复与 S1 三项 P0 回收
