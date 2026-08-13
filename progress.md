@@ -1,5 +1,18 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-13 — Qwen 三模态执行基线、MELD 复盘与数据状态更新
+
+- 老师最新决定已冻结：`Qwen3-Omni-30B-A3B-Instruct` 同时处理文本、音频和视频，但必须保存可独立审计的 T/A/V 表示；当前/历史六路、严格过去 `K=3`、三类 mask、无历史 current-only 回退和 `d_model=128` 投影合同不变。
+- 第一轮重训固定为 emotion-only，utility/VAD 权重均为 0；best checkpoint 改按 dev Weighted-F1 选择；train+dev 完成后进入 `STOP_BEFORE_TEST`，正式 test 不自动运行。
+- 云端复核确认 GPU/容器本身未崩溃，旧 MELD 训练虽完整结束但属于 `invalid_preliminary_run`：Qwen 只处理文本，视频 12,982/13,707（94.71%）为全零，且存在随机冻结投影、伪辅助 target、错误 best 规则、checkpoint 不完整和自动 test 等协议问题。
+- 旧 MELD 聚合指标仅保留诊断：dev Accuracy 0.5469 / Macro-F1 0.3295 / Weighted-F1 0.5042；test Accuracy 0.5808 / Macro-F1 0.3322 / Weighted-F1 0.5418。不得进入论文主结果、不得用于调参。
+- IEMOCAP 已通过官方渠道取得；归档 17,695,884,032 字节，MD5 `521be1e5eec425ae21fdc27c763ca813` 匹配，`gzip -t`、完整解压、Session1–5、零字节检查及 WAV/AVI 抽检通过。状态是“数据完整性 PASS、尚未训练”。
+- IEMOCAP 下一步固定为四分类标签/约 5531 条目标审计、Session 五折、对话 AVI 时间戳对齐、严格过去 K=3 manifest；不能照搬 MELD 的句级视频假设，也不能跳过 preflight 直接训练。
+- Qwen 权重完整性检查：15 个 safetensors、0 个 incomplete，约 66 GB。
+- EmotionTalk 新一轮原始包仍在上传，尚未完成到盘、解压和新管线审计；此前探索结果不等于本轮 Qwen 三模态结果。
+- GitHub 代码对照发现实现尚未同步：Qwen 当前仅接入文本塔，A/V 仍是外部 sidecar 投影，旧配置仍启用 utility/VAD，正式 trainer 缺 K=3 masks、dev Weighted-F1 best 和 test-deny；已明确列为本轮重训前置 Gate，未误报为实现完成。
+- 新增 `docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md`，统一记录旧/新差异、逐数据集状态、MELD Gate、IEMOCAP 五折与后续汇报模板。
+
 ## 2026-08-09 — N3 主线恢复、HarmBench 收尾与 IEMOCAP 预注册
 
 - 接收并采用最高优先级纠偏指令：N3 候选方案恢复为唯一正向方法主线；HarmBench 降级为历史负迁移评价、N2 失败分析、N3 辅助 benchmark 和备选论文路线。既有 N2/HarmBench/负结果保持不删除、不覆盖、不改写。

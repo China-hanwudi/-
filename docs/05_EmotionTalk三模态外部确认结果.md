@@ -1,5 +1,7 @@
 # EmotionTalk三模态外部确认终判报告
 
+> **历史结果警告：**本文是 2026-08-07 使用 TF-IDF/WavLM/DINOv2 的冻结探索报告，不是 2026-08-13 的 Qwen 三模态新管线结果。当前新一轮原始包仍在上传，尚未完成到盘、解压、manifest、特征或训练审计。最新步骤见 [最新执行基线](14_最新执行基线与GitHub旧方案差异_2026-08-13.md)。
+
 **研究任务：** CARMA-Affect／历史负迁移研究路线外部确认
 
 **冻结协议：** `emotiontalk_multimodal_external_v1`

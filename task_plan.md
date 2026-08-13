@@ -2,7 +2,23 @@
 
 ## Goal
 
-在不访问当前/未来评估标签、不泄漏人物或时间信息的前提下，建立并验证 N3 候选方案：利用情感领域模型分别表示当前与历史的文本、音频和视频，通过共享参数的 3×3 当前—历史交互、模态级与联合级真实双向边际效用以及两级安全门控，选择能够真正提高当前情感分类性能的历史信息。最终结论必须来自冻结协议后的未观察数据角色或预注册外部确认数据；HarmBench 只保留为辅助 benchmark/备选论文路线。
+在不访问当前/未来评估标签、不泄漏人物或时间信息的前提下，建立并验证 N3 候选方案：当前以冻结 Qwen3-Omni 分别表示当前与历史的文本、音频和视频，通过共享参数的 3×3 当前—历史交互、模态级与联合级真实双向边际效用以及两级安全门控，选择能够真正提高当前情感分类性能的历史信息；情感专用编码器保留为后续 baseline/消融。最终结论必须来自冻结协议后的未观察数据角色或预注册外部确认数据；HarmBench 只保留为辅助 benchmark/备选论文路线。
+
+## Highest-priority override（2026-08-13）
+
+详细合同见 [`docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md`](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md)。本节优先于 2026-08-09 及更早记录；旧记录不得删除或改写。
+
+- [x] 冻结当前主干为 `Qwen3-Omni-30B-A3B-Instruct`；文本、音频、视频均由其离线抽取，同时保持 `T_t/A_t/V_t/T_h/A_h/V_h` 分路和原始隐藏维度缓存。
+- [x] 冻结 N3 输入合同：`K=3` 严格过去；`current_modality_mask[B,3]`、`history_mask[B,K]`、`history_modality_mask[B,K,3]`；无历史逐样本精确回退 current-only；内部 `ModalityProjector` 输出 `d_model=128`。
+- [x] 冻结第一轮训练为 emotion-only：`utility_loss_weight=0`、`vad_loss_weight=0`；按 dev Weighted-F1 选择 best；train+dev 后必须 `STOP_BEFORE_TEST`。
+- [x] 将 MELD 旧运行标记为 `invalid_preliminary_run`：只作故障诊断，不进论文、不用于调参；主要缺陷为 Qwen 只编码文本、视频 94.71% 全零、随机冻结文本投影、伪 VAD/utility target、错误 best 规则及自动 test。
+- [ ] MELD 依序完成：数据清单 → 单样本 Qwen 三模态证明 → 32 train/8 dev 冒烟 → 全量特征审计 → emotion-only train+dev → `STOP_BEFORE_TEST`。
+- [x] IEMOCAP 官方归档已校验并完整解压，Session1–5 和 WAV/AVI 抽检通过；状态从“等待授权”改为“数据完整性 PASS、尚未训练”。
+- [ ] IEMOCAP 完成四分类 `angry/happy(hap+exc)/sad/neutral`、约 5531 条目标审计、固定 Session 五折、时间戳视频对齐、严格过去 K=3 manifest；在此之前不得训练。
+- [ ] EmotionTalk 继续上传；到盘后依次做 archive、解压、manifest、媒体、mask 和 Qwen 三模态冒烟审计；不得假设已完成。
+- [ ] 关闭 GitHub 代码差距：当前仓库仍只把 Qwen 接在文本塔上，utility/VAD 配置仍为旧值，K=3 masks、dev Weighted-F1 best 和 test-deny 正式 trainer 尚未同步；未关闭前不得直接用仓库旧配置重训。
+- [ ] 三数据集采用同一冻结框架分别训练/验证/测试并对照总结；跨数据集零样本迁移仅作额外实验，不能替代三数据集内验证。
+- [ ] 正式 test 继续封存；只有源码、配置、特征 manifest、best checkpoint 和统计合同冻结后，才可对每个数据集单独一次性授权。
 
 ## Highest-priority override（2026-08-09）
 
