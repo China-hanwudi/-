@@ -4,6 +4,29 @@
 
 在不访问当前/未来评估标签、不泄漏人物或时间信息的前提下，建立并验证 N3 候选方案：当前以冻结 Qwen3-Omni 分别表示当前与历史的文本、音频和视频，通过共享参数的 3×3 当前—历史交互、模态级与联合级真实双向边际效用以及两级安全门控，选择能够真正提高当前情感分类性能的历史信息；情感专用编码器保留为后续 baseline/消融。最终结论必须来自冻结协议后的未观察数据角色或预注册外部确认数据；HarmBench 只保留为辅助 benchmark/备选论文路线。
 
+## Current execution plan — Phase A / Phase B（2026-08-13）
+
+> **当前唯一执行计划。** 本节与 [`docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md`](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md) 共同构成当前口径。下方 2026-08-09 的 `Current Phase`、`Next Step`、`N3 Mainline Phases` 以及 N2/HarmBench 计划均为历史快照；冲突项不再执行。
+
+### Phase A — Qwen 三模态管线与 emotion-only 基线（in_progress）
+
+- [x] 冻结表示合同：后续由 `Qwen3-Omni-30B-A3B-Instruct` 分别离线提取文本、音频和视频；三路缓存及 provenance 必须独立保留，禁止只保存混合向量。此勾选仅表示方案已冻结，不表示全量特征已完成。
+- [x] 冻结 `ModalityProjector → d_model=128`、严格过去 `K=3`、`[B,3]` / `[B,K]` / `[B,K,3]` 三类 mask 和无合法历史时的逐样本 current-only 精确回退合同。
+- [x] 冻结 emotion-only 配置：`utility_loss_weight=0`、`vad_loss_weight=0`；dev Weighted-F1 选择 best；train+dev 后 `STOP_BEFORE_TEST`。
+- [ ] 按数据集分别完成：单样本 T/A/V 证明 → 32 train/8 dev 冒烟 → 全量特征及 provenance 审计 → train+dev。
+- [ ] MELD 先修复旧 `invalid_preliminary_run`；IEMOCAP 先完成 manifest/标签/Session 五折/视频时间戳 preflight；EmotionTalk 到盘后先完成归档、解压和 manifest 审计。
+- [ ] 关闭当前仓库的实现差距并同步可复核的代码、配置和测试。Phase A 只建立管线和 emotion-only 基线，**不得据此声称完整 N3 有效**。
+
+### Phase B — 完整 N3 情感历史效用实验（pending）
+
+- [ ] 对每个 `h_k, k=1..3` 分别计算当前 T/A/V 与该候选历史 T/A/V 的 3×3 关系；禁止先聚合三条历史再只计算一次 3×3。
+- [ ] 接入 VAD、情感惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量，并为每一项保留可检验消融。
+- [ ] 实现逐候选、逐模态与联合级真实双向边际效用；前向背景 `S` 与后向背景 `R` 必须不同，禁止符号翻转式伪双向。
+- [ ] 实现模态级和候选联合级两级门控及 independent current-only 精确回退。
+- [ ] 在每个数据集内采用至少 5 seeds、按 dialogue/session/speaker 分组的配对 95% CI，并完成预注册强基线和完整消融。
+- [ ] MELD、EmotionTalk、IEMOCAP 使用同一冻结框架但分别训练、验证和评估；不合并数据集，不默认用一套权重零样本跑三个数据集。
+- [ ] 每个数据集的正式 test 分别独立授权、仅运行一次、write-once，且不得根据 test 调参。
+
 ## Highest-priority override（2026-08-13）
 
 详细合同见 [`docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md`](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md)。本节优先于 2026-08-09 及更早记录；旧记录不得删除或改写。
@@ -20,7 +43,7 @@
 - [ ] 三数据集采用同一冻结框架分别训练/验证/测试并对照总结；跨数据集零样本迁移仅作额外实验，不能替代三数据集内验证。
 - [ ] 正式 test 继续封存；只有源码、配置、特征 manifest、best checkpoint 和统计合同冻结后，才可对每个数据集单独一次性授权。
 
-## Highest-priority override（2026-08-09）
+## Historical override snapshot（2026-08-09；已由当前 Phase A/B 计划替代）
 
 - 最高研究依据：用户提供的四条连贯研究要求及仓库内冻结协议。
 - 正向方法唯一主线正式命名为 **N3 候选方案**；老师前三条要求作为待检验的方法贡献，第四条作为不可绕过的真实情感分类成功门。
@@ -31,7 +54,7 @@
 - IEMOCAP 若因授权或预注册六路协议不可满足而失败，替代顺序固定为 `CPED → M3ED`；只按预先定义的许可/数据可行性门切换，禁止按结果选数据集。
 - 在新的 protocol ID、模型、指标、效应阈值、统计方法和公开模板完全冻结前，MELD/EmotionTalk official test、validation、calibration、internal holdout 与任何未观察标签继续封存；真实受限数据禁止发送给 GPT/API/外部服务。
 
-## Current Phase
+## Historical current-phase snapshot（2026-08-09；不再作为当前执行口径）
 
 N3 Phase 0 — 主线纠偏、协议/许可审计与预注册冻结（in_progress）
 
@@ -137,7 +160,7 @@ patch_scope: one target/model-family or one metric-contract correction per candi
 reject_if: candidate fails to improve query Macro-F1 without positive excess NLL, fails the predeclared seed gate, or cannot outperform the matching recency/all-history strong baselines; after three distinct repair families, stop this selector route
 ```
 
-## Next Step
+## Historical next-step snapshot（2026-08-09；冲突项不再执行）
 
 严格按以下顺序推进且不并行解封评估角色：
 
@@ -159,7 +182,7 @@ HarmBench 现有工程证据保持封存：最终 protocol v2 pin=`58630569e7cb5
 3. 与 current-only、all-history、强检索/记忆基线及校准回退基线公平比较。
 4. MELD 锁定 Weighted-F1 为主指标；同时报告 Macro-F1、Accuracy、NLL、Brier、ECE、历史负迁移率、CVaR 和风险—覆盖曲线。外部确认集需在冻结协议中预先指定与标签映射一致的主指标，不得看到结果后变更。
 5. 确认实验至少 5 个随机种子；报告均值、95% CI、配对效应量与 Holm 校正；按对话或人物做层级 bootstrap，禁止把 utterance 当作完全独立样本。
-6. 完整 N3 必须同时满足：Accuracy 高于 independent current-only；Weighted-F1 高于最强历史基线；Macro-F1 不明显下降；配对 95% CI 支持提升；至少 5 seeds 方向基本一致；双向效用伤害率低于单向效用；去情感编码器、双向效用、模态级效用或 3×3 后性能下降。增益必须来自真实情感分类，不能只来自效用 AUC/伤害率。
+6. 完整 N3 必须同时满足：Accuracy 高于 independent current-only；Weighted-F1 高于最强历史基线；Macro-F1 不明显下降；配对 95% CI 支持提升；至少 5 seeds 方向基本一致；双向效用伤害率低于单向效用；去 VAD/惯性/转折/恢复/冲突等情感理论变量、双向效用、模态级效用、两级门控或逐候选 3×3 后性能下降。情感专用编码器只作为替代表征 baseline 与 Qwen 主干公平比较，不属于当前主模型的“移除组件”。增益必须来自真实情感分类，不能只来自效用 AUC/伤害率。
 7. 完成消融、标签置乱、未来历史注入检测、重复人物检测、时间反转、状态突变与恢复、模态缺失/噪声压力测试。
 8. 代码、配置、随机种子、环境、聚合结果与失败实验均可复现；未授权原始数据和派生受限特征不公开。
 
@@ -170,7 +193,7 @@ HarmBench 现有工程证据保持封存：最终 protocol v2 pin=`58630569e7cb5
 - GPT 输出必须缓存并版本化；确认实验禁止根据测试结果改提示词。
 - 若没有可用 API 凭据或数据许可，先实现可离线运行的接口和 mock/开源替代基线，不伪造 GPT 实验数据。
 
-## N3 Mainline Phases
+## Historical N3 Phase 0–4 plan（2026-08-09；已由当前 Phase A/B 取代）
 
 ### N3 Phase 0 — 纠偏、对照、许可与协议冻结
 

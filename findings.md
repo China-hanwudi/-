@@ -1,5 +1,11 @@
 # CARMA-Affect Research Findings
 
+## 当前两阶段方案摘要（2026-08-13；计划边界，不是性能发现）
+
+- **Phase A：**冻结 `Qwen3-Omni-30B-A3B-Instruct`，对文本、音频、视频分别离线提特征并保留三路缓存和 provenance；`ModalityProjector → d_model=128`。历史为严格过去 `K=3`，mask 为 `[B,3]`、`[B,K]`、`[B,K,3]`，无合法历史逐样本精确回退 current-only。`utility_loss_weight=0`、`vad_loss_weight=0`，按单样本 → 32/8 冒烟 → 全量特征 → train+dev 推进，dev Weighted-F1 选 best，随后 `STOP_BEFORE_TEST`。Phase A 只验证管线与 emotion-only 基线，不能证明完整 N3。
+- **Phase B：**对每个 `h_k (k=1..3)` 分别计算 3×3 当前—历史关系，禁止先聚合历史；接入 VAD、惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量；学习模态级与联合级真实双向边际效用，前向 `S` 与后向 `R` 背景必须不同；执行两级门控与 current-only 回退，并以至少 5 seeds、分组配对 95% CI、完整基线/消融检验。
+- **数据集与 test：**MELD、EmotionTalk、IEMOCAP 使用同一冻结框架但分别训练和评估，不合并训练，也不默认一套权重零样本跑三个数据集；每个正式 test 均须独立授权、一次性、write-once。当前只是方案冻结，尚未产生新的 Phase A/Phase B 性能证据。
+
 ## N3 主线纠偏与不可变边界（2026-08-09）
 
 - 最高研究依据已切换为用户提供的 `pasted-text.txt`；正式正向主线命名为 N3 候选方案。核心是“情感领域六路表示 × 共享 3×3 当前—历史交互 × 模态级/联合级真实双向边际效用 × 两级安全门控”，最终必须提高真实情感分类，而不是只改善 utility AUC 或历史伤害率。
@@ -574,6 +580,8 @@
 
 ## 持续科研审计与不同集合 OOF 启动（2026-08-08）
 
+> **历史状态快照（已被 2026-08-13 顶部摘要替代）：**本节关于 IEMOCAP 尚无许可数据、原始媒体可用性和数据集优先级的陈述仅反映 2026-08-08 当时状态，不得用于当前执行判断。
+
 - 顶会证据审计判定：当前只能支持“历史负迁移问题/benchmark 值得研究”，教师提出的三项方法创新仍为 `0/3` 实证通过；旧 endpoint 的 harm AUC 为 0.728，但 mean utility Spearman 约为 -0.002，不能作为新方法成功证据。
 - 发现并在真实实验前修复两个关键混杂：数据角色不再随新模型协议名变化，统一复用冻结的 `scu_set_exploration_v1` split id；不同集合任务强制 `|S|=|T\{h_i}|` 且成员不同，避免把集合大小效应误当成双向不对称。
 - 新增可断点恢复的 EmotionTalk different-set runner：每个训练折内先做 query-balanced history-subset augmentation，再生成 5 seed float64 `P(S)`、`P(S+h_i)`、`P(T)`、`P(T-h_i)` OOF 概率；calibration、internal holdout、validation 与 test 均保持封存。
@@ -626,6 +634,8 @@
 - 仓库公开边界不包含原始音视频、转写、逐查询记录、权重、受限派生特征、授权材料或凭据。
 
 ## 数据集优先级
+
+> **历史优先级（2026-08-07，已失效）：**IEMOCAP 现已取得官方授权并通过归档/解压/媒体完整性检查；当前状态以本文件顶部摘要和 `docs/03_数据集与许可状态.md` 为准。
 
 1. MELD：立即可用的 pilot/标准基准，但深历史覆盖有限。
 2. IEMOCAP：长双人对话更适合主确认，但需要 USC 许可。

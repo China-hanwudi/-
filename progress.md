@@ -1,5 +1,15 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-13 — 两阶段实验方案与流程图口径冻结
+
+- 当前执行正式拆为 Phase A / Phase B。Phase A 是 Qwen 三模态管线与 emotion-only 基线；Phase B 才是完整 N3 情感理论、双向效用和两级门控实验。Phase A 通过只说明管线/基线成立，不证明完整 N3 创新。
+- Phase A 冻结 `Qwen3-Omni-30B-A3B-Instruct`，分别离线抽取文本、音频、视频；每路独立缓存并记录 provenance，`ModalityProjector → d_model=128`。历史严格过去 `K=3`，mask 固定为 `[B,3]`、`[B,K]`、`[B,K,3]`，无合法历史逐样本精确回退 current-only。
+- Phase A 训练顺序冻结为单样本 → 32 train/8 dev 冒烟 → 全量特征 → train+dev；`utility_loss_weight=0`、`vad_loss_weight=0`，dev Weighted-F1 选择 best，随后 `STOP_BEFORE_TEST`。
+- Phase B 对 `h_1/h_2/h_3` 每个历史候选分别计算 3×3 当前—历史模态关系，禁止先聚合历史；接入 VAD、惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量。
+- Phase B 要求模态级和联合级真实双向边际效用，前向背景 `S` 与后向背景 `R` 不同，并使用模态级/联合级两级门控和 current-only 回退；评估采用至少 5 seeds、分组配对 95% CI 及完整基线/消融。
+- MELD、EmotionTalk、IEMOCAP 采用同一冻结框架但分别训练、验证和评估，默认产生各自 checkpoint；不合并三个数据集，也不以一套权重零样本运行三个数据集替代数据集内验证。
+- 正式 test 对每个数据集分别独立授权、一次性运行并 write-once；本次记录是方案/文档更新，不代表 Phase A 或 Phase B 已产生新的性能结果。
+
 ## 2026-08-13 — Qwen 三模态执行基线、MELD 复盘与数据状态更新
 
 - 老师最新决定已冻结：`Qwen3-Omni-30B-A3B-Instruct` 同时处理文本、音频和视频，但必须保存可独立审计的 T/A/V 表示；当前/历史六路、严格过去 `K=3`、三类 mask、无历史 current-only 回退和 `d_model=128` 投影合同不变。
