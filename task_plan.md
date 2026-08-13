@@ -12,7 +12,8 @@
 
 - [x] 冻结表示合同：后续由 `Qwen3-Omni-30B-A3B-Instruct` 分别离线提取文本、音频和视频；三路缓存及 provenance 必须独立保留，禁止只保存混合向量。此勾选仅表示方案已冻结，不表示全量特征已完成。
 - [x] 冻结 `ModalityProjector → d_model=128`、严格过去 `K=3`、`[B,3]` / `[B,K]` / `[B,K,3]` 三类 mask 和无合法历史时的逐样本 current-only 精确回退合同。
-- [x] 冻结 emotion-only 配置：`utility_loss_weight=0`、`vad_loss_weight=0`；dev Weighted-F1 选择 best；train+dev 后 `STOP_BEFORE_TEST`。
+- [x] 冻结 emotion-only 配置：`utility_loss_weight=0`、`vad_loss_weight=0`；dev Weighted-F1 选择 best；Phase A train+dev 后 `STOP_BEFORE_TEST_A`，Phase B 冻结后才进入最终 `STOP_BEFORE_TEST`。
+- [x] 冻结 MELD 与 IEMOCAP 已解压后的数据集专用逐 Gate 执行单：[`docs/15_MELD_已解压数据后续执行全流程_2026-08-13.md`](docs/15_MELD_已解压数据后续执行全流程_2026-08-13.md) 与 [`docs/16_IEMOCAP_已解压数据后续执行全流程_2026-08-13.md`](docs/16_IEMOCAP_已解压数据后续执行全流程_2026-08-13.md)。此勾选只表示操作合同已冻结；已解压不等于可训练或任何 Gate 已通过。
 - [ ] 按数据集分别完成：单样本 T/A/V 证明 → 32 train/8 dev 冒烟 → 全量特征及 provenance 审计 → train+dev。
 - [ ] MELD 先修复旧 `invalid_preliminary_run`；IEMOCAP 先完成 manifest/标签/Session 五折/视频时间戳 preflight；EmotionTalk 到盘后先完成归档、解压和 manifest 审计。
 - [ ] 关闭当前仓库的实现差距并同步可复核的代码、配置和测试。Phase A 只建立管线和 emotion-only 基线，**不得据此声称完整 N3 有效**。
@@ -25,7 +26,7 @@
 - [ ] 实现模态级和候选联合级两级门控及 independent current-only 精确回退。
 - [ ] 在每个数据集内采用至少 5 seeds、按 dialogue/session/speaker 分组的配对 95% CI，并完成预注册强基线和完整消融。
 - [ ] MELD、EmotionTalk、IEMOCAP 使用同一冻结框架但分别训练、验证和评估；不合并数据集，不默认用一套权重零样本跑三个数据集。
-- [ ] 每个数据集的正式 test 分别独立授权、仅运行一次、write-once，且不得根据 test 调参。
+- [ ] MELD/EmotionTalk 的正式 test 分别独立授权、仅运行一次且 write-once；IEMOCAP 使用预注册外层 Session 五折 OOF 汇总并按 `(fold, role)` 隔离。任何评估结果都不得回流调参。
 
 ## Highest-priority override（2026-08-13）
 
@@ -33,15 +34,15 @@
 
 - [x] 冻结当前主干为 `Qwen3-Omni-30B-A3B-Instruct`；文本、音频、视频均由其离线抽取，同时保持 `T_t/A_t/V_t/T_h/A_h/V_h` 分路和原始隐藏维度缓存。
 - [x] 冻结 N3 输入合同：`K=3` 严格过去；`current_modality_mask[B,3]`、`history_mask[B,K]`、`history_modality_mask[B,K,3]`；无历史逐样本精确回退 current-only；内部 `ModalityProjector` 输出 `d_model=128`。
-- [x] 冻结第一轮训练为 emotion-only：`utility_loss_weight=0`、`vad_loss_weight=0`；按 dev Weighted-F1 选择 best；train+dev 后必须 `STOP_BEFORE_TEST`。
+- [x] 冻结第一轮训练为 emotion-only：`utility_loss_weight=0`、`vad_loss_weight=0`；按 dev Weighted-F1 选择 best；Phase A train+dev 后必须 `STOP_BEFORE_TEST_A`，不得提前评估。
 - [x] 将 MELD 旧运行标记为 `invalid_preliminary_run`：只作故障诊断，不进论文、不用于调参；主要缺陷为 Qwen 只编码文本、视频 94.71% 全零、随机冻结文本投影、伪 VAD/utility target、错误 best 规则及自动 test。
-- [ ] MELD 依序完成：数据清单 → 单样本 Qwen 三模态证明 → 32 train/8 dev 冒烟 → 全量特征审计 → emotion-only train+dev → `STOP_BEFORE_TEST`。
+- [ ] MELD 按 `docs/15` 依序完成：只读/代码能力 Gate → 数据与 manifest → 单样本 Qwen 三模态证明 → 32 train/8 dev 冒烟 → 全量特征审计 → emotion-only train+dev → `STOP_BEFORE_TEST_A` → Phase B B0–B4 → `STOP_BEFORE_TEST`；正式 CLI 缺失时先实现并测试，不得运行 synthetic/旧入口替代。
 - [x] IEMOCAP 官方归档已校验并完整解压，Session1–5 和 WAV/AVI 抽检通过；状态从“等待授权”改为“数据完整性 PASS、尚未训练”。
-- [ ] IEMOCAP 完成四分类 `angry/happy(hap+exc)/sad/neutral`、约 5531 条目标审计、固定 Session 五折、时间戳视频对齐、严格过去 K=3 manifest；在此之前不得训练。
+- [ ] IEMOCAP 按 `docs/16` 完成四分类 `angry/happy(hap+exc)/sad/neutral`、约 5531 条目标审计、固定 Session 五折、时间戳视频对齐、严格过去 K=3 manifest；在此之前不得训练，正式 CLI 缺失时先实现并测试 Gate。
 - [ ] EmotionTalk 继续上传；到盘后依次做 archive、解压、manifest、媒体、mask 和 Qwen 三模态冒烟审计；不得假设已完成。
 - [ ] 关闭 GitHub 代码差距：当前仓库仍只把 Qwen 接在文本塔上，utility/VAD 配置仍为旧值，K=3 masks、dev Weighted-F1 best 和 test-deny 正式 trainer 尚未同步；未关闭前不得直接用仓库旧配置重训。
 - [ ] 三数据集采用同一冻结框架分别训练/验证/测试并对照总结；跨数据集零样本迁移仅作额外实验，不能替代三数据集内验证。
-- [ ] 正式 test 继续封存；只有源码、配置、特征 manifest、best checkpoint 和统计合同冻结后，才可对每个数据集单独一次性授权。
+- [ ] MELD/EmotionTalk 正式 test 继续封存；IEMOCAP 外层 Session 五折的每折 held-out 角色保持不可达，直到源码、配置、特征 manifest、best checkpoint 和统计合同全部冻结并取得逐折评估授权。
 
 ## Historical override snapshot（2026-08-09；已由当前 Phase A/B 计划替代）
 

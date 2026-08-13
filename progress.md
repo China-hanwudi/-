@@ -1,19 +1,26 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-13 — MELD/IEMOCAP 已解压后执行单冻结
+
+- 新增并冻结 MELD 与 IEMOCAP 两份数据集专用逐 Gate 操作单，分别覆盖已解压后的批准路径/只读 preflight、数据/manifest、Qwen 三模态证明、32 train/8 dev 冒烟、全量特征、Phase A/Phase B、评估和归档边界。
+- 明确 `extracted` 只表示文件落盘，不等于 `training_ready`；若真实数据正式 CLI 缺失，先实现、测试并通过对应 Gate，不得用 synthetic trainer、旧 sidecar 或只处理文本的入口冒充当前管线。
+- 两份执行单继续服从三数据集分别训练/验证/评估的总合同；MELD、IEMOCAP、EmotionTalk 不合并训练，也不以一个数据集的权重替代另外两个数据集内实验。
+- 同步冻结公开边界：不上传原始或解压数据、逐样本 manifest/标签、派生特征、Qwen/训练权重、服务器 checkpoint/日志、服务器地址或私有绝对路径。本次记录只表示 runbook 已上传和冻结，不表示任何数据 Gate、训练或性能结果已经完成。
+
 ## 2026-08-13 — 两阶段实验方案与流程图口径冻结
 
 - 当前执行正式拆为 Phase A / Phase B。Phase A 是 Qwen 三模态管线与 emotion-only 基线；Phase B 才是完整 N3 情感理论、双向效用和两级门控实验。Phase A 通过只说明管线/基线成立，不证明完整 N3 创新。
 - Phase A 冻结 `Qwen3-Omni-30B-A3B-Instruct`，分别离线抽取文本、音频、视频；每路独立缓存并记录 provenance，`ModalityProjector → d_model=128`。历史严格过去 `K=3`，mask 固定为 `[B,3]`、`[B,K]`、`[B,K,3]`，无合法历史逐样本精确回退 current-only。
-- Phase A 训练顺序冻结为单样本 → 32 train/8 dev 冒烟 → 全量特征 → train+dev；`utility_loss_weight=0`、`vad_loss_weight=0`，dev Weighted-F1 选择 best，随后 `STOP_BEFORE_TEST`。
+- Phase A 训练顺序冻结为单样本 → 32 train/8 dev 冒烟 → 全量特征 → train+dev；`utility_loss_weight=0`、`vad_loss_weight=0`，dev Weighted-F1 选择 best，随后 `STOP_BEFORE_TEST_A`；Phase B 冻结后才进入最终 `STOP_BEFORE_TEST`。
 - Phase B 对 `h_1/h_2/h_3` 每个历史候选分别计算 3×3 当前—历史模态关系，禁止先聚合历史；接入 VAD、惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量。
 - Phase B 要求模态级和联合级真实双向边际效用，前向背景 `S` 与后向背景 `R` 不同，并使用模态级/联合级两级门控和 current-only 回退；评估采用至少 5 seeds、分组配对 95% CI 及完整基线/消融。
 - MELD、EmotionTalk、IEMOCAP 采用同一冻结框架但分别训练、验证和评估，默认产生各自 checkpoint；不合并三个数据集，也不以一套权重零样本运行三个数据集替代数据集内验证。
-- 正式 test 对每个数据集分别独立授权、一次性运行并 write-once；本次记录是方案/文档更新，不代表 Phase A 或 Phase B 已产生新的性能结果。
+- MELD/EmotionTalk 的正式 test 分别独立授权、一次性且 write-once；IEMOCAP 采用预注册外层 Session 五折 OOF 汇总，每折 held-out 角色在该折冻结前不可达。任何评估结果都不得回流调参；本次记录是方案/文档更新，不代表 Phase A 或 Phase B 已产生新的性能结果。
 
 ## 2026-08-13 — Qwen 三模态执行基线、MELD 复盘与数据状态更新
 
 - 老师最新决定已冻结：`Qwen3-Omni-30B-A3B-Instruct` 同时处理文本、音频和视频，但必须保存可独立审计的 T/A/V 表示；当前/历史六路、严格过去 `K=3`、三类 mask、无历史 current-only 回退和 `d_model=128` 投影合同不变。
-- 第一轮重训固定为 emotion-only，utility/VAD 权重均为 0；best checkpoint 改按 dev Weighted-F1 选择；train+dev 完成后进入 `STOP_BEFORE_TEST`，正式 test 不自动运行。
+- 第一轮重训固定为 emotion-only，utility/VAD 权重均为 0；best checkpoint 改按 dev Weighted-F1 选择；Phase A train+dev 完成后进入 `STOP_BEFORE_TEST_A`，Phase B 冻结后进入最终 `STOP_BEFORE_TEST`，正式评估不自动运行。
 - 云端复核确认 GPU/容器本身未崩溃，旧 MELD 训练虽完整结束但属于 `invalid_preliminary_run`：Qwen 只处理文本，视频 12,982/13,707（94.71%）为全零，且存在随机冻结投影、伪辅助 target、错误 best 规则、checkpoint 不完整和自动 test 等协议问题。
 - 旧 MELD 聚合指标仅保留诊断：dev Accuracy 0.5469 / Macro-F1 0.3295 / Weighted-F1 0.5042；test Accuracy 0.5808 / Macro-F1 0.3322 / Weighted-F1 0.5418。不得进入论文主结果、不得用于调参。
 - IEMOCAP 已通过官方渠道取得；归档 17,695,884,032 字节，MD5 `521be1e5eec425ae21fdc27c763ca813` 匹配，`gzip -t`、完整解压、Session1–5、零字节检查及 WAV/AVI 抽检通过。状态是“数据完整性 PASS、尚未训练”。
