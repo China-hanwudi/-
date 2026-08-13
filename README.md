@@ -8,8 +8,20 @@
 
 最新实验方案分为两个不可混淆的阶段：
 
-- **Phase A — Qwen 三模态管线与 emotion-only 基线。** 冻结 `Qwen3-Omni-30B-A3B-Instruct`，分别离线抽取文本、音频、视频特征；三路分别缓存并保留各自 provenance，禁止只保存不可拆分的混合向量。`ModalityProjector` 将三路特征投影到 `d_model=128`。历史只取严格过去 `K=3`，接口固定为 `current_modality_mask[B,3]`、`history_mask[B,K]`、`history_modality_mask[B,K,3]`；无合法历史时逐样本精确回退 current-only。Phase A 固定 `utility_loss_weight=0`、`vad_loss_weight=0`，按“单样本 → 32 train/8 dev 冒烟 → 全量特征 → train+dev”推进，以 dev Weighted-F1 选择 best，并停在 `STOP_BEFORE_TEST_A`。Phase A 只证明数据、特征和分类基线管线成立，**不证明完整 N3 创新有效**。
-- **Phase B — 完整 N3 情感历史效用实验。** 对每个历史候选 `h_k (k=1,2,3)` 分别计算当前三模态与该候选历史三模态的 3×3 关系，禁止先把三条历史聚合成一个向量再计算一次 3×3。VAD、情感惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量进入关系与门控；学习模态级和联合级真实双向边际效用，前向背景 `S` 与后向背景 `R` 必须不同；随后执行模态级、联合级两级门控和 current-only 回退。完整比较采用至少 5 个 seeds、分组配对 95% CI 及预注册的完整基线/消融。
+- **Phase A — Qwen 三模态特征生产与 emotion-only 基线。** 原始当前/历史媒体记为 `x_t^m/x_{h_k}^m`；冻结 `Qwen3-Omni-30B-A3B-Instruct` 分模态、分候选离线抽取隐藏表示 `e_t^m/e_{h_k}^m`，三路独立缓存并保存 provenance。可训练 `ModalityProjector` 再将 `e` 投影为真正送入 N3 的 `z`，其中 `Z_current=[B,3,128]`、`Z_history=[B,K=3,3,128]`。Phase A 只训练基础情绪分类，固定 `utility_loss_weight=0`、`vad_loss_weight=0`，以 dev Weighted-F1 选 best 并停在 `STOP_BEFORE_TEST_A`；它只证明特征与分类管线成立，**不证明情感理论或完整 N3 创新有效**。
+- **Phase B — 情感状态与动力学条件化的完整 N3。** 在投影后的 `z` 上由 fit-only/group-OOF 模态情绪头产生离散情绪后验、VAD 与置信度，再仅用严格过去预测轨迹计算情感惯性、转折、恢复和跨模态冲突；它们与时间距离、`same_speaker`、模态质量/mask 组成逐候选 `phi_k`。`phi_k` 必须同时真实接入每个 `h_k` 的条件化 3×3 关系、模态级/联合级双向效用和两级门控，不能只是写在配置或图中。前向背景 `S` 与后向背景 `R` 必须不同；无可靠历史时精确回退 current-only。完整比较采用至少 5 个 seeds、分组配对 95% CI 及预注册的完整基线/消融。
+
+### 不可混淆的三套符号与边界
+
+```text
+原始输入 x → 冻结 Qwen 离线隐藏表示 e → 可训练 Projector 后的 N3 表示 z
+```
+
+- `x` 是原始文本、音频和视频，不直接进入 N3 关系、效用或门控模块；
+- `e` 是冻结 Qwen 的分路隐藏表示，必须连同 model/processor/hash/shape/dtype/mask 保存 provenance；
+- `z` 才是 N3 的可训练下游输入；候选轴 `K=3` 必须一直保留到效用与门控；
+- gold 情绪标签只用于 fit 内监督、`L_emotion` 和 group-OOF 反事实效用 target，禁止作为模型输入，禁止用 dev/test gold 类别反查 VAD；
+- 情感专用 RoBERTa/emotion2vec/AffectNet 等编码器是替代表征 baseline，不是当前 Qwen 主线中暗含的“情感理论模块”。
 
 当前状态：MELD 旧运行因视频 94.71% 全零和损失/评估合同错误被标记为 `invalid_preliminary_run`，正在修复重训；IEMOCAP 已获官方授权并通过归档、解压、Session1–5 和媒体完整性检查，下一步只做 manifest/Session 五折预检；EmotionTalk 新一轮原始数据仍在上传，尚未完成新管线审计。三数据集将使用同一冻结框架**分别训练和评估**，不是默认用一个数据集训练出的单一权重直接证明另外两个数据集有效。
 
@@ -29,9 +41,10 @@ N3 面向多模态对话情感识别，核心问题是：面对某条当前话�
 
 | 阶段 | 核心处理 | 输出与判定边界 |
 |---|---|---|
-| Phase A1. 冻结三模态提取 | Qwen3-Omni 分别离线提取 T/A/V；分路缓存、provenance 和三类 mask；`ModalityProjector → 128` | 证明每路特征来自冻结 Qwen 且可追溯，不把混合向量冒充三路证据 |
+| Phase A1. 冻结三模态提取 | 原始 `x` 经 Qwen3-Omni 分模态/分候选得到 hidden `e`；分路缓存 provenance；`ModalityProjector(e) → z∈R^128` | 明确 N3 消费的是 `z` 而不是原始媒体；证明每路 Qwen 来源可追溯 |
 | Phase A2. 严格历史与基线训练 | 只用严格过去 `K=3`；无合法历史精确 current-only；emotion-only train+dev，dev Weighted-F1 选 best | 得到每个数据集自己的管线基线并停在 `STOP_BEFORE_TEST_A`；不作完整 N3 机制结论 |
-| Phase B1. 候选级 3×3 与情感变量 | 对 `h_1`、`h_2`、`h_3` **逐候选**计算九种 T/A/V 当前—历史关系；加入 VAD、惯性、转折、恢复、冲突、时间、说话人和质量 | 保留候选和模态可归因性；禁止先聚合三条历史 |
+| Phase B0. 情感状态与动力学 | 在 `z` 上用 fit-only/group-OOF 模态情绪头得到后验、VAD、置信度；由严格过去预测轨迹计算惯性、转折、恢复、跨模态冲突，并并入时间/说话人/质量/mask | 形成无评估标签泄漏的逐候选 `phi_k`，缺少合法来源则 fail closed |
+| Phase B1. 条件化候选级 3×3 | 对 `h_1`、`h_2`、`h_3` **逐候选**先计算九种基础关系 `R_k^0`，再用 `phi_k` 得到条件化关系 `R_k` | 避免 `R_k/phi_k` 循环定义；保留候选和模态可归因性；禁止先聚合三条历史 |
 | Phase B2. 真实双向边际效用 | 在不同的 `S`/`R` 背景下分别估计各候选的文本、音频、视频加入收益与删除风险，再估计联合效用和不可加残差 | `U_T/U_A/U_V`、`U_joint` 与 `U_cross` |
 | Phase B3. 两级门控与确认 | 先做模态级门控，再做候选联合级门控；失败时精确回退 current-only；至少 5 seeds、分组配对 95% CI、完整基线/消融 | 只有真实分类指标和完整合取门通过，才支持 N3 有效性主张 |
 
@@ -58,7 +71,8 @@ N3 的任务、表示、理论约束和成功标准都绑定情感识别，而�
 
 - 主任务始终是当前话语的情绪分类，主损失为 `L_emotion`；
 - 当前主干是冻结 Qwen3-Omni 的三路可审计表示；情感专用文本、音频和视觉编码器作为 Phase B 的公平 baseline/消融，用来检验结论是否依赖特定表征；
-- VAD、情感惯性、情感转折、情感恢复和跨模态情绪冲突直接进入 3×3 关系层与门控层；
+- 离散情绪后验和 VAD 由训练角色内的冻结/fit-only 头预测；惯性、转折、恢复与跨模态冲突由这些预测及严格过去轨迹计算，禁止把 gold 类别直接查表后作为输入；
+- 上述情感状态与动力学变量组成 `phi_k`，同时条件化逐候选 3×3、效用头和两级门控；只有真实接入 forward、产生可审计输出且对应消融有效，才算“融入情感理论”；
 - 最终成功必须体现为真实 Accuracy、Weighted-F1 等情感分类指标提升，并通过去 VAD、去惯性/转折/恢复、去跨模态冲突、去双向效用、去两级门控等主模型组件消融验证；情感专用编码器只做替代表征 baseline，不作为当前 Qwen 主模型中可“移除”的组件。
 
 因此，即使一个通用 selector 能预测“某段历史是否有用”，如果完整 N3 不能提高真实情感分类，它也不能支持本项目的核心主张。
