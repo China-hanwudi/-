@@ -1,41 +1,37 @@
 # N3 情感历史效用控制：六路建模 × 双向边际效用 × 真实分类增益
 
-> **当前研究主线：N3 正向方法。** 本分支已经上传冻结协议、实验框架、接口合同、部分历史/通用合同的合成测试与可编辑流程图；它们支持边界审计，但**不证明最新 `x→e→z→R_k^0→phi_k→R_k→效用→门控` 完整目标链已实现，更不等于真实数据性能提升**。<br>
-> **HarmBench/ERC 的定位：**辅助评估、负迁移诊断与安全合同，不是当前主方法。<br>
-> **最终判据：**N3 必须在严格冻结、无泄漏的真实情感分类实验中提高预注册指标；只提高效用预测 AUC、降低 RMSE 或通过工程测试都不算方法成功。
-
-## 2026-08-13 当前两阶段执行方案（ACTIVE OVERRIDE）
-
-最新实验方案分为两个不可混淆的阶段：
-
-- **Phase A — Qwen 三模态特征生产与两个 emotion-only 基线。** 原始当前/历史媒体记为 `x_t^m/x_{h_k}^m`；冻结 `Qwen3-Omni-30B-A3B-Instruct` 分模态、分候选离线抽取隐藏表示 `e_t^m/e_{h_k}^m`，三路独立缓存并保存 provenance。可训练 `ModalityProjector` 再将 `e` 投影为 `z`，其中 `Z_current=[B,3,128]`、`Z_history=[B,K=3,3,128]`。独立训练 A0 current-only 和使用无参数 mask-safe history mean 的 A1 plain-history；两者都只用交叉熵，state/VAD、`a_k/phi_k`、learned history attention、utility 和两级 gate 在 runtime graph 中关闭。以 dev Weighted-F1 选 best 并停在 `STOP_BEFORE_TEST_A`；它只证明特征与基础分类管线成立，**不证明情感理论或完整 N3 创新有效**。
-- **Phase B — 情感状态与动力学条件化的完整 N3。** 从冻结 `e` 开始的全部可学习状态 producer 上游按 dialogue/session 做 group-OOF，产生离散情绪后验、VAD 与置信度；严格过去预测轨迹形成逐候选 `a_k`。随后固定为 `R_k^0=Rel0(z_t,z_hk) → phi_k=Phi(R_k^0,a_k,masks) → R_k`。同一 `phi_k` 必须直接接入条件化关系、模态/联合双向效用、模态门和候选联合门，不能只是写在配置或图中。前向/后向集合背景 `S_set/R_set` 必须不同；无可靠历史或风险失败时硬切独立 A0 logits/probabilities。完整比较采用至少 5 个 seeds、分组配对 95% CI 及预注册的完整基线/消融。
-
-### 不可混淆的三套符号与边界
+> **当前可训练主架构（ACTIVE）：ComposerN3**——与本地训练用模型包同构。  
+> 详解：[ComposerN3 当前实现架构](docs/17_ComposerN3当前实现架构_对齐E模型_2026-08-14.md) · 代码：[`模型/`](模型/README.md)
 
 ```text
-原始输入 x → 冻结 Qwen 离线隐藏表示 e → 可训练 Projector 后的 N3 表示 z
+冻 Qwen3-Omni thinker（文本）+ 音视频侧车特征
+  → 六路投影 z∈R^128
+  → 共享 3×3 关系 → 多效应双向效用 → 两级门控
+  → Transformer 上下文 → 情感分类（+ VAD 辅助）
 ```
 
-- `x` 是原始文本、音频和视频，不直接进入 N3 关系、效用或门控模块；
-- `e` 是冻结 Qwen 的分路隐藏表示，必须连同 model/processor/hash/shape/dtype/mask 保存 provenance；
-- `z` 才是 N3 的可训练下游输入；候选轴 `K=3` 必须一直保留到效用与门控；
-- fit/train gold 只用于训练损失和 held-out-group OOF evaluator 内的反事实 utility target；dev gold 只进入隔离的 metric/model-selection evaluator；test/outer gold 只在明确授权后进入独立 write-once evaluator。任何角色的 gold 都禁止作为 forward 特征，禁止用 dev/test gold 类别反查 VAD；
-- 情感专用 RoBERTa/emotion2vec/AffectNet 等编码器是替代表征 baseline，不是当前 Qwen 主线中暗含的“情感理论模块”。
+- **HarmBench/ERC：**辅助评估与安全合同，不是当前主方法。  
+- **最终判据：**真实情感分类指标；工程冒烟通过不等于方法成功。  
+- **`docs/14`–`16`：**升级向的 Phase A/B（Qwen 原生三模态、`phi_k` 等）**目标合同**，默认**不是**当前代码架构；与实现冲突时，以 `模型/n3_affect` + docs/17 为准。
 
-当前状态：MELD 旧运行因视频 94.71% 全零和损失/评估合同错误被标记为 `invalid_preliminary_run`，正在修复重训；IEMOCAP 已获官方授权并通过归档、解压、Session1–5 和媒体完整性检查，下一步只做 manifest/Session 五折预检；EmotionTalk 新一轮原始数据仍在上传，尚未完成新管线审计。三数据集将使用同一冻结框架**分别训练和评估**，不是默认用一个数据集训练出的单一权重直接证明另外两个数据集有效。
+## 当前实现架构（按代码，2026-08-14）
 
-完整的“做什么、怎么做、旧方案差异、逐数据集 Gate 与停止条件”见 [最新执行基线与 GitHub 旧方案差异](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md)。下方旧协议内容仅用于解释 Phase B 的研究来源；凡与上述两阶段顺序、Qwen 三模态主干或数据集执行关系冲突之处，均不再作为当前执行口径。
+| 层 | 实现要点 |
+|---|---|
+| 特征 | 离线：`extract_meld_features` — Qwen 文本 2048-d；A/V 为 librosa / 帧统计侧车 |
+| 输入维 | `text_dim=2048`, `audio_dim=1536`, `video_dim=768` → `d_model=128` |
+| 历史 | 严格过去最多 `K=3`，`history_mask` / `modality_mask` |
+| 骨干 | `SharedThreeByThree` + `BidirectionalUtilityHeads` + `TwoLevelGate` + Transformer |
+| 训练 | `train_meld.py`：仅官方 **train**；train 内 monitor 早停 |
+| 主线 LLM | `Qwen3-Omni-30B-A3B-Instruct` **只作文本塔**（权重不进 Git） |
 
-**代码同步状态（2026-08-14）：部分完成。** 已从本地 `E:\模型` 合入 MELD 实跑链：`generate_meld_manifests.py`、`extract_meld_features.py`、`train_meld.py`、`eval_meld.py`、`meld_dataset.py` 与 `run_meld_*.sh`。该链使用冻结 Qwen **文本** thinker + librosa/torchvision 音视频侧车特征，并在官方 train 上训练 N3。**仍未完成**最新 Phase A 合同：Qwen 原生三模态分路 `e`、严格 `K=3` masks、A0/A1 emotion-only、`STOP_BEFORE_TEST_A` / `STOP_BEFORE_TEST`。`n3_train_v1.json` 仍含非零 utility/VAD 旧默认。因此可跑真实 MELD 管线，但不能把当前代码直接视为已完成的 Qwen 三模态重训实现。详见 [`模型/README.md`](模型/README.md)。
+数据状态（机器侧，不进公开仓）：MELD 可走上述链；IEMOCAP / EmotionTalk 另按数据集文档推进。三数据集**分别**训练评估，不默认一套权重证明三套数据。
 
-MELD 与 IEMOCAP 的“已解压后怎么继续”已经分别冻结为 [MELD 执行全流程](docs/15_MELD_已解压数据后续执行全流程_2026-08-13.md) 和 [IEMOCAP 执行全流程](docs/16_IEMOCAP_已解压数据后续执行全流程_2026-08-13.md)。**已解压只表示文件已落盘，不表示可以直接训练。** 每个数据集仍须逐 Gate 完成只读审计、manifest、Qwen 三模态证明、32/8 冒烟、全量特征审计和 train+dev；若仓库缺少对应的正式 CLI，必须先实现并测试该 Gate，不得改跑 synthetic trainer、旧 sidecar 或只处理文本的入口来冒充完成。
-
-N3 面向多模态对话情感识别，核心问题是：面对某条当前话语，应当从同一对话的严格过去历史中保留哪些文本、音频和视频信息，哪些信息会造成负迁移，以及何时必须安全回退到只看当前话语的分类器。当前候选不限制说话人，并逐候选保存 `same_speaker`；同说话人历史作为预注册对照，以便真正检验说话人关系变量。
+已解压 ≠ 可直接训：仍需 manifest → 特征 → `train_meld`。入口见 [`模型/README.md`](模型/README.md)。
 
 ![N3 Qwen-Omni 两阶段实验流程](assets/n3_qwen_omni_experiment_workflow_20260813.png)
 
-可编辑源图：[PPTX](assets/n3_qwen_omni_experiment_workflow_20260813.pptx)。旧版流程图继续保留作历史追溯；完整的当前两阶段定义见 [最新执行基线](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md)，Phase B 的历史设计来源见 [N3 候选方案：老师要求对照与冻结协议](docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md)。
+上图对应 **docs/14 目标流程**（远期）。**当前默认训练**不要求该图全部模块已实现。可编辑源：[PPTX](assets/n3_qwen_omni_experiment_workflow_20260813.pptx)。Phase B 设计来源见 [docs/12](docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md)。
 
 ## N3 两阶段实验框架
 

@@ -2,8 +2,8 @@
   "protocol_id": "n3_train_v1",
   "status": "trainable_candidate_no_official_test_authority",
   "created_date": "2026-08-09",
-  "updated_date": "2026-08-09",
-  "design_note": "Main-line LLM is Qwen3-Omni-30B-A3B-Instruct only. No other Qwen variants are configured. Omni weights are NOT vendored (size). Branch: EmoBERTa / ComposerN3.",
+  "updated_date": "2026-08-14",
+  "design_note": "ACTIVE architecture = ComposerN3 six-way (see docs/17): frozen Qwen3-Omni thinker TEXT only (2048-d) + audio/video sidecars → projectors → 3x3 relation → multi-effect bidirectional utility → two-level gate → classifier. Omni weights NOT vendored. Phase A/B tri-modal protocol in docs/14-16 is future upgrade, not this config's runtime graph.",
   "authorization": {
     "fit_training_authorized": true,
     "official_test_evaluation_authorized": false
