@@ -1,12 +1,19 @@
 # CARMA-Affect Research Findings
 
+## 当前两阶段方案摘要（2026-08-13；计划边界，不是性能发现）
+
+- **表示边界：**原始文本/音频/视频 `x` 经冻结 Qwen 分模态、分候选离线产生 hidden `e` 并保存 provenance；三个可训练 `ModalityProjector` 再产生真正的 N3 输入 `z`，固定为 `Z_current=[B,3,128]`、`Z_history=[B,K=3,3,128]`。不得混写 `x/e/z`，也不得提前消掉候选轴。
+- **Phase A：**只走 `x→e→z` 后的独立 A0 current-only CE 与冻结公式 A1 plain-history CE；候选先取最近 `K=3`，oldest→newest、固定左 padding，mask 为 `[B,3]`、`[B,K]`、`[B,K,3]`。A1 仅使用无参数 mask-safe history mean，无合法历史在 classifier 前硬切并原样返回 A0 logits/probabilities。posterior/VAD/confidence、`a/phi`、learned history attention、utility 和两级 gate 均关闭。按单样本 → 32/8 冒烟 → 全量特征 → train+dev 推进，dev Weighted-F1 选 best，随后 `STOP_BEFORE_TEST_A`。Phase A 只验证管线与基线，不能证明完整 N3。
+- **Phase B：**由 fit-only/group-OOF 模态情绪头产生离散后验、VAD 和置信度，再用严格过去预测轨迹计算惯性、转折、恢复、跨模态冲突，并与时间、说话人、质量/mask 组成逐候选 `phi_k`。每个 `h_k` 先有基础 `R_k^0`，再由 `phi_k` 条件化为 `R_k`；`phi_k` 同时进入逐候选 3×3、`S≠R` 的模态/联合双向效用和两级门控。gold 只用于 fit 内监督、`L_emotion` 与 group-OOF utility target，绝不作为输入。完整比较至少 5 seeds、分组配对 95% CI 和预注册消融，随后 `STOP_BEFORE_TEST`。
+- **数据集与评估：**MELD、EmotionTalk、IEMOCAP 使用同一冻结框架但分别训练和评估，不合并训练，也不默认一套权重零样本跑三个数据集。MELD/EmotionTalk official test 分别独立授权且 write-once；IEMOCAP 是预注册 outer-Session 五折的一次冻结执行与汇总，每个 Session 仅在对应 fold 内 held-out，不能声称全局从未用于开发。当前只是方案冻结，尚未产生新的 Phase A/Phase B 性能证据。
+
 ## N3 主线纠偏与不可变边界（2026-08-09）
 
 - 最高研究依据已切换为用户提供的 `pasted-text.txt`；正式正向主线命名为 N3 候选方案。核心是“情感领域六路表示 × 共享 3×3 当前—历史交互 × 模态级/联合级真实双向边际效用 × 两级安全门控”，最终必须提高真实情感分类，而不是只改善 utility AUC 或历史伤害率。
 - N2 不是“没有双向目标”：其相关原型已有不同集合 forward/backward OOF，但主要是候选历史联合层，缺少逐模态受控反事实、联合协同/冲突残差和部分模态门控。N2 还采用 benefit-positive backward `ell(R-h)-ell(R)`；老师原式/N3 采用 deletion-risk-positive backward `ell(R)-ell(R-h)`。旧 N2 结果保持原符号，N3 若复用必须显式乘 `-1` 并绑定 provenance，不能静默混用。
 - N2 的 TF-IDF/SVD、通用 WavLM 和 DINOv2 只能作为输入、容量和预算匹配的通用编码器基线；固定 VAD 表不能冒充完整情感领域建模。N3 必须把离散情绪后验、VAD、惯性、转折、恢复、跨模态冲突、时间、说话人和模态质量实际接入表示/交互/门控并做消融。
 - 已生成 `docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md`，包含老师四条逐项对照、六路接口、效用公式、两级门控、15 项最低基线/消融、合取成功门和 synthetic/fit-only 停止条件。当前仍为 PROVISIONAL，不构成性能结论或未观察标签解封授权。
-- IEMOCAP 已预注册为 N3 的第三个独立外部确认数据集：冻结前不得运行、不得模型选择/调参、正负都报告；若官方授权或预声明六路协议失败，只按 `CPED → M3ED` 固定顺序切换，禁止按结果挑集。
+- **历史口径（已被 2026-08-13 Session 五折协议取代）：**当时把 IEMOCAP 预注册为第三个独立外部确认数据集，并约定授权/六路协议失败时按 `CPED → M3ED` 切换。当前已取得授权，实际执行以 `docs/16` 的 outer-Session 五折、逐 fold train/dev/outer 角色隔离为准。
 
 ## HarmBench S1 收尾只读审计（2026-08-09）
 
@@ -574,6 +581,8 @@
 
 ## 持续科研审计与不同集合 OOF 启动（2026-08-08）
 
+> **历史状态快照（已被 2026-08-13 顶部摘要替代）：**本节关于 IEMOCAP 尚无许可数据、原始媒体可用性和数据集优先级的陈述仅反映 2026-08-08 当时状态，不得用于当前执行判断。
+
 - 顶会证据审计判定：当前只能支持“历史负迁移问题/benchmark 值得研究”，教师提出的三项方法创新仍为 `0/3` 实证通过；旧 endpoint 的 harm AUC 为 0.728，但 mean utility Spearman 约为 -0.002，不能作为新方法成功证据。
 - 发现并在真实实验前修复两个关键混杂：数据角色不再随新模型协议名变化，统一复用冻结的 `scu_set_exploration_v1` split id；不同集合任务强制 `|S|=|T\{h_i}|` 且成员不同，避免把集合大小效应误当成双向不对称。
 - 新增可断点恢复的 EmotionTalk different-set runner：每个训练折内先做 query-balanced history-subset augmentation，再生成 5 seed float64 `P(S)`、`P(S+h_i)`、`P(T)`、`P(T-h_i)` OOF 概率；calibration、internal holdout、validation 与 test 均保持封存。
@@ -626,6 +635,8 @@
 - 仓库公开边界不包含原始音视频、转写、逐查询记录、权重、受限派生特征、授权材料或凭据。
 
 ## 数据集优先级
+
+> **历史优先级（2026-08-07，已失效）：**IEMOCAP 现已取得官方授权并通过归档/解压/媒体完整性检查；当前状态以本文件顶部摘要和 `docs/03_数据集与许可状态.md` 为准。
 
 1. MELD：立即可用的 pilot/标准基准，但深历史覆盖有限。
 2. IEMOCAP：长双人对话更适合主确认，但需要 USC 许可。
