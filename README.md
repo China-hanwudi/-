@@ -27,7 +27,7 @@
 
 完整的“做什么、怎么做、旧方案差异、逐数据集 Gate 与停止条件”见 [最新执行基线与 GitHub 旧方案差异](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md)。下方旧协议内容仅用于解释 Phase B 的研究来源；凡与上述两阶段顺序、Qwen 三模态主干或数据集执行关系冲突之处，均不再作为当前执行口径。
 
-**代码同步状态：未完成。** 当前 `模型/n3_affect/` 仍只把 Qwen 接入文本塔，音频/视频使用外部 sidecar 投影；`n3_train_v1.json` 仍是 utility/VAD 非零的旧配置，且正式数据 trainer 尚未实现最新 K=3 masks、dev Weighted-F1 best、`STOP_BEFORE_TEST_A` 与最终 `STOP_BEFORE_TEST`。因此当前仓库可作为最新执行说明和旧/新差异基线，不能直接视为已经完成的 Qwen 三模态重训实现。
+**代码同步状态（2026-08-14）：部分完成。** 已从本地 `E:\模型` 合入 MELD 实跑链：`generate_meld_manifests.py`、`extract_meld_features.py`、`train_meld.py`、`eval_meld.py`、`meld_dataset.py` 与 `run_meld_*.sh`。该链使用冻结 Qwen **文本** thinker + librosa/torchvision 音视频侧车特征，并在官方 train 上训练 N3。**仍未完成**最新 Phase A 合同：Qwen 原生三模态分路 `e`、严格 `K=3` masks、A0/A1 emotion-only、`STOP_BEFORE_TEST_A` / `STOP_BEFORE_TEST`。`n3_train_v1.json` 仍含非零 utility/VAD 旧默认。因此可跑真实 MELD 管线，但不能把当前代码直接视为已完成的 Qwen 三模态重训实现。详见 [`模型/README.md`](模型/README.md)。
 
 MELD 与 IEMOCAP 的“已解压后怎么继续”已经分别冻结为 [MELD 执行全流程](docs/15_MELD_已解压数据后续执行全流程_2026-08-13.md) 和 [IEMOCAP 执行全流程](docs/16_IEMOCAP_已解压数据后续执行全流程_2026-08-13.md)。**已解压只表示文件已落盘，不表示可以直接训练。** 每个数据集仍须逐 Gate 完成只读审计、manifest、Qwen 三模态证明、32/8 冒烟、全量特征审计和 train+dev；若仓库缺少对应的正式 CLI，必须先实现并测试该 Gate，不得改跑 synthetic trainer、旧 sidecar 或只处理文本的入口来冒充完成。
 

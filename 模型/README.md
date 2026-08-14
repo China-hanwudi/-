@@ -28,7 +28,33 @@ raw x
 
 Phase A 的 A1 只允许对候选话语表示做无参数 mask-safe mean；无历史时在 A1 classifier 前硬切独立 A0-best logits/probabilities。Phase B 无候选通过或风险失败也硬切 A0，不得用 history/N3 checkpoint 的空历史近似或混合概率。dev gold 只进入隔离的 best-checkpoint evaluator；正式 test/outer gold 只进入授权后的独立 write-once evaluator。
 
-## 遗留构造示例（仅 smoke，禁止本轮正式训练）
+## 已同步的 MELD 实跑入口（来自本地 `E:\模型`，2026-08-14）
+
+下列文件**真实存在**，用于官方 MELD 划分上的离线特征 + N3 训练/评估（与上方「目标协议」仍有差距，**不能**直接宣称 Phase A/B Gate 已完成）：
+
+| 入口 | 作用 |
+|---|---|
+| `n3_affect/generate_meld_manifests.py` | 从已解压 MELD 生成 train/val/test manifest |
+| `n3_affect/extract_meld_features.py` | 冻 Qwen thinker **文本**隐状态；音频/视频为 librosa / torchvision 侧车特征（非 Omni 原生 A/V 三路） |
+| `n3_affect/meld_dataset.py` | 读取离线特征 batch |
+| `n3_affect/train_meld.py` | 仅用官方 train；train 内 10% monitor 早停（不用官方 val/test 调参） |
+| `n3_affect/eval_meld.py` | checkpoint 评估 |
+| `run_meld_v3.sh` / `run_meld_resume.sh` / `run_meld_retrain.sh` / `n3_affect/run_pipeline.sh` | 服务器一键流水线（路径默认 `/root/肖田泽最强/`） |
+
+Omni 权重与 `local_omni_path.txt` **不进 Git**；服务器上指向 `/data/shared/qwen/Qwen3-Omni-30B-A3B-Instruct`。
+
+示例（服务器；先改脚本内数据根路径）：
+
+```bash
+cd 模型
+bash run_meld_v3.sh
+# 或分步：
+# python -m n3_affect.generate_meld_manifests --out-dir ...
+# python -m n3_affect.extract_meld_features --manifests ... --out-dirs ...
+# python -m n3_affect.train_meld --train-manifest ... --train-features ... --out-dir ...
+```
+
+## 遗留构造示例（仅 smoke）
 
 ```python
 from n3_affect import N3TrainConfig, N3EmotionModel
@@ -45,4 +71,4 @@ python -m pytest tests -q
 python -m n3_affect.train --text-tower composer_n3 --epochs 1 --steps-per-epoch 2
 ```
 
-上述命令只验证旧接口仍可运行，不证明 Qwen 三模态 `x→e→z`、真实数据 loader、逐候选轴、理论条件化、双向效用或两级门控已经实现。
+上述命令只验证旧接口仍可运行。`train_meld` 链证明「真实 MELD + 冻 Qwen 文本特征 + N3」可跑，**仍不证明**完整 Qwen 三模态 `x→e→z`、`K=3` masks、Phase A `STOP_BEFORE_TEST_A` 或 Phase B 理论条件化已实现。
