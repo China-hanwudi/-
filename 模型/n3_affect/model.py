@@ -12,7 +12,11 @@ from .config import N3TrainConfig
 from .encoders import SixWayEncoders
 from .gating import TwoLevelGate
 from .relation import SharedThreeByThree
-from .utility import BidirectionalUtilityHeads
+from .utility import (
+    BidirectionalUtilityHeads,
+    all_effect_deltas,
+    fuse_variants,
+)
 
 
 class TheoryAuxHead(nn.Module):
@@ -41,8 +45,15 @@ class N3EmotionModel(nn.Module):
             nn.LayerNorm(d),
         )
         self.relation = SharedThreeByThree(d, self.cfg.relation_rank, self.cfg.dropout)
-        self.utility = BidirectionalUtilityHeads(d, self.cfg.gate_hidden, self.cfg.dropout)
+        self.time_fuse = nn.Sequential(
+            nn.Linear(d * 2, d),
+            nn.GELU(),
+            nn.LayerNorm(d),
+        )
+        mix_tau = float(getattr(self.cfg, "mix_tau", 1.25))
+        self.utility = BidirectionalUtilityHeads(d, self.cfg.gate_hidden, self.cfg.dropout, mix_tau=mix_tau)
         self.gate = TwoLevelGate(d, self.cfg.gate_hidden, self.cfg.dropout)
+        self.mix_norm = nn.LayerNorm(d)
         self.context = nn.TransformerEncoder(
             nn.TransformerEncoderLayer(
                 d_model=d,
@@ -68,16 +79,43 @@ class N3EmotionModel(nn.Module):
         texts_history: list[str] | None = None,
     ) -> dict[str, Tensor]:
         streams = self.encoders(batch, texts_current=texts_current, texts_history=texts_history)
-        current_pool = self.current_fuse(
-            torch.cat([streams["T_t"], streams["A_t"], streams["V_t"]], dim=-1)
+        history_mask = batch.get("history_mask")
+        has_history = None
+        if history_mask is not None:
+            w = history_mask.unsqueeze(-1)
+            denom = history_mask.sum(dim=1, keepdim=True).clamp(min=1.0)
+            for key in ("T_h", "A_h", "V_h"):
+                h = streams[key]
+                if h.dim() == 3:
+                    streams[key] = (h * w).sum(dim=1) / denom
+            has_history = (history_mask.sum(dim=1) > 0).to(dtype=streams["T_t"].dtype)
+        variants = fuse_variants(self.current_fuse, streams["T_t"], streams["A_t"], streams["V_t"])
+        hist_variants = fuse_variants(self.current_fuse, streams["T_h"], streams["A_h"], streams["V_h"])
+        current_pool = variants["TAV"]
+        relation_vec, relation_grid = self.relation(
+            streams,
+            has_history=has_history,
+            modality_mask=batch.get("modality_mask"),
+            history_modality_mask=batch.get("history_modality_mask"),
         )
-        relation_vec, relation_grid = self.relation(streams)
-        utilities = self.utility(current_pool, relation_vec)
+        deltas = all_effect_deltas(
+            variants,
+            hist_variants,
+            self.time_fuse,
+            streams["T_t"],
+            streams["A_t"],
+            streams["V_t"],
+            streams["T_h"],
+            streams["A_h"],
+            streams["V_h"],
+        )
+        utilities = self.utility(deltas)
         gated = self.gate(
             current_pool,
             {"T_h": streams["T_h"], "A_h": streams["A_h"], "V_h": streams["V_h"]},
             utilities,
         )
+        gated["representation"] = gated["representation"] + self.mix_norm(utilities["delta_mix"])
         tokens = torch.stack(
             [
                 streams["T_t"],

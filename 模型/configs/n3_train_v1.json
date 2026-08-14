@@ -58,11 +58,11 @@
     "num_classes": 7,
     "parameter_budget": 2000000,
     "relation": "shared_low_rank_3x3",
-    "utility": ["U_T", "U_A", "U_V", "U_joint", "U_cross"],
+    "utility": ["T_fwd","T_bwd","A_fwd","A_bwd","V_fwd","V_bwd","TA","TV","AV","cross","Th_fwd","Th_bwd","Ah_fwd","Ah_bwd","Vh_fwd","Vh_bwd","T_time","A_time","V_time"],
     "gating": ["modality_gate", "joint_risk_gate", "current_only_fallback"]
   },
   "input_dims": {
-    "text_dim": 256,
+    "text_dim": 2048,
     "audio_dim": 1536,
     "video_dim": 768
   },

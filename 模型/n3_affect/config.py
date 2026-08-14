@@ -26,13 +26,29 @@ DEFAULT_HF_TEXT_MODEL = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
 _PKG_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LOCAL_EMOBERTA = _PKG_ROOT / "artifacts" / "pretrained" / "emoberta-base"
 DEFAULT_LOCAL_QWEN = _PKG_ROOT / "artifacts" / "pretrained" / "qwen3-omni-30b-a3b-instruct"
+LOCAL_OMNI_PATH_FILE = _PKG_ROOT / "local_omni_path.txt"
+
+
+def _read_local_omni_override() -> Path | None:
+    """Optional one-line absolute path in 模型/local_omni_path.txt."""
+    if not LOCAL_OMNI_PATH_FILE.is_file():
+        return None
+    for line in LOCAL_OMNI_PATH_FILE.read_text(encoding="utf-8").splitlines():
+        text = line.strip()
+        if not text or text.startswith("#"):
+            continue
+        path = Path(text)
+        if path.is_dir():
+            return path
+    return None
+
 
 
 @dataclass
 class N3TrainConfig:
     """Hyperparameters for :class:`~n3_affect.model.N3EmotionModel`."""
 
-    text_dim: int = 256
+    text_dim: int = 2048
     audio_dim: int = 1536
     video_dim: int = 768
     d_model: int = 128
@@ -57,6 +73,10 @@ class N3TrainConfig:
     emotion_loss_weight: float = 1.0
     utility_loss_weight: float = 0.2
     vad_loss_weight: float = 0.1
+    mix_tau: float = 1.0
+    mix_kl_weight: float = 0.0
+    mix_peak_weight: float = 0.05
+    mix_peak_cap: float = 0.40
     seed: int = 17
 
     def validate(self) -> None:
@@ -75,7 +95,8 @@ class N3TrainConfig:
         if self.text_tower == "emoberta_base":
             candidates = [local, DEFAULT_LOCAL_EMOBERTA]
         elif self.text_tower == "qwen3_omni_30b_a3b":
-            candidates = [local, DEFAULT_LOCAL_QWEN]
+            override = _read_local_omni_override()
+            candidates = [c for c in [override, local, DEFAULT_LOCAL_QWEN] if c is not None]
         else:
             candidates = [local]
         for path in candidates:
@@ -129,7 +150,7 @@ class N3TrainConfig:
         else:
             local_path = str(DEFAULT_LOCAL_QWEN)
         return cls(
-            text_dim=int(dims.get("text_dim", 256)),
+            text_dim=int(dims.get("text_dim", 2048)),
             audio_dim=int(dims.get("audio_dim", 1536)),
             video_dim=int(dims.get("video_dim", 768)),
             d_model=int(arch.get("d_model", 128)),
@@ -150,5 +171,9 @@ class N3TrainConfig:
             emotion_loss_weight=float(weights.get("emotion", 1.0)),
             utility_loss_weight=float(weights.get("utility", 0.2)),
             vad_loss_weight=float(weights.get("vad", 0.1)),
+            mix_tau=float(train.get("mix_tau", 1.0)),
+            mix_kl_weight=float(weights.get("mix_kl", 0.0)),
+            mix_peak_weight=float(weights.get("mix_peak", 0.05)),
+            mix_peak_cap=float(train.get("mix_peak_cap", 0.40)),
             seed=int((train.get("seeds") or [17])[0]),
         )

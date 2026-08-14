@@ -75,6 +75,8 @@ experiment/checkpoints/
 # Never auto-commit Omni / large Qwen downloads
 模型/artifacts/pretrained/qwen*/
 模型/artifacts/pretrained/qwen3-omni-*/
+模型/local_omni_path.txt
+
 
 # Private working documents and screenshots
 *.docx
