@@ -29,9 +29,9 @@
 
 已解压 ≠ 可直接训：仍需 manifest → 特征 → `train_meld`。入口见 [`模型/README.md`](模型/README.md)。
 
-![N3 Qwen-Omni 两阶段实验流程](assets/n3_qwen_omni_experiment_workflow_20260813.png)
+![ComposerN3 当前可训练架构](assets/composer_n3_current_architecture_20260817.svg)
 
-上图对应 **docs/14 目标流程**（远期）。**当前默认训练**不要求该图全部模块已实现。可编辑源：[PPTX](assets/n3_qwen_omni_experiment_workflow_20260813.pptx)。Phase B 设计来源见 [docs/12](docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md)。
+上图与当前 `模型/n3_affect` 实现对齐：Qwen 只作文本塔，音视频使用侧车特征。远期 **docs/14 Phase A/B 目标流程**仍保留为历史设计资料：[PNG](assets/n3_qwen_omni_experiment_workflow_20260813.png) · [PPTX](assets/n3_qwen_omni_experiment_workflow_20260813.pptx)。Phase B 设计来源见 [docs/12](docs/12_N3候选方案_要求对照与冻结协议_2026-08-09.md)。
 
 ## N3 两阶段实验框架
 
