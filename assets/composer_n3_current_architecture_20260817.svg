@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">ComposerN3 当前可训练架构</title>
+  <desc id="desc">冻结 Qwen3-Omni 文本特征与音视频侧车特征，经六路投影、三乘三关系、双向效用、两级门控和 Transformer 完成七类情感分类。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#64748b"/>
+    </marker>
+    <style>
+      text { font-family: "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; letter-spacing: 0; }
+      .title { font-size: 52px; font-weight: 700; fill: #0f172a; }
+      .subtitle { font-size: 23px; fill: #475569; }
+      .stage { font-size: 27px; font-weight: 700; fill: #0f172a; }
+      .body { font-size: 21px; fill: #334155; }
+      .small { font-size: 18px; fill: #475569; }
+      .white { fill: #ffffff; }
+      .arrow { stroke: #64748b; stroke-width: 5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f8fafc"/>
+  <rect x="0" y="0" width="1600" height="16" fill="#0f766e"/>
+  <text x="80" y="88" class="title">ComposerN3 当前可训练架构</text>
+  <text x="80" y="132" class="subtitle">实现态：冻结 Qwen 文本塔 + 音视频侧车 → 历史效用控制 → 当前话语情感分类</text>
+
+  <rect x="80" y="190" width="260" height="470" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text x="110" y="242" class="stage">01  多模态输入</text>
+  <text x="110" y="287" class="body">当前话语</text>
+  <rect x="110" y="310" width="64" height="64" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <rect x="183" y="310" width="64" height="64" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <rect x="256" y="310" width="64" height="64" rx="6" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+  <text x="132" y="351" class="body" fill="#1d4ed8">T</text>
+  <text x="205" y="351" class="body" fill="#b45309">A</text>
+  <text x="278" y="351" class="body" fill="#be185d">V</text>
+  <text x="110" y="424" class="body">严格过去历史</text>
+  <text x="110" y="459" class="small">最多 K=3</text>
+  <rect x="110" y="485" width="210" height="72" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="132" y="517" class="body">h₁  h₂  h₃</text>
+  <text x="132" y="546" class="small">T / A / V + masks</text>
+  <text x="110" y="608" class="small">禁止未来话语</text>
+  <text x="110" y="637" class="small">保留模态与历史掩码</text>
+
+  <path d="M 350 425 L 405 425" class="arrow"/>
+
+  <rect x="420" y="190" width="280" height="470" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text x="450" y="242" class="stage">02  离线特征</text>
+  <rect x="450" y="285" width="220" height="105" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="476" y="325" class="body">Qwen3-Omni thinker</text>
+  <text x="476" y="359" class="small">仅文本·2048-d·冻结</text>
+  <rect x="450" y="415" width="220" height="76" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="476" y="448" class="body">音频侧车</text>
+  <text x="476" y="477" class="small">librosa 统计·1536-d</text>
+  <rect x="450" y="516" width="220" height="76" rx="6" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+  <text x="476" y="549" class="body">视频侧车</text>
+  <text x="476" y="578" class="small">抽帧统计·768-d</text>
+  <text x="450" y="635" class="small">权重与特征不进 Git</text>
+
+  <path d="M 710 425 L 765 425" class="arrow"/>
+
+  <rect x="780" y="190" width="300" height="470" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text x="810" y="242" class="stage">03  N3 关系与效用</text>
+  <rect x="810" y="285" width="240" height="80" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="837" y="319" class="body">六路模态投影</text>
+  <text x="837" y="348" class="small">e → z ∈ R¹²⁸</text>
+  <rect x="810" y="390" width="240" height="80" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <text x="837" y="424" class="body">共享 3×3 关系</text>
+  <text x="837" y="453" class="small">当前 T/A/V × 历史 T/A/V</text>
+  <rect x="810" y="495" width="240" height="112" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="837" y="529" class="body">双向边际效用</text>
+  <text x="837" y="561" class="small">19 路 effect + softmax mix</text>
+  <text x="837" y="590" class="small">加入收益 / 删除风险</text>
+  <text x="810" y="641" class="small">学习历史何时有益</text>
+
+  <path d="M 1090 425 L 1145 425" class="arrow"/>
+
+  <rect x="1160" y="190" width="220" height="470" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text x="1190" y="242" class="stage">04  门控融合</text>
+  <rect x="1190" y="300" width="160" height="90" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="1215" y="338" class="body">模态级门</text>
+  <text x="1215" y="369" class="small">保留可靠模态</text>
+  <rect x="1190" y="420" width="160" height="90" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="1215" y="458" class="body">联合风险门</text>
+  <text x="1215" y="489" class="small">压制有害历史</text>
+  <rect x="1190" y="540" width="160" height="82" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="1215" y="575" class="body">Transformer</text>
+  <text x="1215" y="605" class="small">上下文融合</text>
+
+  <path d="M 1390 425 L 1435 425" class="arrow"/>
+
+  <rect x="1450" y="190" width="110" height="470" rx="8" fill="#0f766e"/>
+  <text x="1478" y="248" class="stage white">05</text>
+  <text x="1478" y="300" class="body white">情感</text>
+  <text x="1478" y="334" class="body white">分类</text>
+  <text x="1478" y="397" class="small white">7 类</text>
+  <text x="1478" y="430" class="small white">概率</text>
+  <text x="1478" y="463" class="small white">VAD</text>
+  <text x="1478" y="526" class="small white">无合法</text>
+  <text x="1478" y="556" class="small white">历史时</text>
+  <text x="1478" y="586" class="small white">回退</text>
+
+  <rect x="80" y="715" width="1480" height="120" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <rect x="80" y="715" width="14" height="120" fill="#0f766e"/>
+  <text x="120" y="765" class="stage">成功判据</text>
+  <text x="320" y="760" class="body">真实 Weighted-F1 / Accuracy 超过 current-only 和最强历史基线</text>
+  <text x="320" y="802" class="body">至少 5 seeds、分组配对 95% CI、完整消融；工程冒烟通过 ≠ 方法成功</text>
+</svg>
