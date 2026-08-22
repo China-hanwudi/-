@@ -153,6 +153,8 @@ $python = (Resolve-Path '.venv\Scripts\python.exe').Path
 
 ## 关键文件
 
+- [当前训练对齐与三数据集证据](docs/19_当前训练对齐与三数据集证据_2026-08-23.md)：将 ComposerN3/N3-HistoryGate 与最新聚合结果、EmotionTalk selector 安全结论和公开边界对齐；不替代各数据集的正式 runbook。
+
 - [最新 Phase A/Phase B 执行基线](docs/14_最新执行基线与GitHub旧方案差异_2026-08-13.md)：当前唯一执行顺序、逐数据集 Gate、实现差距与 test 边界；
 - [MELD 已解压数据后续执行全流程](docs/15_MELD_已解压数据后续执行全流程_2026-08-13.md)：从用户批准路径、只读 preflight 到 Phase A/Phase B 两个停止点及独立授权 test 的逐 Gate 操作单；
 - [IEMOCAP 已解压数据后续执行全流程](docs/16_IEMOCAP_已解压数据后续执行全流程_2026-08-13.md)：从 Session/媒体审计、外层 Session 五折 manifest 到两阶段训练与五折交叉验证汇总的逐 Gate 操作单；
