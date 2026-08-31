@@ -23,7 +23,7 @@ For a batch of `B` current utterances and `K` frozen candidate histories, the mo
 | Two-level routing | Applies modality gates first, then candidate gates conditioned on the bottleneck. |
 | Current-only route | Emits current-only logits when `history_authorized` is false. It is a separate classifier head, although the present development code still shares upstream encoders. |
 
-The reference implementation is [`../temporal_n3/`](../temporal_n3/). Its unit tests verify candidate dimensions, masks, gate routing, and deterministic fallback authorization; they do not train on a corpus or prove utility quality.
+The reference implementation is [`../temporal_n3/`](../temporal_n3/). It includes synthetic unit tests for candidate dimensions, masks, gate routing, and deterministic fallback authorization. Those tests do not train on a corpus or prove utility quality.
 
 ## Temporal candidate and resampling protocol
 
@@ -50,9 +50,9 @@ The public policy module currently exposes a bounded development pool (`max_cand
 
 | Item | Status |
 |---|---|
-| Variable-candidate `K x 3 x 3` module and masks | Implemented and synthetic-unit-tested |
-| Utility-Risk Bottleneck and two-stage candidate routing | Implemented and synthetic-unit-tested |
-| Fresh-round and maximum-round API guard | Implemented and synthetic-unit-tested |
+| Variable-candidate `K x 3 x 3` module and masks | Implemented; synthetic test suite included |
+| Utility-Risk Bottleneck and two-stage candidate routing | Implemented; synthetic test suite included |
+| Fresh-round and maximum-round API guard | Implemented; synthetic test suite included |
 | Full causal/OOF utility supervision | Not yet verified end to end |
 | Selector, refill, and resampling on official data | Not yet verified end to end |
 | MELD v4 official train/dev run | Preparation in progress; test unopened |

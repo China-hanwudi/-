@@ -12,7 +12,7 @@
 - Added public release exclusions for v4 manifests, per-example routing outputs,
   features, receipts, checkpoints, and logs. No raw data or server artifact was
   copied into the repository.
-- The v4 code has synthetic interface tests only. End-to-end OOF utility labels,
+- The v4 code includes synthetic interface tests. End-to-end OOF utility labels,
   selector/fallback evidence, official-split training, and final test results
   remain unverified and must not be inferred from this migration.
 

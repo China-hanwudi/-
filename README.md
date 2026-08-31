@@ -4,7 +4,7 @@ This repository documents the current development direction: **Temporal N3 v4**,
 
 The research question is narrower than “does more context help?”: **which strictly-past dialogue turns should be used for the current emotion prediction, through which modalities, and when should the system return to a current-only prediction instead?**
 
-> **Evidence status, 2026-08-31.** Temporal N3 v4 has an independently tested architecture and a frozen development protocol. Its complete causal/OOF utility-supervision, selector, resampling, and official-test chain has not yet been verified end to end. The MELD official-split run is train/dev-only preparation; its test split remains unopened. This repository makes no SOTA or completed-test claim for v4.
+> **Evidence status, 2026-08-31.** Temporal N3 v4 has a public architecture and a frozen development protocol, with a synthetic test suite included in this repository. Its complete causal/OOF utility-supervision, selector, resampling, and official-test chain has not yet been verified end to end. The MELD official-split run is train/dev-only preparation; its test split remains unopened. This repository makes no SOTA or completed-test claim for v4.
 
 ## Current architecture
 
