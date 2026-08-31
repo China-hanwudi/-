@@ -1,5 +1,21 @@
 # CARMA-Affect Progress Log
 
+## 2026-08-31 — Temporal N3 v4 public-source migration
+
+- Added an independent public Temporal N3 v4 module: variable candidate-axis
+  `K x 3 x 3` relations, candidate-wise bidirectional utility/risk evidence,
+  Utility-Risk Bottleneck, modality-to-candidate gates, bounded resampling
+  authorization, and a hard current-only output route.
+- Reframed ComposerN3 and the existing experiment directory as historical
+  material. Their source and evidence remain available but do not constitute
+  Temporal N3 v4 results.
+- Added public release exclusions for v4 manifests, per-example routing outputs,
+  features, receipts, checkpoints, and logs. No raw data or server artifact was
+  copied into the repository.
+- The v4 code has synthetic interface tests only. End-to-end OOF utility labels,
+  selector/fallback evidence, official-split training, and final test results
+  remain unverified and must not be inferred from this migration.
+
 ## 2026-08-13 — `x/e/z`、情感状态与 N3 连接语义纠正
 
 - Phase A 进一步冻结为独立 A0 current-only CE 与无参数 mask-safe history mean 的 A1 plain-history CE；候选先取最近 K=3、oldest→newest、固定左 padding。无历史在 A1 classifier 前硬切 A0-best，Phase B 风险/质量拒绝也原样返回绑定 A0 logits/probabilities，禁止空历史近似或概率混合。

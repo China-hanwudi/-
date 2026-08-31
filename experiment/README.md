@@ -1,3 +1,7 @@
+# Historical experiment code
+
+> This directory contains prior CARMA/N3 experiment contracts and synthetic checks. It is retained for auditability. New Temporal N3 v4 work lives in [`../temporal_n3/`](../temporal_n3/) and must use a separately frozen protocol; an old contract or result is not a v4 result.
+
 # 实验代码说明
 
 本目录公开当前 EmotionTalk 三模态外部确认的核心实现、冻结配置和不依赖原始数据的合同测试。
