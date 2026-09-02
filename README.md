@@ -30,7 +30,7 @@ The development protocol specifies auditable temporal candidate sampling, candid
 |---|---|
 | [`temporal_n3/`](temporal_n3/) | Current v4 implementation: batched `K x 3 x 3`, utility-risk bottleneck, candidate gates, and temporal candidate policy. |
 | [`docs/20_temporal_n3_v4.md`](docs/20_temporal_n3_v4.md) | Research objective, protocol, verification status, and non-leakage rules. |
-| [`模型/`](模型/) | Legacy ComposerN3 implementation retained for reproducibility of earlier work. |
+| [`模型/`](模型/) | Legacy ComposerN3 archive; not an active training entrypoint. |
 | [`experiment/`](experiment/) | Historical experiment contracts, analysis utilities, and synthetic contract tests. |
 | [`datasets/`](datasets/) | Official-source download and checksum guidance only; no controlled corpus is redistributed. |
 | [`DATA_BOUNDARY.md`](DATA_BOUNDARY.md) | Public-release and data-protection boundary. |
@@ -66,4 +66,4 @@ This repository excludes raw MELD, IEMOCAP, and EmotionTalk data, per-sample lab
 
 ## Legacy material
 
-The existing ComposerN3 package and earlier contracts remain available for auditability. They use a different fixed-history architecture and must not be presented as Temporal N3 v4 results. The migration relationship is recorded in [the v4 documentation](docs/20_temporal_n3_v4.md#relationship-to-legacy-material).
+The existing ComposerN3 package and earlier contracts remain available only as an audit archive. They use a different fixed-history architecture and must not be imported by new training code or presented as Temporal N3 v4 results. New model work must import `temporal_n3`; the migration relationship is recorded in [the v4 documentation](docs/20_temporal_n3_v4.md#relationship-to-legacy-material).

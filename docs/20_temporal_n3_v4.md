@@ -61,4 +61,4 @@ The public policy module currently exposes a bounded development pool (`max_cand
 
 ## Relationship to legacy material
 
-`模型/n3_affect/` is the earlier ComposerN3 codebase. It uses a fixed `K=3` pooled-history pathway and older experiment scripts. Its contracts, documentation, and published aggregate evidence remain historical records. Temporal N3 v4 reuses feature configuration/encoder interfaces where appropriate, but is an independent architecture and experiment version; old checkpoints, results, authorization, and selectors cannot be reused as v4 evidence.
+`模型/n3_affect/` is the earlier ComposerN3 codebase. It uses a fixed `K=3` pooled-history pathway and older experiment scripts. Its contracts, documentation, and published aggregate evidence remain historical records. Temporal N3 v4 is self-contained under `temporal_n3/` and is an independent architecture and experiment version; old checkpoints, results, authorization, and selectors cannot be reused as v4 evidence.

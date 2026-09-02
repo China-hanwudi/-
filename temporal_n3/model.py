@@ -1,4 +1,4 @@
-"""Full Temporal N3 v4 architecture using existing six-way feature interfaces.
+"""Full Temporal N3 v4 architecture with a self-contained feature interface.
 
 The model consumes an already-frozen candidate manifest. It deliberately does
 not load a previous-round checkpoint; a production runner must instantiate a
@@ -11,8 +11,8 @@ from typing import Mapping
 import torch
 from torch import Tensor, nn
 
-from n3_affect.config import N3TrainConfig
-from n3_affect.encoders import SixWayEncoders
+from .config import TemporalN3Config
+from .encoders import TemporalN3Encoders
 from .modules import BatchedCandidateThreeByThree, CandidateTwoLevelGate, UtilityRiskBottleneck
 
 
@@ -40,12 +40,12 @@ class CandidateBidirectionalUtility(nn.Module):
 class TemporalResamplingN3(nn.Module):
     """Variable-candidate N3 with a hard current-only output route."""
 
-    def __init__(self, cfg: N3TrainConfig | None = None) -> None:
+    def __init__(self, cfg: TemporalN3Config | None = None) -> None:
         super().__init__()
-        self.cfg = cfg or N3TrainConfig()
+        self.cfg = cfg or TemporalN3Config()
         self.cfg.validate()
         d_model = self.cfg.d_model
-        self.encoders = SixWayEncoders(self.cfg)
+        self.encoders = TemporalN3Encoders(self.cfg)
         self.current_fuse = nn.Sequential(nn.Linear(3 * d_model, d_model), nn.GELU(), nn.LayerNorm(d_model))
         # Keep a separate current-only adapter/classifier so the fallback does
         # not reuse the history branch's fusion parameters. A production run

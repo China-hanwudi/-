@@ -8,7 +8,7 @@ from temporal_n3.modules import (
 )
 from temporal_n3.policy import TemporalPolicy, initial_candidates, refill_after_filter, strata
 from temporal_n3.model import TemporalResamplingN3
-from n3_affect.config import N3TrainConfig
+from temporal_n3.config import TemporalN3Config
 
 
 def test_candidate_grid_masks_and_bounded_fallback():
@@ -38,7 +38,7 @@ def test_temporal_policy_is_bounded_and_never_refills_old_candidates():
 
 
 def test_model_fails_closed_without_authorization_and_on_empty_history():
-    cfg = N3TrainConfig(text_tower="composer_n3", text_dim=8, audio_dim=8, video_dim=8, d_model=8, relation_rank=4, gate_hidden=8, num_classes=7, emotion_label_order=tuple(str(i) for i in range(7)))
+    cfg = TemporalN3Config(text_dim=8, audio_dim=8, video_dim=8, d_model=8, relation_rank=4, gate_hidden=8, num_classes=4)
     model = TemporalResamplingN3(cfg)
     streams = {
         "T_t": torch.randn(2, 8), "A_t": torch.randn(2, 8), "V_t": torch.randn(2, 8),
