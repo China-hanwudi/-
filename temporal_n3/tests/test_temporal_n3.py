@@ -7,6 +7,8 @@ from temporal_n3.modules import (
     authorize_next_round,
 )
 from temporal_n3.policy import TemporalPolicy, initial_candidates, refill_after_filter, strata
+from temporal_n3.model import TemporalResamplingN3
+from n3_affect.config import N3TrainConfig
 
 
 def test_candidate_grid_masks_and_bounded_fallback():
@@ -33,3 +35,18 @@ def test_temporal_policy_is_bounded_and_never_refills_old_candidates():
     assert set(refilled).intersection(initial) <= set(initial[:2])
     older, middle, recent = strata(20)
     assert (len(older), len(middle), len(recent)) == (10, 6, 4)
+
+
+def test_model_fails_closed_without_authorization_and_on_empty_history():
+    cfg = N3TrainConfig(text_tower="composer_n3", text_dim=8, audio_dim=8, video_dim=8, d_model=8, relation_rank=4, gate_hidden=8, num_classes=7, emotion_label_order=tuple(str(i) for i in range(7)))
+    model = TemporalResamplingN3(cfg)
+    streams = {
+        "T_t": torch.randn(2, 8), "A_t": torch.randn(2, 8), "V_t": torch.randn(2, 8),
+        "T_h": torch.randn(2, 3, 8), "A_h": torch.randn(2, 3, 8), "V_h": torch.randn(2, 3, 8),
+    }
+    batch = {**streams, "history_mask": torch.tensor([[1, 1, 1], [0, 0, 0]], dtype=torch.float32)}
+    out = model(batch, torch.zeros(2, 3, 2))
+    assert torch.equal(out["history_used"], torch.zeros(2, 1, dtype=torch.bool))
+    assert torch.allclose(out["logits"], out["current_only_logits"])
+    out = model(batch, torch.zeros(2, 3, 2), history_authorized=torch.tensor([1, 1]))
+    assert torch.equal(out["history_used"].view(-1), torch.tensor([True, False]))
