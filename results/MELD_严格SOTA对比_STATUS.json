@@ -1,0 +1,22 @@
+{
+  "dataset": "MELD",
+  "status": "BASELINE_IMPLEMENTATION_IN_PROGRESS",
+  "primary_metric": "macro_f1",
+  "fixed_seeds": [17, 29, 43, 71, 101],
+  "candidate_methods": ["Temporal N3 v4", "MMGCN", "CTNet", "UniMSE"],
+  "published_numbers_policy": "reference_only_until_reproduced_under_the_fixed_protocol",
+  "existing_temporal_n3_precheck": {
+    "macro_f1_mean": 0.4582601322811507,
+    "weighted_f1_mean": 0.6118030428231127,
+    "accuracy_mean": 0.6045210727969349,
+    "status": "NOT_COMPARABLE_AS_A_TRAINED_FINAL_MODEL",
+    "reason": "optimizer_steps=0 and training_epochs=0"
+  },
+  "test_blinding": "previously_opened; no future model selection may use test results",
+  "implementation": {
+    "temporal_n3_v4": "train_dev_five_seed_completed_gate_failed",
+    "mmgcn": "source_obtained_dev_only_adapter_pending",
+    "unimse": "source_obtained_train_dev_loader_pending",
+    "ctnet": "verified_public_source_not_located"
+  }
+}
