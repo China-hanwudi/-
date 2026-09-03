@@ -1,0 +1,10 @@
+{
+  "dataset": "IEMOCAP",
+  "status": "PERFORMANCE_COMPARISON_SPECIFICATION_ADDED",
+  "proposed_model": "Temporal N3 v4",
+  "primary_metrics": ["macro_f1", "uar"],
+  "secondary_metrics": ["accuracy", "weighted_f1"],
+  "result_policy": "separate_reproduced_results_from_published_reference_values",
+  "test_policy": "test_data_excluded_from_tuning_and_checkpoint_selection",
+  "comparison_table_ready": false
+}
