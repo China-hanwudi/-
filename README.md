@@ -1,69 +1,51 @@
-# Temporal N3: Risk-Aware Multimodal History Routing
+# TemporalN3 UnifiedTemporalFinal
 
-This repository documents the current development direction: **Temporal N3 v4**, a candidate-wise multimodal history-routing architecture for dialogue emotion recognition.
+当前仓库的模型主线是 `TemporalN3_UnifiedTemporalFinal_20260913`，面向 M3ED 与 CMU-MOSEI。实现位于 [`模型/n3_affect/`](模型/n3_affect/)，不是旧版固定历史 ComposerN3 的说明稿。
 
-The research question is narrower than “does more context help?”: **which strictly-past dialogue turns should be used for the current emotion prediction, through which modalities, and when should the system return to a current-only prediction instead?**
+## 当前模型
 
-> **Evidence status, 2026-08-31.** Temporal N3 v4 has a public architecture and a frozen development protocol, with a synthetic test suite included in this repository. Its complete causal/OOF utility-supervision, selector, resampling, and official-test chain has not yet been verified end to end. The MELD official-split run is train/dev-only preparation; its test split remains unopened. This repository makes no SOTA or completed-test claim for v4.
-
-## Current architecture
+模型将当前 T/A/V 表征、严格过去的历史候选和可用性掩码送入统一的候选级路由：
 
 ```text
-current utterance + strictly-past candidates
-        |
-        +-- frozen, auditable temporal candidate manifest
-        +-- candidate-wise K x 3 x 3 current-history relations (T/A/V)
-        +-- bidirectional utility/risk heads
-        +-- modality gate -> Utility-Risk Bottleneck -> candidate gate
-        +-- history route, or a hard current-only route when unauthorized
-        v
-emotion prediction
+T/A/V current + strict-past history
+        │
+        ├─ SixWayEncoders
+        ├─ current fusion + Transformer current-only anchor
+        ├─ SharedThreeByThree: alignment / complementarity / conflict
+        ├─ BidirectionalUtilityHeads + TwoLevelGate
+        ├─ speaker-conditioned GRU history state
+        ├─ HistoricalEvidenceController with bounded recency decay
+        ├─ DynamicEvidenceRouter: candidate-level T/A/V evidence weights
+        ├─ conflict_v2 risk features and uncertainty estimates
+        └─ CandidateRiskFallback → hard-safe / soft / current-only route
+                                      │
+                                      └─ classification logits + VAD auxiliary head
 ```
 
-Temporal N3 keeps the history-candidate axis until routing is decided. For each candidate it computes nine current-modality to history-modality relations, then uses add-benefit and deletion-risk evidence to control modality and candidate gates. A failed frozen safety condition must emit the current-only prediction rather than a weakened history mixture.
+模型输入维度默认是 text 2048、audio 1536、video 768，内部维度为 128。千问仅作为文本塔使用；千问权重、原始数据、预计算特征和训练 checkpoint 均不提交到 GitHub。
 
-The development protocol specifies auditable temporal candidate sampling, candidate refill from previously unvisited history, fresh parameters and optimizer for a permitted resampling round, and a maximum of two fallback resampling attempts. See [the v4 protocol](docs/20_temporal_n3_v4.md).
+## 目录
 
-## Repository map
-
-| Path | Purpose |
+| 路径 | 内容 |
 |---|---|
-| [`temporal_n3/`](temporal_n3/) | Current v4 implementation: batched `K x 3 x 3`, utility-risk bottleneck, candidate gates, and temporal candidate policy. |
-| [`docs/20_temporal_n3_v4.md`](docs/20_temporal_n3_v4.md) | Research objective, protocol, verification status, and non-leakage rules. |
-| [`模型/`](模型/) | Legacy ComposerN3 implementation retained for reproducibility of earlier work. |
-| [`experiment/`](experiment/) | Historical experiment contracts, analysis utilities, and synthetic contract tests. |
-| [`datasets/`](datasets/) | Official-source download and checksum guidance only; no controlled corpus is redistributed. |
-| [`DATA_BOUNDARY.md`](DATA_BOUNDARY.md) | Public-release and data-protection boundary. |
+| [`模型/n3_affect/`](模型/n3_affect/) | 最新分类、回归、关系、门控、动态路由和数据入口 |
+| [`模型/MODEL_MANIFEST_M3ED_MOSEI_v2.json`](模型/MODEL_MANIFEST_M3ED_MOSEI_v2.json) | 当前模型版本、输入数据集和 smoke-test 状态 |
+| [`docs/17_ComposerN3当前实现架构_对齐E模型_2026-08-14.md`](docs/17_ComposerN3当前实现架构_对齐E模型_2026-08-14.md) | 最新源码级结构说明 |
+| [`assets/TemporalN3_UnifiedTemporalFinal_structure.svg`](assets/TemporalN3_UnifiedTemporalFinal_structure.svg) | 可编辑论文级结构图 |
+| [`datasets/`](datasets/) | 数据下载、许可和校验说明；不存放原始数据 |
 
-## Research claims and boundaries
+## M3ED 与 CMU-MOSEI
 
-The intended contribution is **risk-aware candidate-wise history routing**, not a claim that historical context is universally beneficial. The architecture is designed to test separately whether a candidate and its modalities have measurable benefit or risk relative to a matched current-only route, and whether a selector can use that evidence without increasing historical harm or degrading frozen classification criteria.
+数据集稍后由用户提供。接入时必须分别建立 train/validation/test manifest，记录标签协议、模态可用性、特征维度、数据清单哈希和 split 哈希。test 只用于最终一次评估，不得用于 checkpoint、阈值或校准选择。
 
-These are research hypotheses until the complete train-only / development-OOF procedure, frozen selector, and one-time official evaluation have been run. Historical aggregated evidence remains available in older documentation; it must not be re-labeled as a v4 result.
+当前 manifest 记录的工程 smoke 状态为：分类/回归合成前向、反向和实际回归特征维度检查通过；正式训练尚未开始，因此仓库不宣称已完成的 M3ED 或 CMU-MOSEI 测试结果。
 
-## Reproducibility and evaluation discipline
-
-- Training parameters use training data only. Development data is used only for validation, early stopping, and predeclared selection.
-- Candidate utility/risk supervision must be generated from development-time OOF predictions, never test labels or test-derived features.
-- The final test is evaluated once only after code, manifests, partitions, selector, thresholds, and evidence receipts are frozen.
-- Cross-paper SOTA comparison additionally requires matched official split, modality inputs, metric definition, and pretrained representation.
-- A failed history safety gate is a valid result: the prescribed output is `current-only`, not threshold tuning or a retrospective retry.
-
-## Quick architecture checks
-
-The v4 module uses PyTorch and the existing feature configuration interfaces. From the repository root, with dependencies installed and `模型/` on the Python path:
+## 运行前检查
 
 ```powershell
 $env:PYTHONPATH = (Resolve-Path '模型').Path
+python -m compileall 模型/n3_affect
 python -m pytest temporal_n3/tests -q
 ```
 
-The tests are synthetic interface checks. They verify variable candidate counts, masked `K x 3 x 3` relations, the hard fallback route, and bounded resampling authorization. They do not establish dataset performance.
-
-## Data and release boundary
-
-This repository excludes raw MELD, IEMOCAP, and EmotionTalk data, per-sample labels/manifests, extracted features, Qwen weights, checkpoints, server logs, credentials, and private absolute paths. Obtain data through [`datasets/README.md`](datasets/README.md), then keep run artifacts outside Git as specified in [`DATA_BOUNDARY.md`](DATA_BOUNDARY.md).
-
-## Legacy material
-
-The existing ComposerN3 package and earlier contracts remain available for auditability. They use a different fixed-history architecture and must not be presented as Temporal N3 v4 results. The migration relationship is recorded in [the v4 documentation](docs/20_temporal_n3_v4.md#relationship-to-legacy-material).
+正式训练前还需要安装 PyTorch/CUDA、配置数据路径和 manifest、提供预计算三模态特征，并在独立输出目录记录代码哈希、配置哈希和随机种子。
