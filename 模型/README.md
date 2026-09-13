@@ -1,13 +1,16 @@
-# TemporalN3 UnifiedTemporalFinal（M3ED + CMU-MOSEI）
+# TemporalN3 UnifiedTemporalFinal
 
-> 2026-09-13 同步：当前实现已升级为候选级动态证据路由与 `CandidateRiskFallback`，并同时保留分类与回归适配入口。正式数据集与千问权重不随仓库提交。
+本目录是当前 M3ED 与 CMU-MOSEI 适配模型的源码入口。核心分类模型为 `n3_affect/model.py`，连续情感回归适配为 `n3_affect/regression_model.py`。
 
-本目录保留早期 ComposerN3 接口和历史脚本，便于审计；最新 v4 研究方向以仓库根目录的 `temporal_n3/` 和本次同步的 `n3_affect/` 代码为准。
+模型包含六路 T/A/V 编码、当前-only Transformer 锚点、`SharedThreeByThree` 关系网格、双向效用头、两级门控、历史证据控制器、same-speaker GRU 状态、候选级 `DynamicEvidenceRouter` 和 `CandidateRiskFallback`。风险条件不满足时输出 current-only 结果。
 
-This directory preserves the earlier **ComposerN3** implementation and its MELD-oriented scripts so prior experiments, source snapshots, and interfaces remain auditable.
+默认输入维度为 text=2048、audio=1536、video=768，内部维度为 128。千问只作为文本塔使用；权重、原始数据、预计算特征和 checkpoint 不提交到仓库。
 
-It is **not** the reference implementation for the current Temporal N3 v4 research direction. ComposerN3 pools a fixed strict-past history budget (`K=3`) before its shared `3 x 3` relation and gate stack. Temporal N3 v4, implemented in [`../temporal_n3/`](../temporal_n3/), retains a variable candidate axis, computes `K x 3 x 3` relations in batch, adds a Utility-Risk Bottleneck, and specifies an auditable resampling/fallback protocol.
+数据集由外部提供后再配置。M3ED 与 CMU-MOSEI 必须分别维护 train/validation/test manifest，严格禁止用 test 选择 checkpoint、阈值或校准参数。
 
-The feature configuration classes and six-way encoders in `n3_affect/` are currently reused by the v4 development module; that reuse does not make the two architectures or their results interchangeable.
+```powershell
+$env:PYTHONPATH = (Resolve-Path '.').Path
+python -m compileall n3_affect
+```
 
-Do not start an old `run_meld_*.sh` script as a v4 run. A v4 experiment requires its own frozen candidate manifest, train/dev partition contract, source/config hashes, and test-closed preflight. See [`../docs/20_temporal_n3_v4.md`](../docs/20_temporal_n3_v4.md).
+当前工程已完成源码级 smoke 检查，正式数据集训练尚未开始。
