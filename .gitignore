@@ -60,6 +60,13 @@ experiment/artifacts/
 experiment/models/
 experiment/checkpoints/
 
+# Temporal N3 v4 local-only products
+temporal_n3/artifacts/
+temporal_n3/features/
+temporal_n3/runs/
+temporal_n3/*_candidates.jsonl
+temporal_n3/*_receipts.json
+
 # Research artifacts under 模型/artifacts (see DATA_BOUNDARY.md)
 !模型/artifacts/
 !模型/artifacts/**

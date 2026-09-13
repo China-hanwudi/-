@@ -44,3 +44,13 @@
 模型/artifacts/checkpoints/    # 团队自训 N3 权重
 模型/artifacts/metrics/        # 聚合指标
 ```
+
+## Temporal N3 v4 products
+
+`temporal_n3/` only contains public source, documentation, and synthetic tests.
+Candidate manifests, per-example routing outputs, OOF predictions, extracted
+features, receipts that reveal private paths or identifiers, checkpoints, and
+all run logs remain local-only under the ignored `temporal_n3/artifacts/`,
+`temporal_n3/features/`, or `temporal_n3/runs/` paths. Public aggregate results
+may be added only after the corresponding data license and final-evaluation
+protocol permit release.
