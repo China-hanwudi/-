@@ -1,4 +1,6 @@
-# 模型 / ComposerN3（当前可训练架构）
+# 模型 / TemporalN3 UnifiedTemporalFinal（M3ED + CMU-MOSEI）
+
+> 2026-09-13 同步：当前实现已升级为候选级动态证据路由与 `CandidateRiskFallback`，并同时保留分类与回归适配入口。正式数据集与千问权重不随仓库提交。
 
 本目录是**当前仓库默认可训练实现**，架构与本地训练用模型包同构。完整说明见：
 

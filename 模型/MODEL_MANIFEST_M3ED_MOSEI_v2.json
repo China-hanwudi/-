@@ -1,0 +1,25 @@
+{
+  "model_directory": "TemporalN3_M3ED_MOSEI_v2_20260913",
+  "created": "2026-09-13",
+  "source_directory": "TemporalN3_HardFallback",
+  "scope": "/data/emo/肖田泽科研/",
+  "classification_entry": "n3_affect/model.py",
+  "regression_entry": "n3_affect/regression_model.py",
+  "datasets": ["M3ED", "CMU-MOSEI"],
+  "changes": [
+    "bounded_history_residual",
+    "masked_modality_consensus",
+    "explicit_regression_adapter",
+    "configurable_risk_upper_inflation"
+  ],
+  "test_status": {
+    "compileall": "PASS",
+    "classification_synthetic_forward": "PASS",
+    "classification_synthetic_backward": "PASS",
+    "regression_synthetic_forward": "PASS",
+    "regression_actual_feature_dimensions_forward": "PASS",
+    "regression_synthetic_backward": "PASS",
+    "formal_training": "NOT_STARTED"
+  },
+  "fairness_note": "No test split was used to choose the modifications; retraining is required before any performance claim."
+}

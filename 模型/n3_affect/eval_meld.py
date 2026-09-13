@@ -13,7 +13,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from sklearn.metrics import classification_report, f1_score
 from torch.utils.data import DataLoader
 
 _PKG = Path(__file__).resolve().parents[1]
@@ -26,6 +25,27 @@ from n3_affect.meld_dataset import MELDFeatureDataset
 from n3_affect.model import N3EmotionModel
 from n3_affect.train_meld import tagged_path
 from n3_affect.utility import EFFECT_ORDER
+
+
+def _f1_scores(labels, preds, num_classes=7):
+    cm = np.zeros((num_classes, num_classes), dtype=np.int64)
+    for y, p in zip(labels, preds):
+        cm[int(y), int(p)] += 1
+    tp = np.diag(cm).astype(float)
+    support = cm.sum(1).astype(float)
+    pred_support = cm.sum(0).astype(float)
+    precision = np.divide(tp, pred_support, out=np.zeros_like(tp), where=pred_support > 0)
+    recall = np.divide(tp, support, out=np.zeros_like(tp), where=support > 0)
+    f1 = np.divide(2 * precision * recall, precision + recall,
+                    out=np.zeros_like(tp), where=(precision + recall) > 0)
+    return (
+        float(f1.mean()),
+        float((f1 * support).sum() / max(support.sum(), 1.0)),
+        precision,
+        recall,
+        f1,
+        support,
+    )
 
 
 def set_seed(seed: int) -> None:
@@ -48,7 +68,7 @@ def setup_logging(log_path: Path) -> logging.Logger:
 
 
 @torch.no_grad()
-def evaluate(model, loader, device, cfg) -> dict:
+def evaluate(model, loader, device, cfg, route_mode: str) -> dict:
     model.eval()
     total_loss = emo_loss = 0.0
     n = 0
@@ -59,7 +79,7 @@ def evaluate(model, loader, device, cfg) -> dict:
         batch = {k: v.to(device) for k, v in batch.items()}
         labels = batch.pop("label")
         vad = batch.pop("vad")
-        out = model(batch)
+        out = model(batch, route_mode=route_mode)
         use_vad = vad.abs().sum() > 0
         losses = n3_total_loss(out, labels, cfg, vad_targets=vad if use_vad else None)
         total_loss += float(losses["loss"].item())
@@ -71,11 +91,17 @@ def evaluate(model, loader, device, cfg) -> dict:
         if "mix_weights" in out:
             mix_sum = out["mix_weights"].detach().sum(dim=0) if mix_sum is None else mix_sum + out["mix_weights"].detach().sum(dim=0)
             mix_n += int(out["mix_weights"].size(0))
-    report = classification_report(
-        all_labels, all_preds, labels=list(range(cfg.num_classes)), target_names=list(cfg.emotion_label_order), output_dict=True, zero_division=0
+    f1_macro, f1_weighted, precision, recall, f1_per_class, support = _f1_scores(
+        all_labels, all_preds, cfg.num_classes
     )
-    f1_macro = f1_score(all_labels, all_preds, average="macro", zero_division=0)
-    f1_weighted = f1_score(all_labels, all_preds, average="weighted", zero_division=0)
+    report = {name: {
+                  "precision": float(precision[i]),
+                  "recall": float(recall[i]),
+                  "f1-score": float(f1_per_class[i]),
+                  "support": int(support[i]),
+              }
+              for i, name in enumerate(cfg.emotion_label_order)}
+    report["accuracy"] = float(sum(int(y == p) for y, p in zip(all_labels, all_preds)) / max(len(all_labels), 1))
     mix_mean = None
     if mix_sum is not None and mix_n:
         mix_mean = (mix_sum / mix_n).cpu().tolist()
@@ -100,6 +126,12 @@ def main() -> int:
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--run-tag", type=str, default="", help="suffix appended to output filenames, e.g. 2 -> train_report.txt.2")
     ap.add_argument("--seed", type=int, default=17)
+    ap.add_argument(
+        "--route-mode",
+        choices=["hard-safe", "current-only", "plain-history", "soft-gate"],
+        default=None,
+        help="defaults to the route mode stored in the checkpoint",
+    )
     args = ap.parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     set_seed(args.seed)
@@ -110,6 +142,7 @@ def main() -> int:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     ck = torch.load(args.checkpoint, map_location="cpu", weights_only=True)
+    route_mode = args.route_mode or ck.get("route_mode", "hard-safe")
     cfg = N3TrainConfig(**ck["cfg"])
     model = N3EmotionModel(cfg).to(device)
     model.load_state_dict(ck["model"])
@@ -120,7 +153,7 @@ def main() -> int:
     ds = MELDFeatureDataset(args.manifest, args.features)
     loader = DataLoader(ds, batch_size=cfg.batch_size, shuffle=False, num_workers=2)
     logger.info(f"eval {args.split} n={len(ds)} checkpoint={args.checkpoint}")
-    metrics = evaluate(model, loader, device, cfg)
+    metrics = evaluate(model, loader, device, cfg, route_mode=route_mode)
     if metrics.get("mix_mean"):
         mix_weights = {name: float(metrics["mix_mean"][i]) for i, name in enumerate(EFFECT_ORDER)}
     logger.info("mix_weights=" + json.dumps({k: round(v, 4) for k, v in mix_weights.items()}))
@@ -128,6 +161,7 @@ def main() -> int:
 
     card = {
         "split": args.split,
+        "route_mode": route_mode,
         "checkpoint": str(args.checkpoint),
         "config": cfg.to_dict(),
         "mix_weights": mix_weights,

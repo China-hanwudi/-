@@ -1,8 +1,8 @@
 """Train N3 on offline MELD features.
 
-Uses ONLY the official train split. A seeded 10% slice of train is held
-out as a monitor for early stopping (never official val/test). The
-optimizer sees the remaining 90% only.
+The optimizer consumes only the official train split. Checkpoint selection uses
+an explicitly supplied validation split or a seeded train monitor. The official
+test split is never loaded here.
 """
 from __future__ import annotations
 
@@ -38,6 +38,24 @@ def set_seed(seed: int) -> None:
         torch.cuda.manual_seed_all(seed)
 
 
+def f1_scores(labels, preds, num_classes: int = 7):
+    """Dependency-free macro/weighted F1 for the server torch environment."""
+    cm = np.zeros((num_classes, num_classes), dtype=np.int64)
+    for y, p in zip(labels, preds):
+        if 0 <= int(y) < num_classes and 0 <= int(p) < num_classes:
+            cm[int(y), int(p)] += 1
+    tp = np.diag(cm).astype(np.float64)
+    support = cm.sum(axis=1).astype(np.float64)
+    pred_support = cm.sum(axis=0).astype(np.float64)
+    precision = np.divide(tp, pred_support, out=np.zeros_like(tp), where=pred_support > 0)
+    recall = np.divide(tp, support, out=np.zeros_like(tp), where=support > 0)
+    f1 = np.divide(2 * precision * recall, precision + recall,
+                   out=np.zeros_like(tp), where=(precision + recall) > 0)
+    macro = float(f1.mean())
+    weighted = float((f1 * support).sum() / max(support.sum(), 1.0))
+    return macro, weighted
+
+
 def setup_logging(log_path: Path) -> logging.Logger:
     log_path.parent.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
@@ -71,7 +89,7 @@ def assert_train_only(train_manifest: Path) -> dict:
         "test_loaded": False,
         "val_used_for": "not_loaded_during_training",
         "test_used_for": "not_loaded_during_training",
-        "checkpoint_rule": "best_on_train_monitor_10pct_never_official_val_test",
+        "checkpoint_rule": "weighted_f1_then_macro_f1_then_loss_on_monitor_never_test",
     }
 
 
@@ -79,27 +97,33 @@ def class_weights_from_train(ds: MELDFeatureDataset, num_classes: int, device) -
     labels = [int(r["label_id"]) for r in ds.rows]
     counts = np.bincount(labels, minlength=num_classes).astype(np.float64)
     counts = np.maximum(counts, 1.0)
-    w = counts.sum() / (num_classes * counts)
+    # Effective-number weighting is less extreme than inverse frequency and
+    # improves tail-class recall without letting rare labels dominate training.
+    beta = 0.9995
+    w = (1.0 - beta) / (1.0 - np.power(beta, counts))
     w = w / w.mean()
     return torch.tensor(w, dtype=torch.float32, device=device)
 
 
 @torch.no_grad()
-def evaluate(model, loader, device, cfg) -> dict:
+def evaluate(model, loader, device, cfg, route_mode: str = "hard-safe") -> dict:
     model.eval()
     total = correct = 0
     loss_sum = 0.0
     n = 0
     mix_sum = None
     mix_n = 0
+    all_labels, all_preds = [], []
     for batch in loader:
         batch = {k: v.to(device) for k, v in batch.items()}
         labels = batch.pop("label")
         vad = batch.pop("vad")
-        out = model(batch)
+        out = model(batch, route_mode=route_mode)
         use_vad = vad.abs().sum() > 0
         losses = n3_total_loss(out, labels, cfg, vad_targets=vad if use_vad else None)
         pred = out["logits"].argmax(-1)
+        all_labels.extend(labels.detach().cpu().tolist())
+        all_preds.extend(pred.detach().cpu().tolist())
         correct += int((pred == labels).sum().item())
         total += labels.numel()
         loss_sum += float(losses["loss"].item())
@@ -111,7 +135,15 @@ def evaluate(model, loader, device, cfg) -> dict:
     if mix_sum is not None and mix_n:
         mix_mean = (mix_sum / mix_n).detach().cpu()
         mix_mean = {name: float(mix_mean[i]) for i, name in enumerate(EFFECT_ORDER)}
-    return {"loss": loss_sum / max(n, 1), "acc": correct / max(total, 1), "n": total, "mix_mean": mix_mean}
+    f1_macro, f1_weighted = f1_scores(all_labels, all_preds, cfg.num_classes)
+    return {
+        "loss": loss_sum / max(n, 1),
+        "acc": correct / max(total, 1),
+        "f1_weighted": f1_weighted,
+        "f1_macro": f1_macro,
+        "n": total,
+        "mix_mean": mix_mean,
+    }
 
 
 def copy_code_snapshot(code_dir: Path, sources: list[Path]) -> None:
@@ -141,7 +173,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", type=Path, default=_PKG / "configs" / "n3_train_v1.json")
     ap.add_argument("--train-manifest", type=Path, required=True)
+    ap.add_argument("--val-manifest", type=Path, default=None)
     ap.add_argument("--train-features", type=Path, required=True)
+    ap.add_argument("--val-features", type=Path, default=None)
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--run-tag", type=str, default="", help="suffix appended to output filenames, e.g. 2 -> last.pt.2")
     ap.add_argument("--epochs", type=int, default=20)
@@ -159,6 +193,11 @@ def main() -> int:
     ap.add_argument("--mix-peak-cap", type=float, default=0.40)
     ap.add_argument("--seed", type=int, default=17)
     ap.add_argument("--smoke", type=int, default=0, help="if >0, limit train steps per epoch")
+    ap.add_argument(
+        "--route-mode",
+        choices=["hard-safe", "current-only", "plain-history", "soft-gate"],
+        default="hard-safe",
+    )
     args = ap.parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -193,7 +232,18 @@ def main() -> int:
     idx = list(range(len(full_ds)))
     rng = random.Random(cfg.seed)
     rng.shuffle(idx)
-    if args.monitor_frac <= 0:
+    external_val = None
+    if args.val_manifest is not None or args.val_features is not None:
+        if args.val_manifest is None or args.val_features is None:
+            raise SystemExit("--val-manifest and --val-features must be supplied together")
+        external_val = MELDFeatureDataset(args.val_manifest, args.val_features)
+    if external_val is not None:
+        leak["val_loaded"] = True
+        leak["val_used_for"] = "weighted_f1_then_macro_f1_then_loss_checkpoint_selection"
+        n_mon = len(external_val)
+        fit_idx = idx
+        mon_idx = []
+    elif args.monitor_frac <= 0:
         n_mon = 0
         fit_idx = idx
         mon_idx = []
@@ -202,12 +252,15 @@ def main() -> int:
         mon_idx = idx[:n_mon]
         fit_idx = idx[n_mon:]
     fit_ds = full_ds.subset(fit_idx)
-    mon_ds = full_ds.subset(mon_idx) if mon_idx else None
+    mon_ds = external_val if external_val is not None else (full_ds.subset(mon_idx) if mon_idx else None)
     logger.info(
         f"train_n={len(full_ds)} fit_n={len(fit_ds)} monitor_n={0 if mon_ds is None else len(mon_ds)} "
         f"device={device} text_dim={cfg.text_dim} mix_lr_mult={args.mix_lr_mult}"
     )
-    logger.info("official val/test are not loaded; monitor is a slice of train or disabled")
+    logger.info(
+        "selection_split=%s",
+        "official_val" if external_val is not None else "train_monitor_or_disabled",
+    )
 
     train_loader = DataLoader(
         fit_ds,
@@ -247,7 +300,8 @@ def main() -> int:
     last_path = tagged_path(args.out_dir / "checkpoints" / "last.pt", args.run_tag)
     best_path = tagged_path(args.out_dir / "checkpoints" / "best.pt", args.run_tag)
     last_path.parent.mkdir(parents=True, exist_ok=True)
-    best_acc = -1.0
+    best_weighted = -1.0
+    best_macro = -1.0
     best_mon = float("inf")
     bad = 0
     best_row = None
@@ -260,13 +314,18 @@ def main() -> int:
         model.train()
         running = 0.0
         correct = total = n = 0
+        component_sums = {key: 0.0 for key in ("emotion_loss", "current_aux_loss", "history_aux_loss", "risk_loss", "coverage_loss", "risk_positive_rate", "predicted_safe_coverage")}
+        train_labels, train_preds = [], []
         for step, batch in enumerate(train_loader):
             if args.smoke and step >= args.smoke:
                 break
             batch = {k: v.to(device) for k, v in batch.items()}
             labels = batch.pop("label")
             vad = batch.pop("vad")
-            out = model(batch)
+            oof_risk_targets = batch.pop("oof_risk_targets", None)
+            out = model(batch, route_mode=args.route_mode)
+            if oof_risk_targets is not None:
+                out["oof_risk_targets"] = oof_risk_targets
             use_vad = vad.abs().sum() > 0
             losses = n3_total_loss(
                 out,
@@ -280,16 +339,22 @@ def main() -> int:
             torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
             opt.step()
             running += float(losses["loss"].item())
+            for key in component_sums:
+                component_sums[key] += float(losses[key].detach().item())
             pred = out["logits"].argmax(-1)
+            train_labels.extend(labels.detach().cpu().tolist())
+            train_preds.extend(pred.detach().cpu().tolist())
             correct += int((pred == labels).sum().item())
             total += labels.numel()
             n += 1
         train_loss = running / max(n, 1)
         train_acc = correct / max(total, 1)
+        train_components = {key: value / max(n, 1) for key, value in component_sums.items()}
+        train_macro, train_weighted = f1_scores(train_labels, train_preds, cfg.num_classes)
         if mon_loader is not None:
-            mon_m = evaluate(model, mon_loader, device, cfg)
+            mon_m = evaluate(model, mon_loader, device, cfg, route_mode=args.route_mode)
         else:
-            mon_m = {"loss": train_loss, "acc": train_acc, "n": total, "mix_mean": None}
+            mon_m = {"loss": train_loss, "acc": train_acc, "f1_weighted": train_weighted, "f1_macro": train_macro, "n": total, "mix_mean": None}
         mix_now = model.utility.mixing_weights_dict()
         mix_sample = mon_m.get("mix_mean") or mix_now
         hist_w = float(torch.sigmoid(model.gate.hist_logit).detach().cpu())
@@ -297,8 +362,13 @@ def main() -> int:
             "epoch": epoch,
             "train_loss": train_loss,
             "train_acc": train_acc,
+            "train_loss_components": train_components,
+            "train_f1_weighted": train_weighted,
+            "train_f1_macro": train_macro,
             "monitor_loss": mon_m["loss"],
             "monitor_acc": mon_m["acc"],
+            "monitor_f1_weighted": mon_m["f1_weighted"],
+            "monitor_f1_macro": mon_m["f1_macro"],
             "mix_weights_global": mix_now,
             "mix_weights": mix_sample,
             "hist_mix_weight": hist_w,
@@ -309,6 +379,7 @@ def main() -> int:
         ck = {
             "model": model.state_dict(),
             "cfg": cfg.to_dict(),
+            "route_mode": args.route_mode,
             "epoch": epoch,
             "mix_weights": mix_sample,
             "mix_weights_global": mix_now,
@@ -322,17 +393,18 @@ def main() -> int:
             best_row = row
             logger.info(f"saved_full_train {best_path} epoch={epoch} train_loss={train_loss:.4f}")
         else:
-            improved = (mon_m["acc"] > best_acc + 1e-6) or (
-                abs(mon_m["acc"] - best_acc) <= 1e-6 and mon_m["loss"] < best_mon
-            )
+            score = (mon_m["f1_weighted"], mon_m["f1_macro"], -mon_m["loss"])
+            best_score = (best_weighted, best_macro, -best_mon)
+            improved = score > best_score
             if improved:
-                best_acc = mon_m["acc"]
+                best_weighted = mon_m["f1_weighted"]
+                best_macro = mon_m["f1_macro"]
                 best_mon = mon_m["loss"]
                 bad = 0
                 torch.save(ck, best_path)
                 best_row = row
                 logger.info(
-                    f"saved_best {best_path} monitor_acc={best_acc:.4f} monitor_loss={best_mon:.4f}"
+                    f"saved_best {best_path} monitor_wf1={best_weighted:.4f} monitor_macro_f1={best_macro:.4f} monitor_loss={best_mon:.4f}"
                 )
             else:
                 bad += 1
@@ -365,12 +437,13 @@ def main() -> int:
         "final_mix_weights": model.utility.mixing_weights_dict(),
         "final_hist_mix_weight": float(torch.sigmoid(model.gate.hist_logit).detach().cpu()),
         "run_tag": args.run_tag or "1",
+        "route_mode": args.route_mode,
         "note": (
-            "Qwen thinker native 2048-d text + real 3-history A/V; "
-            "19 measured marginal effects (current Möbius, history unimodal, temporal) "
-            "mixed by learned softmax weights injected as a residual; "
-            "optimizer sees 90% of official train; 10% train slice is monitor/no_grad "
-            "for early stopping; official val/test never loaded during training."
+            "CMER-HardSafe: unified T/A/V projection, candidate Kx3x3 "
+            "alignment-complementarity-conflict evidence, candidate-level T/A/V "
+            "selection, chronological speaker-state memory, modality/history dropout, "
+            "effective-number long-tail weighting, and uncertainty-aware hard fallback. "
+            "Official test is never loaded during training."
         ),
     }
     (tagged_path(args.out_dir / "train_card.json", args.run_tag)).write_text(

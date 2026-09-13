@@ -38,10 +38,27 @@ class MELDFeatureDataset(Dataset):
         out = {k: feat[k] for k in ("T_t", "A_t", "V_t", "T_h", "A_h", "V_h")}
         out["history_mask"] = feat.get("history_mask", torch.ones(3, dtype=torch.float32))
         out["modality_mask"] = feat.get("modality_mask", torch.ones(3, dtype=torch.float32))
-        out["history_modality_mask"] = feat.get(
-            "history_modality_mask",
-            torch.ones(3, dtype=torch.float32) * (out["history_mask"].sum() > 0).to(torch.float32),
-        )
+        history_mask = out["history_mask"].to(dtype=torch.float32)
+        modality_mask = out["modality_mask"].to(dtype=torch.float32)
+        raw_history_modality = feat.get("history_modality_mask")
+        if raw_history_modality is None:
+            # Legacy features only stored one validity bit per history slot.
+            # Expand it to an explicit K x 3 mask without inventing evidence.
+            raw_history_modality = history_mask[:, None] * modality_mask[None, :]
+        elif raw_history_modality.ndim == 1:
+            raw_history_modality = raw_history_modality[:, None] * modality_mask[None, :]
+        out["history_modality_mask"] = raw_history_modality.to(dtype=torch.float32)
+        # Speaker-conditioned history signal: same-speaker slots are more
+        # likely to carry a continuous affective state.  Keep it as metadata
+        # so the relation encoder can use it without changing checkpoint shape.
+        current_speaker = str(r.get("speaker", "")).strip()
+        same = []
+        for key in ("h0_speaker", "h1_speaker", "h2_speaker"):
+            hist_speaker = str(r.get(key, "")).strip()
+            same.append(float(bool(current_speaker) and hist_speaker == current_speaker))
+        out["speaker_same"] = torch.tensor(same, dtype=torch.float32)
+        if "oof_risk_targets" in feat:
+            out["oof_risk_targets"] = feat["oof_risk_targets"].to(dtype=torch.float32)
         out["label"] = torch.tensor(int(r["label_id"]), dtype=torch.long)
         out["vad"] = feat.get("vad", torch.zeros(3))
         return out

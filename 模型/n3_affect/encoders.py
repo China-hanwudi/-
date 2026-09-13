@@ -159,6 +159,7 @@ class SixWayEncoders(nn.Module):
     ) -> dict[str, Tensor]:
         history_mask = batch.get("history_mask")
         modality_mask = batch.get("modality_mask")
+        history_modality_mask = batch.get("history_modality_mask")
         if self.hf_text is not None and texts_current is not None and texts_history is not None:
             device = batch["T_t"].device
             z_tt = self.hf_text.forward_texts(texts_current, device)
@@ -176,20 +177,34 @@ class SixWayEncoders(nn.Module):
             z_at = z_at * modality_mask[:, 1:2]
             z_vt = z_vt * modality_mask[:, 2:3]
             if history_mask is not None:
-                slot_weight = modality_mask[:, 0:1].unsqueeze(-1) * history_mask.unsqueeze(-1)
-                z_th = z_th * slot_weight
-                slot_weight = modality_mask[:, 1:2].unsqueeze(-1) * history_mask.unsqueeze(-1)
-                z_ah = z_ah * slot_weight
-                slot_weight = modality_mask[:, 2:3].unsqueeze(-1) * history_mask.unsqueeze(-1)
-                z_vh = z_vh * slot_weight
+                slot_mask = history_mask.to(dtype=z_th.dtype)
+                if slot_mask.ndim == 1:
+                    slot_mask = slot_mask.unsqueeze(1)
+                if history_modality_mask is None:
+                    history_modality_mask = slot_mask.unsqueeze(-1).expand(-1, -1, 3)
+                elif history_modality_mask.ndim == 2:
+                    history_modality_mask = history_modality_mask.unsqueeze(1).expand(-1, slot_mask.size(1), -1)
+                z_th = z_th * slot_mask.unsqueeze(-1) * history_modality_mask[:, :, 0:1]
+                z_ah = z_ah * slot_mask.unsqueeze(-1) * history_modality_mask[:, :, 1:2]
+                z_vh = z_vh * slot_mask.unsqueeze(-1) * history_modality_mask[:, :, 2:3]
             else:
-                z_th = z_th * modality_mask[:, 0:1].unsqueeze(-1)
-                z_ah = z_ah * modality_mask[:, 1:2].unsqueeze(-1)
-                z_vh = z_vh * modality_mask[:, 2:3].unsqueeze(-1)
+                if history_modality_mask is None:
+                    z_th = z_th * modality_mask[:, 0:1].unsqueeze(-1)
+                    z_ah = z_ah * modality_mask[:, 1:2].unsqueeze(-1)
+                    z_vh = z_vh * modality_mask[:, 2:3].unsqueeze(-1)
+                else:
+                    if history_modality_mask.ndim == 2:
+                        history_modality_mask = history_modality_mask.unsqueeze(1)
+                    z_th = z_th * history_modality_mask[:, :, 0:1]
+                    z_ah = z_ah * history_modality_mask[:, :, 1:2]
+                    z_vh = z_vh * history_modality_mask[:, :, 2:3]
         elif history_mask is not None:
-            z_th = z_th * history_mask.unsqueeze(-1)
-            z_ah = z_ah * history_mask.unsqueeze(-1)
-            z_vh = z_vh * history_mask.unsqueeze(-1)
+            slot_mask = history_mask.to(dtype=z_th.dtype)
+            if slot_mask.ndim == 1:
+                slot_mask = slot_mask.unsqueeze(1)
+            z_th = z_th * slot_mask.unsqueeze(-1)
+            z_ah = z_ah * slot_mask.unsqueeze(-1)
+            z_vh = z_vh * slot_mask.unsqueeze(-1)
 
         return {
             "T_t": z_tt,

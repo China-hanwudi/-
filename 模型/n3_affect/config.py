@@ -78,16 +78,38 @@ class N3TrainConfig:
     mix_peak_weight: float = 0.05
     mix_peak_cap: float = 0.40
     seed: int = 17
+    label_smoothing: float = 0.05
+    current_aux_loss_weight: float = 0.25
+    history_aux_loss_weight: float = 0.50
+    risk_loss_weight: float = 0.50
+    coverage_loss_weight: float = 0.10
+    risk_margin: float = 0.0
+    risk_threshold: float = 0.50
+    risk_feature_version: str = "relation_v1"
+    # Training-only stochastic corruption of historical evidence.  Evaluation
+    # is deterministic and uses the full observed history/mask.
+    history_dropout: float = 0.15
+    modality_dropout: float = 0.10
 
     def validate(self) -> None:
         if self.d_model % self.num_heads:
             raise ValueError("d_model must be divisible by num_heads")
-        if self.num_classes != 7:
-            raise ValueError("N3 train config currently requires 7 emotion classes")
+        if self.num_classes < 2:
+            raise ValueError("N3 train config requires at least two emotion classes")
         if self.text_tower not in ALLOWED_TEXT_TOWERS:
             raise ValueError(f"unknown text_tower: {self.text_tower}")
         if len(self.emotion_label_order) != self.num_classes:
             raise ValueError("emotion_label_order length must equal num_classes")
+        if not 0.0 <= self.label_smoothing < 1.0:
+            raise ValueError("label_smoothing must be in [0, 1)")
+        if not 0.0 < self.risk_threshold < 1.0:
+            raise ValueError("risk_threshold must be in (0, 1)")
+        if self.risk_feature_version not in {"relation_v1", "conflict_v2"}:
+            raise ValueError("risk_feature_version must be relation_v1 or conflict_v2")
+        if any(weight < 0.0 for weight in (self.current_aux_loss_weight, self.history_aux_loss_weight, self.risk_loss_weight, self.coverage_loss_weight)):
+            raise ValueError("auxiliary loss weights must be non-negative")
+        if not 0.0 <= self.history_dropout < 1.0 or not 0.0 <= self.modality_dropout < 1.0:
+            raise ValueError("history/modality dropout must be in [0, 1)")
 
     def resolved_text_model_source(self) -> str:
         """Prefer local snapshot when present, else Hugging Face id."""
@@ -175,5 +197,15 @@ class N3TrainConfig:
             mix_kl_weight=float(weights.get("mix_kl", 0.0)),
             mix_peak_weight=float(weights.get("mix_peak", 0.05)),
             mix_peak_cap=float(train.get("mix_peak_cap", 0.40)),
+            label_smoothing=float(train.get("label_smoothing", 0.05)),
+            current_aux_loss_weight=float(weights.get("current_aux", 0.25)),
+            history_aux_loss_weight=float(weights.get("history_aux", 0.50)),
+            risk_loss_weight=float(weights.get("risk", 0.50)),
+            coverage_loss_weight=float(weights.get("coverage", 0.10)),
+            risk_margin=float(train.get("risk_margin", 0.0)),
+            risk_threshold=float(train.get("risk_threshold", 0.50)),
+            risk_feature_version=str(arch.get("risk_feature_version", "conflict_v2")),
+            history_dropout=float(train.get("history_dropout", 0.15)),
+            modality_dropout=float(train.get("modality_dropout", 0.10)),
             seed=int((train.get("seeds") or [17])[0]),
         )
