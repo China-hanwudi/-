@@ -1,6 +1,6 @@
 {
   "model_directory": "模型",
-  "version": "TemporalN3_NewDatasets_v9_20260914",
+  "version": "TemporalN3_TopJournal_v10_20260914",
   "datasets": ["M3ED", "CMU-MOSEI", "CH-SIMS_v2"],
   "classification_entry": "模型/n3_affect/model.py",
   "regression_entry": "模型/n3_affect/regression_model.py",
@@ -8,13 +8,14 @@
   "training_entries": ["模型/n3_affect/train_m3ed.py", "模型/n3_affect/train_mosei.py", "模型/n3_affect/train_chsims.py"],
   "contracts": {
     "history": "oldest_to_newest_right_aligned_K3",
-    "test_usage": "sealed_until_final_frozen_evaluation",
+    "test_usage": "old_v9_test_prohibited_for_v10_selection; new_protocol_required",
     "m3ed_selection": "valid_weighted_f1_then_macro_f1",
     "mosei_selection": "valid_mae"
   },
   "engineering_status": {
     "compileall": "PASS",
-    "real_packed_smoke": "PASS",
+    "real_packed_cpu_smoke_all_three_tasks": "PASS",
+    "a100_cuda_smoke_m3ed": "PASS",
     "formal_training": "NOT_STARTED"
   },
   "publication_status": "No performance claim; retraining required"

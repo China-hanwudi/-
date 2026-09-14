@@ -1,0 +1,86 @@
+{
+  "_doc": [
+    "Curated comparator registry for Table 6 of the v9 report.",
+    "rows   : admitted comparators, each tagged with a group id.",
+    "pending: evidence that exists but is NOT admitted to any group yet, because",
+    "         its split / label protocol / leak status has not been verified.",
+    "Rules (pre-registration):",
+    "  * A row may only enter rows[] if task, modality set, label protocol and split",
+    "    match the row it is compared with.",
+    "  * paper-reported and locally-reproduced numbers never mix inside one column.",
+    "  * local_reproduction=true requires a checkpoint + FINAL_RESULT.json in this repo.",
+    "This work's own rows are injected automatically by report_v9.py; do not duplicate them here."
+  ],
+  "rows": [],
+  "pending": [
+    {
+      "method": "Text pooling (mean-pool text feature + linear head)",
+      "group_if_admitted": "C",
+      "modalities": "T",
+      "dataset": "CH-SIMS v2",
+      "split": "train 2143 / valid 647 (v7 packed)",
+      "labels": "CH-SIMS v2 [-1,1], Acc-2 y>0",
+      "mae": 0.375501,
+      "accuracy": 74.81,
+      "weighted_f1": null,
+      "macro_f1": 75.07,
+      "pearson": null,
+      "ccc": null,
+      "why_pending": "Single-seed historical diagnostic from the pre-v9 SIMS cache. No checkpoint in this repository; the dev/test provenance of the recorded number cannot be re-derived, so it is not admitted as a matched comparator."
+    },
+    {
+      "method": "Plain TAV pooling",
+      "group_if_admitted": "A",
+      "modalities": "T/A/V",
+      "dataset": "CH-SIMS v2",
+      "split": "train 2143 / valid 647 (v7 packed)",
+      "labels": "CH-SIMS v2 [-1,1], Acc-2 y>0",
+      "mae": 0.339326,
+      "accuracy": 78.98,
+      "weighted_f1": null,
+      "macro_f1": 79.14,
+      "pearson": null,
+      "ccc": null,
+      "why_pending": "Single-seed historical diagnostic; see above."
+    },
+    {
+      "method": "Plain four-label multi-task head",
+      "group_if_admitted": "A",
+      "modalities": "T/A/V",
+      "dataset": "CH-SIMS v2",
+      "split": "train 2143 / valid 647 (v7 packed)",
+      "labels": "CH-SIMS v2 [-1,1] + unimodal T/A/V labels",
+      "mae": 0.335792,
+      "accuracy": 77.28,
+      "weighted_f1": null,
+      "macro_f1": 77.49,
+      "pearson": null,
+      "ccc": null,
+      "why_pending": "Single-seed historical diagnostic; see above."
+    },
+    {
+      "method": "Frozen observer + simple fusion (h[4096] features)",
+      "group_if_admitted": "A",
+      "modalities": "T/A/V",
+      "dataset": "CH-SIMS v2",
+      "split": "train 2143 / valid 647 (v7 packed)",
+      "labels": "CH-SIMS v2 [-1,1], Acc-2 y>0",
+      "mae": 0.303550,
+      "accuracy": 81.92,
+      "weighted_f1": null,
+      "macro_f1": 82.07,
+      "pearson": null,
+      "ccc": null,
+      "why_pending": "BLOCKED, not merely unverified: receipt.json does not state whether the h[4096] fusion features were fitted on train+valid together. Until that provenance is audited this number may embed train/valid leakage. It must not be quoted as a bar to beat. See TASK_INVENTORY_20260914.md item 3."
+    }
+  ],
+  "hold_note": [
+    "No externally published row is admitted in this revision.",
+    "Reason: for every candidate work examined so far, the split, the label protocol, or the",
+    "input modality set could not be matched to a row measured here, and the paper numbers have",
+    "not been independently re-verified. Rather than relax the matching rule, external",
+    "comparators stay out of the tables. Rows can be added to rows[] the moment a candidate is",
+    "verified against an identical split + label protocol; each admitted row must carry a DOI and",
+    "an explicit local_reproduction=false flag."
+  ]
+}
