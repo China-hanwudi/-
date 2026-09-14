@@ -88,6 +88,7 @@ def train_one_run(cfg: N3TrainConfig, steps_per_epoch: int | None = None) -> dic
             labels = batch.pop("label")
             vad = batch.pop("vad")
             out = model(batch)
+            out["cf_measured_targets"] = model.measure_counterfactual_utility(batch, labels)
             losses = n3_total_loss(out, labels, cfg, vad_targets=vad)
             opt.zero_grad(set_to_none=True)
             losses["loss"].backward()

@@ -1,51 +1,28 @@
-# TemporalN3 UnifiedTemporalFinal
+# CARMA-Affect / TemporalN3
 
-当前仓库的模型主线是 `TemporalN3_UnifiedTemporalFinal_20260913`，面向 M3ED 与 CMU-MOSEI。实现位于 [`模型/n3_affect/`](模型/n3_affect/)，不是旧版固定历史 ComposerN3 的说明稿。
+当前公开模型主线是面向 **M3ED、CMU-MOSEI、CH-SIMS_v2** 的 TemporalN3。活动代码位于 [`模型/n3_affect/`](模型/n3_affect/)，历史数据集入口不再属于当前训练流程。
 
-## 当前模型
+## 模型结构
 
-模型将当前 T/A/V 表征、严格过去的历史候选和可用性掩码送入统一的候选级路由：
+当前 T/A/V 经过统一投影后，与严格过去的历史候选进入候选级 `3x3` 跨模态关系编码。双向效用头估计加入/删除历史证据的影响，模态门控和候选门控执行风险过滤，`CandidateRiskFallback` 在风险过高时硬回退到独立 current-only 分支。分类和连续回归使用独立任务头。
 
-```text
-T/A/V current + strict-past history
-        │
-        ├─ SixWayEncoders
-        ├─ current fusion + Transformer current-only anchor
-        ├─ SharedThreeByThree: alignment / complementarity / conflict
-        ├─ BidirectionalUtilityHeads + TwoLevelGate
-        ├─ speaker-conditioned GRU history state
-        ├─ HistoricalEvidenceController with bounded recency decay
-        ├─ DynamicEvidenceRouter: candidate-level T/A/V evidence weights
-        ├─ conflict_v2 risk features and uncertainty estimates
-        └─ CandidateRiskFallback → hard-safe / soft / current-only route
-                                      │
-                                      └─ classification logits + VAD auxiliary head
-```
+模型保留：有界历史残差、缺失模态 mask、speaker-conditioned 状态、反事实效用监督、冗余抑制和空历史严格回退。历史由 packed `history_index` 规范为 oldest-to-newest、右对齐 K=3；未来或无效索引被屏蔽。
 
-模型输入维度默认是 text 2048、audio 1536、video 768，内部维度为 128。千问仅作为文本塔使用；千问权重、原始数据、预计算特征和训练 checkpoint 均不提交到 GitHub。
+## 活动任务
 
-## 目录
+| 数据集 | 任务 | 特征维度 | checkpoint 选择 |
+|---|---|---|---|
+| M3ED | 七分类 | T/A/V = 768/1024/342 | valid Weighted-F1，其次 Macro-F1 |
+| CMU-MOSEI | 连续回归 | T/A/V = 768/74/35 | valid MAE |
+| CH-SIMS_v2 | 连续回归 | 从 packed manifest 读取 | valid MAE |
 
-| 路径 | 内容 |
-|---|---|
-| [`模型/n3_affect/`](模型/n3_affect/) | 最新分类、回归、关系、门控、动态路由和数据入口 |
-| [`模型/MODEL_MANIFEST_M3ED_MOSEI_v2.json`](模型/MODEL_MANIFEST_M3ED_MOSEI_v2.json) | 当前模型版本、输入数据集和 smoke-test 状态 |
-| [`docs/17_ComposerN3当前实现架构_对齐E模型_2026-08-14.md`](docs/17_ComposerN3当前实现架构_对齐E模型_2026-08-14.md) | 最新源码级结构说明 |
-| [`assets/TemporalN3_UnifiedTemporalFinal_structure.svg`](assets/TemporalN3_UnifiedTemporalFinal_structure.svg) | 可编辑论文级结构图 |
-| [`datasets/`](datasets/) | 数据下载、许可和校验说明；不存放原始数据 |
+数据、预计算特征、密钥和训练产物不提交到仓库。test split 只允许在协议冻结后的最终评估中使用，不用于调参、早停、风险校准或 checkpoint 选择。
 
-## M3ED 与 CMU-MOSEI
+## 工程检查
 
-数据集稍后由用户提供。接入时必须分别建立 train/validation/test manifest，记录标签协议、模态可用性、特征维度、数据清单哈希和 split 哈希。test 只用于最终一次评估，不得用于 checkpoint、阈值或校准选择。
-
-当前 manifest 记录的工程 smoke 状态为：分类/回归合成前向、反向和实际回归特征维度检查通过；正式训练尚未开始，因此仓库不宣称已完成的 M3ED 或 CMU-MOSEI 测试结果。
-
-## 运行前检查
-
-```powershell
-$env:PYTHONPATH = (Resolve-Path '模型').Path
+```bash
 python -m compileall 模型/n3_affect
 python -m pytest temporal_n3/tests -q
 ```
 
-正式训练前还需要安装 PyTorch/CUDA、配置数据路径和 manifest、提供预计算三模态特征，并在独立输出目录记录代码哈希、配置哈希和随机种子。
+正式训练入口和 A100 预检见 [`模型/run_a100_training.sh`](模型/run_a100_training.sh)。当前仓库只记录源码和实验合同，不声称已经完成正式性能复现。

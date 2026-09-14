@@ -8,6 +8,7 @@ import torch
 from torch import Tensor, nn
 from torch.nn import functional as F
 
+from .causal_contribution import UnimodalContributionHead
 from .config import N3TrainConfig
 from .encoders import SixWayEncoders
 from .gating import TwoLevelGate
@@ -39,12 +40,12 @@ class HistoricalEvidenceController(nn.Module):
         self.boundary = nn.Sequential(nn.Linear(2 * d_model, hidden), nn.GELU(), nn.Linear(hidden, 1))
 
     def forward(self, current: Tensor, history: Tensor, mask: Tensor) -> Tensor:
-        # history is newest-first; retrieve at short/mid/long scales with a
-        # learned, bounded decay instead of adding another attention backbone.
+        # History is canonical oldest-to-newest (left padded).  Recency decay
+        # therefore assigns the largest bonus to the last valid slot.
         q = self.query(current).unsqueeze(1)
         k = self.key(history)
         sim = (q * k).sum(-1) / (k.size(-1) ** 0.5)
-        dist = torch.arange(history.size(1), device=history.device, dtype=history.dtype)
+        dist = torch.arange(history.size(1) - 1, -1, -1, device=history.device, dtype=history.dtype)
         decay = torch.exp(-self.scale.clamp(0.05, 4.0) * dist / max(history.size(1), 1))
         boundary = torch.sigmoid(self.boundary(torch.cat([current[:, None, :].expand_as(history), history], -1)).squeeze(-1))
         score = sim + decay[None, :] - 0.5 * boundary
@@ -88,6 +89,9 @@ class N3EmotionModel(nn.Module):
             d,
             feature_dim=risk_feature_dim,
             risk_threshold=self.cfg.risk_threshold,
+            use_adaptive_budget=bool(getattr(self.cfg, "use_adaptive_budget", True)),
+            accept_budget_init=float(getattr(self.cfg, "accept_budget_init", 0.35)),
+            accept_warmup_epochs=int(getattr(self.cfg, "accept_warmup_epochs", 3)),
         )
         self.context = nn.TransformerEncoder(
             nn.TransformerEncoderLayer(
@@ -104,6 +108,15 @@ class N3EmotionModel(nn.Module):
         self.classifier = nn.Linear(d, self.cfg.num_classes)
         self.vad_head = TheoryAuxHead(d)
         self.history_controller = HistoricalEvidenceController(d, self.cfg.gate_hidden)
+        # Monotone acceptance warm-up index.  Only the training loop advances it;
+        # it is a schedule over epochs, never over dev/test metrics.
+        self.current_epoch: int = 0
+        # v6 core: predict each modality's OWN label from its private view.  On
+        # CH-SIMS v2 these targets exist, which turns the counterfactual head
+        # into a label-grounded causal estimator.
+        self.unimodal_head = UnimodalContributionHead(
+            self.cfg.gate_hidden, self.cfg.gate_hidden, self.cfg.num_classes, self.cfg.dropout
+        )
 
     def count_trainable_parameters(self) -> int:
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
@@ -114,6 +127,55 @@ class N3EmotionModel(nn.Module):
         encoded = self.context(tokens)
         pooled = encoded.mean(dim=1)
         return self.classifier(pooled), pooled
+
+    def _ablated_current_logits(
+        self, current_tokens: Tensor, drop_modality: int
+    ) -> Tensor:
+        """Anchor logits with one current modality zeroed (leave-one-out).
+
+        Zeroing the *encoded token* matches how a missing modality is already
+        represented downstream, so the ablated anchor stays in-distribution and
+        the measured delta reflects stream information rather than an
+        arbitrary out-of-distribution perturbation.
+        """
+        ablated = current_tokens.clone()
+        ablated[:, drop_modality, :] = 0.0
+        return self.classifier(self.context(ablated).mean(dim=1))
+
+    def measure_counterfactual_utility(
+        self, batch: Mapping[str, Tensor], labels: Tensor
+    ) -> Tensor:
+        """Measured leave-one-modality-out CE increase on the current anchor.
+
+        Returns a detached ``[B, 3]`` tensor used as a training target for the
+        router's counterfactual head.  Runs entirely under ``no_grad`` so it
+        never contaminates the primary gradient path.
+        """
+        modality_mask = batch.get("modality_mask")
+        if modality_mask is None:
+            modality_mask = labels.new_ones(labels.size(0), 3)
+        modality_mask = modality_mask.to(device=labels.device, dtype=labels.dtype)
+        was_training = self.training
+        self.eval()
+        try:
+            with torch.no_grad():
+                streams = self.encoders(batch)
+                tokens = torch.stack([streams["T_t"], streams["A_t"], streams["V_t"]], dim=1)
+                base = F.cross_entropy(
+                    self.classifier(self.context(tokens).mean(dim=1)), labels, reduction="none"
+                )
+                targets = []
+                for k in range(3):
+                    removed = F.cross_entropy(
+                        self._ablated_current_logits(tokens, k), labels, reduction="none"
+                    )
+                    delta = (removed - base).clamp_min(0.0) * modality_mask[:, k]
+                    targets.append(delta)
+                stacked_targets = torch.stack(targets, dim=-1)
+                scale = stacked_targets.abs().amax(dim=-1, keepdim=True).clamp_min(1e-6)
+                return stacked_targets / scale
+        finally:
+            self.train(was_training)
 
     def _candidate_logits(self, current_pool: Tensor, candidate_repr: Tensor) -> Tensor:
         """Classify each candidate without mixing candidates before filtering."""
@@ -224,13 +286,13 @@ class N3EmotionModel(nn.Module):
             speaker_same = torch.zeros_like(history_mask)
         speaker_same = speaker_same.to(dtype=history_mask.dtype)
         # Recurrent speaker-conditioned emotion state over valid history slots.
-        # Slots are stored newest-first; reverse them for chronological updates.
+        # Canonical slots are oldest-to-newest, so update the state in order.
         slot_joint = (
             streams["T_h"] + streams["A_h"] + streams["V_h"]
         ) / 3.0
         state = current_context
         states = [None] * slot_joint.size(1)
-        for k in reversed(range(slot_joint.size(1))):
+        for k in range(slot_joint.size(1)):
             update = self.speaker_state_net(
                 torch.cat(
                     [
@@ -317,6 +379,8 @@ class N3EmotionModel(nn.Module):
             current_logits,
             candidate_logits,
             history_mask=history_mask,
+            cf_utility=routed_modal["cf_predicted_utility"].mean(dim=-1) if "cf_predicted_utility" in routed_modal else None,
+            epoch=self.current_epoch,
         )
         if route_mode == "current-only":
             routed["use_history"] = torch.zeros_like(routed["use_history"])
@@ -347,6 +411,7 @@ class N3EmotionModel(nn.Module):
             "current_only_logits": current_logits,
             "candidate_logits": candidate_logits,
             "history_mask": history_mask,
+            "history_modality_mask": history_modality_mask,
             "history_logits": routed["history_logits"],
             "vad": vad,
             "relation_grid": relation_grid,
@@ -364,6 +429,24 @@ class N3EmotionModel(nn.Module):
             "modal_candidate_logits": routed_modal["modal_candidate_logits"],
             "interaction_strength": routed_modal["interaction_strength"],
             "speaker_state_memory": speaker_memory,
+            # ---- v5: expose the counterfactual head so the auxiliary loss can
+            # actually receive it (this was the disconnected key in v4).
+            "counterfactual_utility": routed_modal["cf_predicted_utility"],
+            "cf_predicted_utility": routed_modal["cf_predicted_utility"],
+            "cf_correction": routed_modal["cf_correction"],
+            "modality_sign": routed_modal["modality_sign"],
+            "shared_view": routed_modal["shared_view"],
+            "private_view": routed_modal["private_view"],
+            "shared_ratio": routed_modal["shared_ratio"],
+            # v6: per-modality label predictions (CH-SIMS v2 supervises these
+            # directly; other datasets leave them as a proxy).
+            "unimodal_logits": self.unimodal_head(routed_modal["private_view"]),
+            # v6 diagnostics for the accept-budget repair
+            "accept_threshold": routed.get("accept_threshold"),
+            "accept_budget": routed.get("accept_budget"),
+            "accept_rate": routed.get("accept_rate"),
+            "risk_collapse_penalty": routed.get("risk_collapse_penalty"),
+            "is_training_forward": self.training,
             **utilities,
             **gated,
             **routed,

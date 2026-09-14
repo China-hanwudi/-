@@ -6,6 +6,9 @@ import torch
 from torch import Tensor, nn
 from torch.nn import functional as F
 
+from .counterfactual import CounterfactualUtilityAligner
+from .redundancy import PrivateSharedReformulation, SignConsistencyHeads
+
 
 class LowRankCrossModalMatch(nn.Module):
     """Compact multiplicative T/A/V matching used by both task adapters.
@@ -77,6 +80,16 @@ class DynamicEvidenceRouter(nn.Module):
             nn.Linear(2 * d_model + 3, hidden), nn.GELU(), nn.Dropout(dropout), nn.Linear(hidden, 1)
         )
         self.fallback_temperature = nn.Parameter(torch.tensor(1.0))
+        # ---- v5 innovations -------------------------------------------------
+        # A genuine leave-one-modality-out utility head, trained against the
+        # measured counterfactual computed by the caller (see counterfactual.py).
+        self.cf_aligner = CounterfactualUtilityAligner(d_model, hidden, dropout)
+        # Private/shared view split plus per-view redundancy signals.
+        self.view_split = PrivateSharedReformulation(d_model, hidden, dropout)
+        self.sign_head = SignConsistencyHeads(hidden, dropout)
+        # Bounded residual scale for the measured-utility correction; starts at
+        # zero so a freshly initialised model reproduces the v4 behaviour.
+        self.cf_correction_scale = nn.Parameter(torch.zeros(1))
 
     @staticmethod
     def _masked_softmax(logits: Tensor, valid: Tensor) -> Tensor:
@@ -134,7 +147,19 @@ class DynamicEvidenceRouter(nn.Module):
         utility_features = torch.cat([evidence, context,
             torch.stack([agreement, -disagreement, history_modality_mask], dim=-1)], dim=-1)
         counterfactual_utility = self.utility_head(utility_features).squeeze(-1)
+        # ---- v5: measured counterfactual utility + redundancy views ---------
+        # ``cf_aligner`` predicts the leave-one-modality-out utility that the
+        # training loop measures with an actual ablated forward pass.  The
+        # private/shared split lets the router distinguish "uninformative"
+        # from "redundant" streams, and sign heads expose disagreement.
+        views = self.view_split(evidence)
+        cf_predicted = self.cf_aligner(evidence)
+        modality_sign = self.sign_head(views["private"])
+        cf_delta = cf_predicted - cf_predicted.mean(dim=2, keepdim=True)
+        cf_delta = cf_delta * valid
         gate_logits = gate_logits + 0.35 * counterfactual_utility - 0.5 * uncertainty
+        # Bounded, zero-initialised correction driven by the measured utility.
+        gate_logits = gate_logits + torch.tanh(self.cf_correction_scale) * cf_delta
         temperature = self.fallback_temperature.clamp(0.5, 2.0)
         gate_logits = gate_logits / (temperature + 0.25 * uncertainty.detach())
         weights = self._masked_softmax(gate_logits, valid)
@@ -157,4 +182,11 @@ class DynamicEvidenceRouter(nn.Module):
             "interaction_logits": interaction_logits, "interaction_strength": interaction_strength.squeeze(-1),
             "cross_modal_logits": cross_modal_logits,
             "routed_evidence": evidence,
+            # v5 signals
+            "cf_predicted_utility": cf_predicted,
+            "cf_correction": cf_delta,
+            "modality_sign": modality_sign,
+            "shared_view": views["shared"],
+            "private_view": views["private"],
+            "shared_ratio": views["ratio"],
         }

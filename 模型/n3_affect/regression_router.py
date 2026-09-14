@@ -47,6 +47,13 @@ class ScalarDynamicEvidenceRouter(DynamicEvidenceRouter):
         context = current_context[:, None, None].expand(-1, candidates, 3, -1)
         gate_logits = self.gate(torch.cat([evidence, context, reliability], dim=-1)).squeeze(-1)
         uncertainty = self.uncertainty(evidence).squeeze(-1)
+        # ---- v5: same measured-counterfactual head and redundancy views as the
+        # classification router, so both tasks share one innovation.
+        views = self.view_split(evidence)
+        cf_predicted = self.cf_aligner(evidence)
+        modality_sign = self.sign_head(views["private"])
+        cf_delta = (cf_predicted - cf_predicted.mean(dim=2, keepdim=True)) * valid
+        gate_logits = gate_logits + torch.tanh(self.cf_correction_scale) * cf_delta
         weights = self._masked_softmax(gate_logits - 0.5 * uncertainty, valid)
         interaction_input = torch.cat([relation_repr, current_context[:, None].expand(-1, candidates, -1)], dim=-1)
         interaction = self.interaction(interaction_input)
@@ -56,4 +63,11 @@ class ScalarDynamicEvidenceRouter(DynamicEvidenceRouter):
         return {"candidate_prediction_norm": candidate, "modality_weights": weights,
                 "modality_disagreement": disagreement, "modal_dispersion": dispersion,
                 "modality_uncertainty": uncertainty, "modal_prediction_norm": modal_prediction,
-                "interaction_strength": strength.squeeze(-1), "cross_modal_prediction_norm": cross_modal}
+                "interaction_strength": strength.squeeze(-1), "cross_modal_prediction_norm": cross_modal,
+                # v5 signals
+                "cf_predicted_utility": cf_predicted,
+                "cf_correction": cf_delta,
+                "modality_sign": modality_sign,
+                "shared_view": views["shared"],
+                "private_view": views["private"],
+                "shared_ratio": views["ratio"]}

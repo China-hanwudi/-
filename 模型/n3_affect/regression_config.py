@@ -36,6 +36,22 @@ class N3RegressionConfig:
     coverage_loss_weight: float = 0.10
     history_dropout: float = 0.15
     modality_dropout: float = 0.10
+    # ---- v5 innovation weights -------------------------------------------
+    counterfactual_loss_weight: float = 0.30
+    sign_consistency_weight: float = 0.0
+    private_orthogonality_weight: float = 0.0
+    # v6 "solve point": the observed MOSEI all-reject collapse (use rate 0.0064)
+    # is countered by an adaptive accept budget plus an explicit floor penalty.
+    risk_collapse_weight: float = 0.0
+    text_shortcut_weight: float = 0.0
+    # v6 core: unimodal label supervision (CH-SIMS v2).  MOSEI has no unimodal
+    # labels, so this stays disabled there and the causal target falls back to
+    # the measured leave-one-out proxy.
+    unimodal_loss_weight: float = 0.0
+    use_adaptive_budget: bool = True
+    accept_budget_init: float = 0.35
+    accept_warmup_epochs: int = 3
+    allow_current_candidate_without_history: bool = False
     mix_tau: float = 1.0
     mix_kl_weight: float = 0.0
     mix_peak_weight: float = 0.05
@@ -57,14 +73,16 @@ class N3RegressionConfig:
             raise ValueError("This model implements scalar sentiment regression only")
         if self.text_tower != "composer_n3":
             raise ValueError("Regression adaptation accepts precomputed features only")
-        if self.target_scale != 3.0 or self.risk_feature_version != "regression_v1":
-            raise ValueError("Expected y/3 normalization and regression_v1 risk features")
+        if self.target_scale <= 0 or self.risk_feature_version != "regression_v1":
+            raise ValueError("Expected positive target_scale and regression_v1 risk features")
         if not 0 < self.risk_threshold < 1:
             raise ValueError("risk_threshold must be in (0,1)")
         if self.history_delta_cap <= 0:
             raise ValueError("history_delta_cap must be positive")
         if self.risk_upper_coef < 0:
             raise ValueError("risk_upper_coef must be non-negative")
+        if not 0.0 < self.accept_budget_init < 1.0 or self.accept_warmup_epochs < 0:
+            raise ValueError("accept_budget_init must be in (0,1) and accept_warmup_epochs non-negative")
         if any(not 0 <= p < 1 for p in (self.dropout, self.history_dropout, self.modality_dropout)):
             raise ValueError("Dropout probabilities must be in [0,1)")
         if any(w < 0 for w in (self.current_aux_loss_weight, self.history_aux_loss_weight,

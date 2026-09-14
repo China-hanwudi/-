@@ -1,0 +1,10 @@
+{
+  "dataset": "CMU-MOSEI",
+  "task": "mosei_sentiment_regression",
+  "input_dims": {"text_dim": 768, "audio_dim": 74, "video_dim": 35},
+  "architecture": {"d_model": 128, "num_heads": 4, "num_layers": 4, "ffn_dim": 384, "risk_feature_version": "regression_v1", "history_delta_cap": 0.35, "risk_upper_coef": 0.15},
+  "target": {"raw_range": "[-3,3] verified from packed labels", "normalization": "y/3", "output": "3*u"},
+  "splits": {"train": "/data/emo/肖田泽科研/数据/MOSEI/packed/train.pt", "valid": "/data/emo/肖田泽科研/数据/MOSEI/packed/valid.pt", "test": "SEALED_DO_NOT_READ"},
+  "training": {"seeds": [17], "batch_size": 64, "lr": 0.0003, "max_epochs": 20, "checkpoint_metric": "MAE"},
+  "history": {"source": "packed history_index", "canonical_order": "oldest_to_newest_right_aligned_K3", "future_indices_rejected": true, "empty_history_allowed": true}
+}

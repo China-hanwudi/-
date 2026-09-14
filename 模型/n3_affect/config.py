@@ -90,6 +90,31 @@ class N3TrainConfig:
     # is deterministic and uses the full observed history/mask.
     history_dropout: float = 0.15
     modality_dropout: float = 0.10
+    # ---- v5 innovation weights -------------------------------------------
+    # Weight of the *measured* leave-one-modality-out utility alignment.  When
+    # the caller supplies ``cf_measured_targets`` the router head is trained
+    # against a genuine ablation instead of a self-referential rank target.
+    counterfactual_loss_weight: float = 0.30
+    cross_modal_consistency_weight: float = 0.03
+    # Redundancy-aware terms: sign agreement between modalities and
+    # decorrelation of private channels.  Both default to zero so legacy
+    # checkpoints and legacy objectives are bit-exact unless explicitly enabled.
+    sign_consistency_weight: float = 0.0
+    private_orthogonality_weight: float = 0.0
+    # v6 "solve point": penalise the all-reject routing collapse observed on
+    # CMU-MOSEI (history use rate 0.0064) and the modality shortcut.
+    risk_collapse_weight: float = 0.0
+    text_shortcut_weight: float = 0.0
+    # v6 core: supervise each modality against its own label when the dataset
+    # provides them (CH-SIMS v2).  Zero disables the term for other datasets.
+    unimodal_loss_weight: float = 0.0
+    # Adaptive accept budget for the hard fallback (v6 repair).
+    use_adaptive_budget: bool = True
+    accept_budget_init: float = 0.35
+    accept_warmup_epochs: int = 3
+    # Keep the empty-history contract strict by default.  Isolated-clip
+    # experiments may opt into a current-as-candidate ablation explicitly.
+    allow_current_candidate_without_history: bool = False
 
     def validate(self) -> None:
         if self.d_model % self.num_heads:
@@ -106,6 +131,14 @@ class N3TrainConfig:
             raise ValueError("risk_threshold must be in (0, 1)")
         if self.risk_feature_version not in {"relation_v1", "conflict_v2"}:
             raise ValueError("risk_feature_version must be relation_v1 or conflict_v2")
+        if not 0.0 < self.accept_budget_init < 1.0 or self.accept_warmup_epochs < 0:
+            raise ValueError("accept_budget_init must be in (0,1) and accept_warmup_epochs non-negative")
+        if any(weight < 0.0 for weight in (
+            self.counterfactual_loss_weight, self.cross_modal_consistency_weight,
+            self.sign_consistency_weight, self.private_orthogonality_weight,
+            self.risk_collapse_weight, self.text_shortcut_weight, self.unimodal_loss_weight,
+        )):
+            raise ValueError("innovation loss weights must be non-negative")
         if any(weight < 0.0 for weight in (self.current_aux_loss_weight, self.history_aux_loss_weight, self.risk_loss_weight, self.coverage_loss_weight)):
             raise ValueError("auxiliary loss weights must be non-negative")
         if not 0.0 <= self.history_dropout < 1.0 or not 0.0 <= self.modality_dropout < 1.0:

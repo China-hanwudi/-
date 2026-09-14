@@ -4,18 +4,33 @@ from __future__ import annotations
 import torch
 from torch import Tensor, nn
 
+from .risk_budget import AdaptiveRiskBudget, risk_collapse_penalty
+
 
 class CandidateRiskFallback(nn.Module):
     """Predict candidate risk, retain safe candidates, and hard-switch if unsafe."""
 
     def __init__(self, d_model: int, feature_dim: int = 4, hidden: int = 128,
-                 risk_threshold: float = 0.5) -> None:
+                 risk_threshold: float = 0.5,
+                 use_adaptive_budget: bool = True,
+                 accept_budget_init: float = 0.35,
+                 accept_warmup_epochs: int = 3) -> None:
         super().__init__()
         self.risk_threshold = float(risk_threshold)
         self.risk_head = nn.Sequential(
             nn.Linear(d_model + feature_dim, hidden),
             nn.GELU(),
             nn.Linear(hidden, 1),
+        )
+        # v6 "solve point": replace the constant 0.5 comparison, which was shown
+        # to collapse into an all-reject policy on CMU-MOSEI, with an adaptive
+        # accept budget.  v7 fix: these settings now arrive through the config
+        # instead of being hard-coded, so changing the config actually changes
+        # the behaviour (previously `use_adaptive_budget` was ignored).
+        self.use_adaptive_budget = bool(use_adaptive_budget)
+        self.budget = AdaptiveRiskBudget(
+            init_budget=accept_budget_init,
+            warmup_epochs=accept_warmup_epochs,
         )
 
     def forward(
@@ -59,6 +74,8 @@ class CandidateRiskFallback(nn.Module):
         candidate_logits: Tensor,
         history_mask: Tensor | None = None,
         uncertainty_coef: float = 0.20,
+        cf_utility: Tensor | None = None,
+        epoch: int | None = None,
     ) -> dict[str, Tensor]:
         """Filter candidate logits and make an exact current-only decision.
 
@@ -94,13 +111,24 @@ class CandidateRiskFallback(nn.Module):
                 valid = valid.unsqueeze(1)
         risk = risk.masked_fill(~valid, 1.0)
         risk_upper = risk_upper.masked_fill(~valid, 1.0)
-        safe = (risk_upper < self.risk_threshold) & valid
+        if self.use_adaptive_budget:
+            # v6: the accept decision is driven by an adaptive budget that is
+            # discounted by the measured counterfactual utility, instead of a
+            # fixed constant.  This is the repair for the observed all-reject
+            # collapse on CMU-MOSEI (history use rate 0.0064).
+            decision = self.budget(risk_upper, cf_utility, valid, epoch=epoch)
+            safe = decision["accept"] & valid
+        else:
+            safe = (risk_upper < self.risk_threshold) & valid
+            decision = {"accept_threshold": risk_upper.new_tensor(self.risk_threshold),
+                        "accept_budget": risk_upper.new_tensor(1.0)}
         safe_count = safe.sum(dim=1)
         use_history = safe_count > 0
         weights = torch.where(safe, (1.0 - risk_upper).clamp_min(0.0), torch.zeros_like(risk_upper))
         weights = weights / weights.sum(dim=1, keepdim=True).clamp_min(1e-6)
         history_logits = (candidate_logits * weights.unsqueeze(-1)).sum(dim=1)
         logits = torch.where(use_history.unsqueeze(-1), history_logits, current_logits)
+        accept_rate = (safe.float().sum() / valid.float().sum().clamp_min(1.0))
         return {
             "logits": logits,
             "candidate_risk_logits": risk_logits,
@@ -112,4 +140,8 @@ class CandidateRiskFallback(nn.Module):
             "use_history": use_history,
             "candidate_weights": weights,
             "history_logits": history_logits,
+            "accept_threshold": decision["accept_threshold"],
+            "accept_budget": decision["accept_budget"],
+            "accept_rate": accept_rate,
+            "risk_collapse_penalty": risk_collapse_penalty(accept_rate),
         }

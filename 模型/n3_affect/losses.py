@@ -10,6 +10,9 @@ from torch import Tensor
 from torch.nn import functional as F
 
 from .config import N3TrainConfig
+from .counterfactual import counterfactual_alignment_loss
+from .redundancy import private_orthogonality_loss, sign_consistency_loss
+from .causal_contribution import text_shortcut_penalty
 
 
 def n3_total_loss(
@@ -88,11 +91,11 @@ def n3_total_loss(
         if pieces:
             utility = torch.stack(pieces).mean()
             total = total + cfg.utility_loss_weight * utility
-    # Reliability objectives for the v4 router.  These are optional and remain
-    # zero for legacy checkpoints, but make the new innovation trainable:
-    # (i) counterfactual utility is aligned with the observed per-modality
-    # prediction quality; (ii) valid modalities should agree with the routed
-    # decision without forcing identical representations.
+    # ---- v5 core innovation: verifiable counterfactual modality utility ----
+    # ``cf_measured_targets`` is a detached [B,3] leave-one-modality-out signal
+    # computed by the model with an explicit ablated forward pass.  It replaces
+    # the v4 self-referential rank target, and the router head is trained to
+    # predict it.
     cf_utility = outputs.get("counterfactual_utility")
     modal_logits = outputs.get("modal_candidate_logits")
     routed = outputs.get("candidate_logits")
@@ -100,23 +103,89 @@ def n3_total_loss(
     consistency = zero
     cf_w = float(getattr(cfg, "counterfactual_loss_weight", 0.05) or 0.0)
     con_w = float(getattr(cfg, "cross_modal_consistency_weight", 0.03) or 0.0)
-    if cf_utility is not None and modal_logits is not None and valid is not None and valid.any() and cf_w > 0:
-        with torch.no_grad():
-            modal_nll = -F.log_softmax(modal_logits, dim=-1).gather(
-                -1, labels[:, None, None, None].expand(-1, modal_logits.size(1), modal_logits.size(2), 1)
-            ).squeeze(-1)
-            target = (-modal_nll).detach()
-            target = (target - target.mean(dim=2, keepdim=True)) / target.std(dim=2, keepdim=True).clamp_min(1e-4)
-        pred = cf_utility
-        pred = (pred - pred.mean(dim=2, keepdim=True)) / pred.std(dim=2, keepdim=True).clamp_min(1e-4)
-        cf_loss = F.smooth_l1_loss(pred[valid], target[valid])
+    measured = outputs.get("cf_measured_targets")
+    if cf_utility is not None and measured is not None and valid is not None and valid.any() and cf_w > 0:
+        measured = measured.to(device=cf_utility.device, dtype=cf_utility.dtype)
+        # Accept [B,3], [B,1,3] or [B,K,3]; broadcast to the head's shape.
+        while measured.ndim < cf_utility.ndim:
+            measured = measured.unsqueeze(1)
+        measured = measured.expand_as(cf_utility)
+        hist_modal_mask = outputs.get("history_modality_mask")
+        if hist_modal_mask is None:
+            util_valid = valid.unsqueeze(-1) & torch.ones_like(cf_utility)
+        else:
+            util_valid = valid.unsqueeze(-1) & (hist_modal_mask > 0)
+        cf_loss = counterfactual_alignment_loss(cf_utility, measured.detach(), util_valid)
         total = total + cf_w * cf_loss
+    elif (cf_utility is not None and valid is not None and valid.any() and cf_w > 0
+          and outputs.get("is_training_forward", False)):
+        raise RuntimeError(
+            "counterfactual_loss_weight > 0 requires measured leave-one-out "
+            "targets during training; self-referential fallback is disabled"
+        )
     if modal_logits is not None and routed is not None and valid is not None and valid.any() and con_w > 0:
         routed_prob = F.softmax(routed.detach(), dim=-1)[:, :, None, :]
         modal_logprob = F.log_softmax(modal_logits, dim=-1)
         consistency = F.kl_div(modal_logprob, routed_prob.expand_as(modal_logprob), reduction="none").sum(-1)
         consistency = consistency[valid].mean()
         total = total + con_w * consistency
+    # ---- v5 secondary innovation: redundancy-aware private/shared terms ----
+    sign_loss = zero
+    ortho_loss = zero
+    sign_w = float(getattr(cfg, "sign_consistency_weight", 0.0) or 0.0)
+    ortho_w = float(getattr(cfg, "private_orthogonality_weight", 0.0) or 0.0)
+    modality_sign = outputs.get("modality_sign")
+    hist_modal_mask = outputs.get("history_modality_mask")
+    if modality_sign is not None and hist_modal_mask is not None and sign_w > 0:
+        sign_valid = hist_modal_mask.bool() * valid.unsqueeze(-1).bool()
+        sign_loss = sign_consistency_loss(modality_sign, sign_valid.float())
+        total = total + sign_w * sign_loss
+    private_view = outputs.get("private_view")
+    shared_view = outputs.get("shared_view")
+    if private_view is not None and shared_view is not None and hist_modal_mask is not None and ortho_w > 0:
+        ortho_valid = hist_modal_mask.float() * valid.unsqueeze(-1).float()
+        ortho_loss = private_orthogonality_loss(private_view, shared_view, ortho_valid)
+        total = total + ortho_w * ortho_loss
+    # ---- v6 "solve point": counter the all-reject collapse -----------------
+    collapse_w = float(getattr(cfg, "risk_collapse_weight", 0.0) or 0.0)
+    collapse = outputs.get("risk_collapse_penalty")
+    if collapse is None:
+        collapse = zero
+    if collapse_w > 0:
+        total = total + collapse_w * collapse.mean()
+    # ---- v7: text-shortcut guard (defined but never wired in v6) -----------
+    ts_loss = zero
+    ts_w = float(getattr(cfg, "text_shortcut_weight", 0.0) or 0.0)
+    route_w = outputs.get("modality_route_weights")
+    measured_raw = outputs.get("cf_measured_targets")
+    if (route_w is not None and measured_raw is not None and ts_w > 0
+            and hist_modal_mask is not None and valid is not None and valid.any()):
+        m_ts = measured_raw.to(device=route_w.device, dtype=route_w.dtype)
+        while m_ts.ndim < route_w.ndim:
+            m_ts = m_ts.unsqueeze(1)
+        m_ts = m_ts.expand_as(route_w)
+        ts_valid = (valid.unsqueeze(-1) & (hist_modal_mask > 0)).to(route_w.dtype)
+        ts_loss = text_shortcut_penalty(route_w, m_ts.detach(), ts_valid)
+        total = total + ts_w * ts_loss
+    # ---- v6 core: unimodal-label supervision (CH-SIMS v2) ------------------
+    unimodal_logits = outputs.get("unimodal_logits")
+    unimodal_labels = outputs.get("unimodal_labels")
+    unimodal_loss = zero
+    unimodal_w = float(getattr(cfg, "unimodal_loss_weight", 0.0) or 0.0)
+    if (unimodal_logits is not None and unimodal_labels is not None
+            and hist_modal_mask is not None and unimodal_w > 0):
+        # unimodal_logits [B,K,3,C]; labels [B,K,3]
+        target = unimodal_labels.to(torch.long)
+        mask = (hist_modal_mask > 0) & valid.unsqueeze(-1)
+        if mask.any():
+            flat_logits = unimodal_logits.reshape(-1, unimodal_logits.size(-1))
+            flat_target = target.reshape(-1)
+            flat_mask = mask.reshape(-1)
+            unimodal_loss = F.cross_entropy(
+                flat_logits[flat_mask], flat_target[flat_mask], weight=class_weight,
+                label_smoothing=smoothing,
+            )
+            total = total + unimodal_w * unimodal_loss
     vad = torch.zeros((), device=labels.device)
     if vad_targets is not None:
         vad = F.mse_loss(outputs["vad"], vad_targets)
@@ -146,6 +215,12 @@ def n3_total_loss(
         "utility_loss": utility,
         "counterfactual_loss": cf_loss,
         "cross_modal_consistency": consistency,
+        "sign_consistency_loss": sign_loss,
+        "private_orthogonality_loss": ortho_loss,
+        "risk_collapse_loss": collapse.mean() if isinstance(collapse, Tensor) else collapse,
+        "text_shortcut_loss": ts_loss,
+        "unimodal_loss": unimodal_loss,
+        "cf_has_measured_target": measured is not None,
         "vad_loss": vad,
         "mix_kl": mix_kl,
         "mix_peak_pen": mix_peak_pen,

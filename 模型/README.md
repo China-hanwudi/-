@@ -1,16 +1,21 @@
-# TemporalN3 UnifiedTemporalFinal
+# TemporalN3 New-Dataset Mainline (v9)
 
-本目录是当前 M3ED 与 CMU-MOSEI 适配模型的源码入口。核心分类模型为 `n3_affect/model.py`，连续情感回归适配为 `n3_affect/regression_model.py`。
+本版本唯一活动数据集是 **M3ED、CMU-MOSEI、CH-SIMS_v2**。历史数据集代码已从活动路径移除，不再作为基准、训练入口或 SOTA 对比来源。
 
-模型包含六路 T/A/V 编码、当前-only Transformer 锚点、`SharedThreeByThree` 关系网格、双向效用头、两级门控、历史证据控制器、same-speaker GRU 状态、候选级 `DynamicEvidenceRouter` 和 `CandidateRiskFallback`。风险条件不满足时输出 current-only 结果。
+## 模型与数据契约
 
-默认输入维度为 text=2048、audio=1536、video=768，内部维度为 128。千问只作为文本塔使用；权重、原始数据、预计算特征和 checkpoint 不提交到仓库。
+- M3ED：七类分类，输入维度 T/A/V=`768/1024/342`，主选择指标为 valid Weighted-F1，其次 Macro-F1、Accuracy、loss。
+- CMU-MOSEI：连续回归，输入维度 T/A/V=`768/74/35`，标签按 `y/3` 归一化，报告值为 `3*u`，主指标为 valid MAE。
+- CH-SIMS_v2：连续回归，输入维度从 packed manifest 读取（当前 `768/25/177`），使用 `train_chsims.py`，封存 test 永不读取。
 
-数据集由外部提供后再配置。M3ED 与 CMU-MOSEI 必须分别维护 train/validation/test manifest，严格禁止用 test 选择 checkpoint、阈值或校准参数。
+对话历史统一由 packed `history_index` 构造为 oldest→newest、右对齐 K=3；索引越界、未来索引和无效槽位全部 mask 掉。无历史时 `hard-safe` 必须与 `current-only` 完全一致。
 
-```powershell
-$env:PYTHONPATH = (Resolve-Path '.').Path
-python -m compileall n3_affect
+## 入口
+
+```text
+python -m n3_affect.train_m3ed --data /data/emo/肖田泽科研/数据/M3ED/packed --out runs/m3ed/seed_017 --seed 17
+python -m n3_affect.train_mosei --data /data/emo/肖田泽科研/数据/MOSEI/packed --out runs/mosei/seed_017 --seed 17
+python -m n3_affect.train_chsims --source . --data /data/emo/肖田泽科研/数据/CH-SIMS_v2/v7_packed --out runs/chsims/seed_017 --seed 17
 ```
 
-当前工程已完成源码级 smoke 检查，正式数据集训练尚未开始。
+正式训练前必须完成 `--smoke 1`、`python -m compileall n3_affect`、数据 hash/manifest 审计和 GPU 空闲复核。所有 run 独立保存 `best.pt`、`FINAL_RESULT.json`、配置/数据 hash 和 runtime 元数据；本版本当前只完成工程修订，未声称正式性能。

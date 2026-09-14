@@ -1,7 +1,21 @@
 """Continuous N3 adaptation preserving candidate routing and hard fallback.
 
-Predictions are unbounded normalized scores u, with sentiment = 3*u.
+Predictions are unbounded normalized scores u, with sentiment = target_scale*u.
 No labels, categorical probabilities, or categorical entropy enter forward.
+
+v7 additions
+------------
+* **Current-as-candidate routing.**  On non-dialogue data (CH-SIMS v2 /
+  CMU-MOSEI) there is no conversational history, so the entire evidence-routing
+  stack used to sit idle and the model degenerated to its mean-pooled anchor.
+  The current modality triplet is now itself routed as an evidence candidate:
+  the measured-utility machinery (v5/v6) acts on the *current modalities*, and
+  the risk head chooses between the anchor and the routed fusion per sample.
+  With dialogue history present, the current candidate is simply concatenated
+  with the K historical candidates -- one mechanism covers both regimes.
+* **Continuous unimodal head.**  CH-SIMS v2 provides ``label_T/A/V``; a scalar
+  per-modality head on the *current* private views is supervised against them
+  (auxiliary loss only -- never inside a loss difference).
 """
 from __future__ import annotations
 
@@ -10,6 +24,7 @@ from typing import Mapping
 import torch
 from torch import Tensor, nn
 
+from .causal_contribution import UnimodalContributionHead
 from .encoders import SixWayEncoders
 from .gating import TwoLevelGate
 from .hard_fallback import CandidateRiskFallback
@@ -20,8 +35,9 @@ from .utility import BidirectionalUtilityHeads, all_effect_deltas, fuse_variants
 
 
 INPUT_KEYS = frozenset({"T_t", "A_t", "V_t", "T_h", "A_h", "V_h", "history_mask",
-                        "modality_mask", "history_modality_mask", "speaker_same"})
-REQUIRED_KEYS = INPUT_KEYS - {"speaker_same"}
+                        "modality_mask", "history_modality_mask", "speaker_same",
+                        "unimodal_labels"})
+REQUIRED_KEYS = INPUT_KEYS - {"speaker_same", "unimodal_labels"}
 
 
 class N3SentimentModel(nn.Module):
@@ -39,14 +55,64 @@ class N3SentimentModel(nn.Module):
         self.evidence_router = ScalarDynamicEvidenceRouter(d, cfg.gate_hidden, cfg.dropout)
         self.speaker_state_net = nn.Sequential(nn.Linear(d * 3 + 1, d), nn.GELU(), nn.LayerNorm(d))
         self.speaker_state_cell = nn.GRUCell(d, d)
-        self.hard_fallback = CandidateRiskFallback(d, feature_dim=8, risk_threshold=cfg.risk_threshold)
+        self.hard_fallback = CandidateRiskFallback(
+            d, feature_dim=8, risk_threshold=cfg.risk_threshold,
+            use_adaptive_budget=bool(getattr(cfg, "use_adaptive_budget", True)),
+            accept_budget_init=float(getattr(cfg, "accept_budget_init", 0.35)),
+            accept_warmup_epochs=int(getattr(cfg, "accept_warmup_epochs", 3)),
+        )
         self.context = nn.TransformerEncoder(nn.TransformerEncoderLayer(
             d_model=d, nhead=cfg.num_heads, dim_feedforward=cfg.ffn_dim, dropout=cfg.dropout,
             batch_first=True, activation="gelu", norm_first=True), num_layers=cfg.num_layers)
         self.regressor = nn.Linear(d, 1)
+        # Monotone acceptance warm-up index, advanced by the training loop only.
+        self.current_epoch: int = 0
+        # v7: continuous per-modality head for CH-SIMS v2 unimodal labels.  It
+        # consumes the *current* private views produced by the shared
+        # private/shared splitter inside the evidence router, so it adds no
+        # second decomposition.
+        self.unimodal_head = UnimodalContributionHead(
+            cfg.gate_hidden, cfg.gate_hidden, 1, cfg.dropout
+        )
 
     def count_trainable_parameters(self) -> int:
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
+
+    def _ablated_current_prediction(self, current_tokens: Tensor, drop_modality: int) -> Tensor:
+        """Current anchor with one modality token zeroed (leave-one-out)."""
+        ablated = current_tokens.clone()
+        ablated[:, drop_modality, :] = 0.0
+        return self.regressor(self.context(ablated).mean(dim=1))
+
+    def measure_counterfactual_utility(self, batch: Mapping[str, Tensor], targets: Tensor) -> Tensor:
+        """Measured leave-one-modality-out MAE increase on the current anchor.
+
+        Returns a detached ``[B, 3]`` tensor used to train the router's
+        counterfactual head.  Values are in normalised (y/3) units and are
+        rescaled per sample so the head learns a ranking across modalities.
+        """
+        was_training = self.training
+        self.eval()
+        try:
+            with torch.no_grad():
+                self._validate_inputs(batch)
+                streams = self.encoders(batch)
+                tokens = torch.stack([streams["T_t"], streams["A_t"], streams["V_t"]], dim=1)
+                if targets.ndim == 1:
+                    targets = targets.unsqueeze(-1)
+                modality_mask = batch["modality_mask"].to(device=targets.device, dtype=targets.dtype)
+                base = (self.regressor(self.context(tokens).mean(dim=1)) - targets).abs()
+                collected = []
+                for k in range(3):
+                    removed = (self._ablated_current_prediction(tokens, k) - targets).abs()
+                    visible = modality_mask[:, k:k + 1]
+                    delta = (removed - base).clamp_min(0.0) * visible
+                    collected.append(delta)
+                stacked = torch.cat(collected, dim=-1)
+                scale = stacked.abs().amax(dim=-1, keepdim=True).clamp_min(1e-6)
+                return stacked / scale
+        finally:
+            self.train(was_training)
 
     def _validate_inputs(self, batch: Mapping[str, Tensor]) -> None:
         if set(batch) - INPUT_KEYS or REQUIRED_KEYS - set(batch):
@@ -65,6 +131,10 @@ class N3SentimentModel(nn.Module):
                 raise ValueError(f"Invalid binary mask {key}, expected {shape}")
         if not torch.all(batch["history_modality_mask"] <= batch["history_mask"].unsqueeze(-1)):
             raise ValueError("A missing history slot cannot contain an available modality")
+        if "unimodal_labels" in batch:
+            ul = batch["unimodal_labels"]
+            if tuple(ul.shape) != (b, 3) or not ul.is_floating_point():
+                raise ValueError("unimodal_labels must be a floating tensor of shape [B, 3]")
 
     def forward(self, batch: Mapping[str, Tensor], route_mode: str = "hard-safe") -> dict:
         if route_mode not in {"hard-safe", "current-only", "plain-history"}:
@@ -103,7 +173,7 @@ class N3SentimentModel(nn.Module):
             history_modality_mask=hist_modal_mask, history_mask=history_mask)
         state = current_context
         states = [None] * history_mask.size(1)
-        for k in reversed(range(history_mask.size(1))):
+        for k in range(history_mask.size(1)):
             update = self.speaker_state_net(torch.cat([streams["T_h"][:, k], streams["A_h"][:, k],
                                                        streams["V_h"][:, k], speaker_same[:, k:k+1]], dim=-1))
             state = torch.where(history_mask[:, k:k+1].bool(), self.speaker_state_cell(update, state), state)
@@ -134,9 +204,62 @@ class N3SentimentModel(nn.Module):
             modal["modal_dispersion"].detach(),
         ], dim=-1)
         features = torch.cat([context_features, conflict_features], dim=-1)
+        # ---- v7: current-as-candidate --------------------------------------
+        # On non-dialogue data the K historical slots are empty, so without
+        # this branch the whole routing stack would be dead weight.  Route the
+        # current modality triplet as its own evidence candidate; the measured
+        # counterfactual utility (computed on the anchor) supervises this head,
+        # and the risk head chooses per sample between the anchor and the
+        # routed fusion.  With dialogue history, the current candidate is
+        # simply concatenated with the K historical candidates.
+        # Strict empty-history contract: a missing history cannot be converted
+        # into a synthetic candidate.  This makes hard-safe exactly current-only
+        # when every history slot is padding; callers can still enable the
+        # current-as-candidate path explicitly for isolated-clip studies.
+        allow_current_candidate = bool(getattr(self.cfg, "allow_current_candidate_without_history", False))
+        ones_slot = torch.ones_like(history_mask[:, :1]) if allow_current_candidate else has_history[:, None].to(history_mask.dtype)
+        cur_router = self.evidence_router(
+            current_tokens,
+            current_tokens.unsqueeze(1),          # triplet as one candidate [B,1,3,D]
+            current_context.unsqueeze(1),          # relation repr [B,1,D]
+            current_context,
+            modality_mask,
+            modality_mask.unsqueeze(1),            # [B,1,3]
+            ones_slot,                             # [B,1]
+        )
+        cur_raw = cur_router["candidate_prediction_norm"]      # [B,1,1]
+        cur_cf = cur_router["cf_predicted_utility"]            # [B,1,3]
+        cur_weights = cur_router["modality_weights"]           # [B,1,3]
+        cur_views = self.evidence_router.view_split(current_tokens.unsqueeze(1))
+        cur_private = cur_views["private"].squeeze(1)          # [B,3,H]
+        unimodal_pred = self.unimodal_head(cur_private).squeeze(-1)  # [B,3]
+        unimodal_pred = unimodal_pred * modality_mask
+        cur_cf_mean = cur_cf.mean(dim=-1)                      # [B,1]
+        cur_context_features = torch.stack([
+            torch.ones_like(cur_cf_mean), torch.zeros_like(cur_cf_mean),
+            cur_cf_mean, torch.ones_like(cur_cf_mean),
+        ], dim=-1)                                             # [B,1,4]
+        cur_difference = cur_raw.detach().squeeze(-1) - current.detach()
+        cur_conflict_features = torch.stack([
+            cur_difference.abs(), cur_difference,
+            ((cur_raw.detach().squeeze(-1) >= 0) != (current.detach() >= 0)).to(current.dtype),
+            cur_router["modal_dispersion"].detach(),
+        ], dim=-1)                                             # [B,1,4]
+        cur_features = torch.cat([cur_context_features, cur_conflict_features], dim=-1)
+        # Merge the current candidate with the historical candidates into one
+        # routing decision.  All tensors keep the candidate axis explicit.
+        all_raw = torch.cat([cur_raw, raw_candidates], dim=1)              # [B,1+K,1]
+        all_delta = all_raw - current[:, None, :]
+        all_candidates = current[:, None, :] + float(self.cfg.history_delta_cap) * torch.tanh(all_delta)
+        all_repr = torch.cat([current_context.unsqueeze(1), candidate_repr], dim=1)
+        all_mask = torch.cat([ones_slot, history_mask], dim=1)             # [B,1+K]
+        all_features = torch.cat([cur_features, features], dim=1)
+        all_cf = torch.cat([cur_cf_mean, modal["cf_predicted_utility"].mean(dim=-1)], dim=1)
         routed = self.hard_fallback.filter_candidates(
-            candidate_repr, features, current, candidates, history_mask,
+            all_repr, all_features, current, all_candidates, all_mask,
             uncertainty_coef=float(self.cfg.risk_upper_coef),
+            cf_utility=all_cf,
+            epoch=self.current_epoch,
         )
         if route_mode == "current-only":
             routed["use_history"] = torch.zeros_like(routed["use_history"])
@@ -162,6 +285,32 @@ class N3SentimentModel(nn.Module):
             "cross_modal_prediction_norm": modal.get("cross_modal_prediction_norm"),
             "modal_prediction_norm": modal["modal_prediction_norm"], "modality_uncertainty": modal["modality_uncertainty"],
             "speaker_state_memory": memory, "relation_grid": relation_grid, **utilities,
+            # ---- v5: expose the measured counterfactual head + redundancy views
+            "counterfactual_utility": modal["cf_predicted_utility"],
+            "cf_predicted_utility": modal["cf_predicted_utility"],
+            "cf_correction": modal["cf_correction"],
+            "modality_sign": modal["modality_sign"],
+            "shared_view": modal["shared_view"],
+            "private_view": modal["private_view"],
+            "shared_ratio": modal["shared_ratio"],
+            # v7 current-as-candidate signals
+            "current_candidate_prediction_norm": all_candidates[:, :1],
+            "all_candidate_prediction_norm": all_candidates,
+            "all_candidate_mask": all_mask,
+            "current_cf_predicted_utility": cur_cf,
+            "current_modality_weights": cur_weights,
+            "unimodal_prediction_norm": unimodal_pred,
+            "modality_mask": modality_mask,
+            # Passthrough (detached) so the loss can supervise the unimodal
+            # head without the labels ever entering the forward computation.
+            "unimodal_labels": batch["unimodal_labels"].detach()
+            if "unimodal_labels" in batch else None,
+            # v6 accept-budget diagnostics
+            "accept_threshold": routed.get("accept_threshold"),
+            "accept_budget": routed.get("accept_budget"),
+            "accept_rate": routed.get("accept_rate"),
+            "risk_collapse_penalty": routed.get("risk_collapse_penalty"),
+            "is_training_forward": self.training,
         }
 
     def export_card(self) -> dict:

@@ -1,25 +1,21 @@
 {
-  "model_directory": "TemporalN3_M3ED_MOSEI_v2_20260913",
-  "created": "2026-09-13",
-  "source_directory": "TemporalN3_HardFallback",
-  "scope": "/data/emo/肖田泽科研/",
-  "classification_entry": "n3_affect/model.py",
-  "regression_entry": "n3_affect/regression_model.py",
-  "datasets": ["M3ED", "CMU-MOSEI"],
-  "changes": [
-    "bounded_history_residual",
-    "masked_modality_consensus",
-    "explicit_regression_adapter",
-    "configurable_risk_upper_inflation"
-  ],
-  "test_status": {
+  "model_directory": "模型",
+  "version": "TemporalN3_NewDatasets_v9_20260914",
+  "datasets": ["M3ED", "CMU-MOSEI", "CH-SIMS_v2"],
+  "classification_entry": "模型/n3_affect/model.py",
+  "regression_entry": "模型/n3_affect/regression_model.py",
+  "dataset_adapters": ["模型/n3_affect/m3ed_dataset.py", "模型/n3_affect/mosei_dataset.py", "模型/n3_affect/packed_dataset.py"],
+  "training_entries": ["模型/n3_affect/train_m3ed.py", "模型/n3_affect/train_mosei.py", "模型/n3_affect/train_chsims.py"],
+  "contracts": {
+    "history": "oldest_to_newest_right_aligned_K3",
+    "test_usage": "sealed_until_final_frozen_evaluation",
+    "m3ed_selection": "valid_weighted_f1_then_macro_f1",
+    "mosei_selection": "valid_mae"
+  },
+  "engineering_status": {
     "compileall": "PASS",
-    "classification_synthetic_forward": "PASS",
-    "classification_synthetic_backward": "PASS",
-    "regression_synthetic_forward": "PASS",
-    "regression_actual_feature_dimensions_forward": "PASS",
-    "regression_synthetic_backward": "PASS",
+    "real_packed_smoke": "PASS",
     "formal_training": "NOT_STARTED"
   },
-  "fairness_note": "No test split was used to choose the modifications; retraining is required before any performance claim."
+  "publication_status": "No performance claim; retraining required"
 }

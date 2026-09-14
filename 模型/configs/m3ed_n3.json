@@ -1,0 +1,10 @@
+{
+  "dataset": "M3ED",
+  "task": "7_class_emotion",
+  "input_dims": {"text_dim": 768, "audio_dim": 1024, "video_dim": 342},
+  "architecture": {"d_model": 128, "num_heads": 4, "num_layers": 4, "ffn_dim": 384, "risk_feature_version": "conflict_v2"},
+  "label_protocol": "packed label ids 0..6; names are intentionally not inferred from MELD",
+  "splits": {"train": "/data/emo/肖田泽科研/数据/M3ED/packed/train.pt", "valid": "/data/emo/肖田泽科研/数据/M3ED/packed/valid.pt", "test": "SEALED_DO_NOT_READ"},
+  "training": {"seeds": [17, 29, 43, 71, 101], "batch_size": 64, "lr": 0.0003, "max_epochs": 20, "checkpoint_metric": "weighted_f1_then_macro_f1_then_loss"},
+  "history": {"source": "packed history_index", "canonical_order": "oldest_to_newest_right_aligned_K3", "future_indices_rejected": true}
+}
