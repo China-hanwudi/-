@@ -2,6 +2,8 @@
 
 当前公开模型主线是面向 **M3ED、CMU-MOSEI、CH-SIMS_v2** 的 TemporalN3。活动代码位于 [`模型/n3_affect/`](模型/n3_affect/)，历史数据集入口不再属于当前训练流程。
 
+当前主线与历史文档边界见 [`模型/ACTIVE_DATASETS.md`](模型/ACTIVE_DATASETS.md) 和 [`模型/GITHUB_ACTIVE_MAINLINE.md`](模型/GITHUB_ACTIVE_MAINLINE.md)。
+
 ## 模型结构
 
 当前 T/A/V 经过统一投影后，与严格过去的历史候选进入候选级 `3x3` 跨模态关系编码。双向效用头估计加入/删除历史证据的影响，模态门控和候选门控执行风险过滤，`CandidateRiskFallback` 在风险过高时硬回退到独立 current-only 分支。分类和连续回归使用独立任务头。
