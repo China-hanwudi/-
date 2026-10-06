@@ -1,0 +1,11 @@
+{
+  "download_archive_sha256": "0cc3de3d2dd5d85f626b930b6bd755882f129c51761cdcb8a3780cc8c9942db1",
+  "verified_result_files": 95,
+  "matched_training_source_files": 55,
+  "complete_model_seeds": [
+    43,
+    47,
+    59
+  ],
+  "status": "PASS_LOCAL_DOWNLOAD_AND_SOURCE_HASH_CHECK"
+}

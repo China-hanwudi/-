@@ -1,0 +1,10 @@
+Nature Figure Rendered Collision Audit
+pdf: C:\Users\Ф����������ǿ1234\Desktop\MHnoU_��Ŀ������_20261001\�ṹͼ\���Ľṹͼ_v3_�������_20261004\01_ReCoMER_overview.pdf
+pages: 1
+visible text boxes: 60
+stroke paths: 95
+
+
+summary: 0 fail, 0 warn, 40 contained fill overlays, 0 contained image overlays
+verdict: PASS
+note: contained overlays can be intentional; WARN findings need final-size visual review

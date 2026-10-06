@@ -1,0 +1,120 @@
+{
+  "scope": "train-only frozen-model objective inspection, no optimizer step",
+  "records": [
+    {
+      "seed": 43,
+      "solo_head_equals_seeded_initialization": {
+        "solo_heads.T.weight": false,
+        "solo_heads.T.bias": false,
+        "solo_heads.A.weight": false,
+        "solo_heads.A.bias": false,
+        "solo_heads.V.weight": false,
+        "solo_heads.V.bias": false
+      },
+      "solo_head_gradients": {
+        "solo_heads.T.weight": null,
+        "solo_heads.T.bias": null,
+        "solo_heads.A.weight": null,
+        "solo_heads.A.bias": null,
+        "solo_heads.V.weight": null,
+        "solo_heads.V.bias": null
+      },
+      "objective_keys": [
+        "loss",
+        "task",
+        "utility",
+        "consistency",
+        "m1_full",
+        "m1_view",
+        "m3_consistency",
+        "series"
+      ],
+      "solo_head_max_absolute_change_from_seeded_initialization": {
+        "solo_heads.T.weight": 7.450580596923828e-09,
+        "solo_heads.T.bias": 3.725290298461914e-09,
+        "solo_heads.A.weight": 7.450580596923828e-09,
+        "solo_heads.A.bias": 3.725290298461914e-09,
+        "solo_heads.V.weight": 7.450580596923828e-09,
+        "solo_heads.V.bias": 3.725290298461914e-09
+      },
+      "swa_roundoff_tolerance": 1e-06
+    },
+    {
+      "seed": 47,
+      "solo_head_equals_seeded_initialization": {
+        "solo_heads.T.weight": false,
+        "solo_heads.T.bias": false,
+        "solo_heads.A.weight": false,
+        "solo_heads.A.bias": false,
+        "solo_heads.V.weight": false,
+        "solo_heads.V.bias": false
+      },
+      "solo_head_gradients": {
+        "solo_heads.T.weight": null,
+        "solo_heads.T.bias": null,
+        "solo_heads.A.weight": null,
+        "solo_heads.A.bias": null,
+        "solo_heads.V.weight": null,
+        "solo_heads.V.bias": null
+      },
+      "objective_keys": [
+        "loss",
+        "task",
+        "utility",
+        "consistency",
+        "m1_full",
+        "m1_view",
+        "m3_consistency",
+        "series"
+      ],
+      "solo_head_max_absolute_change_from_seeded_initialization": {
+        "solo_heads.T.weight": 7.450580596923828e-09,
+        "solo_heads.T.bias": 4.656612873077393e-10,
+        "solo_heads.A.weight": 7.450580596923828e-09,
+        "solo_heads.A.bias": 3.725290298461914e-09,
+        "solo_heads.V.weight": 7.450580596923828e-09,
+        "solo_heads.V.bias": 1.862645149230957e-09
+      },
+      "swa_roundoff_tolerance": 1e-06
+    },
+    {
+      "seed": 59,
+      "solo_head_equals_seeded_initialization": {
+        "solo_heads.T.weight": false,
+        "solo_heads.T.bias": false,
+        "solo_heads.A.weight": false,
+        "solo_heads.A.bias": false,
+        "solo_heads.V.weight": false,
+        "solo_heads.V.bias": false
+      },
+      "solo_head_gradients": {
+        "solo_heads.T.weight": null,
+        "solo_heads.T.bias": null,
+        "solo_heads.A.weight": null,
+        "solo_heads.A.bias": null,
+        "solo_heads.V.weight": null,
+        "solo_heads.V.bias": null
+      },
+      "objective_keys": [
+        "loss",
+        "task",
+        "utility",
+        "consistency",
+        "m1_full",
+        "m1_view",
+        "m3_consistency",
+        "series"
+      ],
+      "solo_head_max_absolute_change_from_seeded_initialization": {
+        "solo_heads.T.weight": 7.450580596923828e-09,
+        "solo_heads.T.bias": 3.725290298461914e-09,
+        "solo_heads.A.weight": 7.450580596923828e-09,
+        "solo_heads.A.bias": 7.450580596923828e-09,
+        "solo_heads.V.weight": 7.450580596923828e-09,
+        "solo_heads.V.bias": 7.450580596923828e-09
+      },
+      "swa_roundoff_tolerance": 1e-06
+    }
+  ],
+  "interpretation": "No direct gradient to solo heads under the active closed-loop objective; SWA arithmetic can alter unchanged weights at floating-point roundoff scale."
+}

@@ -1,0 +1,24 @@
+{
+  "status": "ALL_FINISHED",
+  "main_seeds": 10,
+  "feature_screen_seeds": 3,
+  "main_datasets": [
+    "MOSEI",
+    "MELD",
+    "M3ED"
+  ],
+  "additional_datasets": [
+    "CMU-MOSI",
+    "CH-SIMS_v2"
+  ],
+  "strong_feature_packs": [
+    "MOSEI_full",
+    "MELD_robertaFT",
+    "M3ED_textRobertaFT"
+  ],
+  "gate_fits_total": 135,
+  "test_read": false,
+  "sota_claim": false,
+  "limitation": "valid-only results; additional and strong-feature runs are exploratory, no official-test SOTA verdict",
+  "completed_utc": "2026-10-02T02:41:36Z"
+}

@@ -1,0 +1,165 @@
+{
+  "pdf": "C:\\Users\\Ф����������ǿ1234\\Desktop\\����\\���Ľṹͼ_v3_�������_20261004\\08_����ͼ������_20261006\\figF_calibration_ece.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 15,
+  "text_trace_count": 15,
+  "stroke_path_count": 34,
+  "filled_region_count": 22,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 6,
+    "warn": 0,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "0.077",
+      "text_bbox": [
+        64.33666229248047,
+        41.453861236572266,
+        84.36446380615234,
+        48.453861236572266
+      ],
+      "other_text": null,
+      "other_bbox": [
+        42.88750076293945,
+        20.043746948242188,
+        265.8074951171875,
+        129.93821716308594
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        6,
+        20
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.180",
+      "text_bbox": [
+        117.66680145263672,
+        15.396663665771484,
+        137.69461059570312,
+        22.396663665771484
+      ],
+      "other_text": null,
+      "other_bbox": [
+        127.68242645263672,
+        20.043746948242188,
+        127.68242645263672,
+        129.93821716308594
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        8
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.043",
+      "text_bbox": [
+        170.9969482421875,
+        84.96741485595703,
+        191.02474975585938,
+        91.96741485595703
+      ],
+      "other_text": null,
+      "other_bbox": [
+        181.0125732421875,
+        20.043746948242188,
+        181.0125732421875,
+        129.93821716308594
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        10
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.049",
+      "text_bbox": [
+        224.32708740234375,
+        82.29956817626953,
+        244.35488891601562,
+        89.29956817626953
+      ],
+      "other_text": null,
+      "other_bbox": [
+        234.34271240234375,
+        20.043746948242188,
+        234.34271240234375,
+        129.93821716308594
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        12
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 6.7% of the smaller box",
+      "text": "0.180",
+      "text_bbox": [
+        117.66680145263672,
+        15.396663665771484,
+        137.69461059570312,
+        22.396663665771484
+      ],
+      "other_text": "ReCoMER lowers calibration error relative to MHnoU and cRBEF",
+      "other_bbox": [
+        11.89437484741211,
+        6.866922855377197,
+        296.8475036621094,
+        15.866923332214355
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 15.0% of the smaller box",
+      "text": "Equal-weight",
+      "text_bbox": [
+        134.41419982910156,
+        136.66944885253906,
+        183.25924682617188,
+        158.9200439453125
+      ],
+      "other_text": "mean �� sample SD; n=3 frozen-test reports",
+      "other_bbox": [
+        120.23455047607422,
+        156.068115234375,
+        263.5822448730469,
+        162.568115234375
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    }
+  ]
+}

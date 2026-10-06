@@ -1,0 +1,8 @@
+{
+  "phase": "ALL_REQUESTED_AVAILABLE_TESTS_FINISHED",
+  "pid": 250509,
+  "seconds": 3487,
+  "attempts": 196,
+  "failures": 0,
+  "previous_paused_workflow_resumed": false
+}

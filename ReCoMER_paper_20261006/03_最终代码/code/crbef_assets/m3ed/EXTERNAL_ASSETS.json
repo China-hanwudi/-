@@ -1,0 +1,20 @@
+[
+  {
+    "role": "native_pack",
+    "server_path": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large",
+    "sha256": null,
+    "hashed_member": "train.pt",
+    "hashed_member_sha256": "507e639f1df8cced9c81d84ae273dcd2ea14b9a36dd23c9e5723f8fdd5ee6fe5",
+    "note": "Directory itself has no single hash; this is the archived hash of its train.pt. External asset not bundled."
+  },
+  {
+    "role": "cr_feature_path",
+    "server_path": "/data/emo/multimodal_research_20260928/local/C/Users/Lenovo/OneDrive/ドキュメント/科研任务/analysis/m3ed_joint_content_20260919_005/results/train_features.npz",
+    "sha256": "10db63afa462e2633517ec4a10d59ddcc19626e89a95aaa95f76594051601e17"
+  },
+  {
+    "role": "rich_features",
+    "server_path": "/data/emo/multimodal_research_20260928/server/root/autodl-tmp/multimodal_newbench_20260912/runs/m3ed_e2v_plus_audio_003/train_features.pt",
+    "sha256": "3709be922d793ad3124d6ee5b8669b6893b3853126a09b353ec0f04f370ff294"
+  }
+]

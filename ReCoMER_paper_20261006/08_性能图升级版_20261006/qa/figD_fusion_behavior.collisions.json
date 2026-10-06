@@ -1,0 +1,189 @@
+{
+  "pdf": "C:\\Users\\肖田泽宇宙最强1234\\Desktop\\论文\\论文结构图_v3_具体表达_20261004\\08_性能图升级版_20261006\\figD_fusion_behavior.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 32,
+  "text_trace_count": 31,
+  "stroke_path_count": 46,
+  "filled_region_count": 118,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 3,
+    "warn": 4,
+    "contained_fill_overlays": 6,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "uniform prior 1/3",
+      "text_bbox": [
+        239.79086303710938,
+        101.5545425415039,
+        295.6957092285156,
+        108.154541015625
+      ],
+      "other_text": null,
+      "other_bbox": [
+        232.26878356933594,
+        101.98661804199219,
+        508.3731384277344,
+        101.98661804199219
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        30
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 23.8% of the smaller box",
+      "text": "formal-test seeds, and evidence weights stay close to the uniform prior on all datasets.",
+      "text_bbox": [
+        12.94112491607666,
+        18.677207946777344,
+        508.6342468261719,
+        28.677207946777344
+      ],
+      "other_text": "= 0 means equal weight · Right: fixed-backbone ten-seed protocol, black bars = mean",
+      "other_bbox": [
+        210.29171752929688,
+        25.6140079498291,
+        524.8590087890625,
+        37.8252067565918
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 61.4% of the smaller box",
+      "text": "Left: frozen M3ED formal test (cRBEF fixed seed 17),",
+      "text_bbox": [
+        12.94112491607666,
+        29.257173538208008,
+        524.8590087890625,
+        36.45717239379883
+      ],
+      "other_text": "= 0 means equal weight · Right: fixed-backbone ten-seed protocol, black bars = mean",
+      "other_bbox": [
+        210.29171752929688,
+        25.6140079498291,
+        524.8590087890625,
+        37.8252067565918
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "The learned outer fusion is conservative:  calibration falls back to equal weight on 1 of 3",
+      "text_bbox": [
+        12.94112491607666,
+        7.408454418182373,
+        521.9904174804688,
+        17.40845489501953
+      ],
+      "other_text": null,
+      "other_bbox": [
+        249.4012451171875,
+        9.193746566772461,
+        254.9012451171875,
+        16.863746643066406
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        141
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "Left: frozen M3ED formal test (cRBEF fixed seed 17),",
+      "text_bbox": [
+        12.94112491607666,
+        29.257173538208008,
+        524.8590087890625,
+        36.45717239379883
+      ],
+      "other_text": null,
+      "other_bbox": [
+        206.35194396972656,
+        30.45960807800293,
+        209.64955139160156,
+        35.98200607299805
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        142
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "Calibrated strength  (formal test)",
+      "text_bbox": [
+        39.65312576293945,
+        41.01864242553711,
+        208.813720703125,
+        49.61864471435547
+      ],
+      "other_text": null,
+      "other_bbox": [
+        138.77548217773438,
+        42.553993225097656,
+        143.5054931640625,
+        49.15019607543945
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        17
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "uniform prior 1/3",
+      "text_bbox": [
+        239.79086303710938,
+        101.5545425415039,
+        295.6957092285156,
+        108.154541015625
+      ],
+      "other_text": null,
+      "other_bbox": [
+        273.0406188964844,
+        100.74256896972656,
+        298.79644775390625,
+        107.45360565185547
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        49,
+        59
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+Nature Figure Static Preflight
+source: C:\Users\Ф����������ǿ1234\Desktop\����\���Ľṹͼ_v3_�������_20261004\08_����ͼ������_20261006\build_missing_figures.py
+backend: python
+
+[PASS] SOURCE-SYNTAX: Python source parses successfully
+[PASS] FONT-FAMILY: A publication-safe sans-serif family is configured
+  - sans-serif
+[PASS] FONT-SIZE: All detected text sizes are at least 5 pt (minimum 6.5 pt)
+[PASS] FONT-GLYPH-FLOOR: No mathtext superscript/subscript expression detected
+[PASS] LEGEND-LABEL-CASE: No auditable literal legend labels detected
+[PASS] COLOR-MAP: No rainbow/jet/hsv color mapping detected
+[PASS] EDITABLE-TEXT: SVG and PDF editable-text settings are configured
+[PASS] EXPORT-VECTOR: Both SVG and PDF exports are present
+[PASS] EXPORT-RASTER: TIFF raster export is present
+[PASS] RASTER-DPI: A raster export of at least 600 dpi is configured
+  - 600
+[WARN] FINAL-WIDTH: Detected width 94.0 mm is not near the common 89/183 mm defaults; verify the target journal
+[PASS] DATA-SAMPLING: No high-confidence row-sampling operation detected
+[PASS] DATA-EXCLUSION: No high-confidence missing-data exclusion detected
+[WARN] DEMO-DATA: Simulated data appears in the plotting source without an explicit demo boundary
+  - np.random.default_rng(
+  - rng.normal(
+[PASS] LOG-GUARD: No logarithmic transform or axis detected
+[PASS] INTERP-MONOTONIC: No NumPy interpolation requiring an increasing x-grid detected
+[PASS] UNCERTAINTY-ENCODING: A stochastic aggregate and uncertainty encoding are both present; still verify every comparable panel
+  - yerr=
+[PASS] ROTATION-ANCHOR: Every detected rotated text call uses anchor-based placement
+  - line 204: rotation=...
+  - line 178: rotation=...
+[WARN] ANNOTATION-WORKAROUND: Hard-coded annotation heights or opaque white text masks can collide with uncertainty or cut visible gaps in curves; position from rendered/data bounds instead
+  - bbox=dict(boxstyle="round,pad=0.3", fc="white"
+[PASS] PANEL-ALIGNMENT-GATE: Render-time panel-alignment gate is wired into the plotting source
+  - require_matplotlib_panel_alignment(
+[PASS] BACKEND-EXCLUSIVE: No obvious cross-backend plotting reference found for python
+
+summary: 18 pass, 3 warn, 0 fail
+verdict: READY FOR VISUAL QA
+note: static preflight does not validate statistics, source-data truth, or rendered appearance

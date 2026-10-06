@@ -1,0 +1,110 @@
+[
+  {
+    "text": "$h_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Earlier turn",
+    "fits": true
+  },
+  {
+    "text": "Recent turn",
+    "fits": true
+  },
+  {
+    "text": "Current + past utterances",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Earlier turn",
+    "fits": true
+  },
+  {
+    "text": "Recent turn",
+    "fits": true
+  },
+  {
+    "text": "Admit\n+ feedback",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "wT / wA / wV\nSolo logits",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Earlier turn",
+    "fits": true
+  },
+  {
+    "text": "Recent turn",
+    "fits": true
+  },
+  {
+    "text": "Admit\n+ feedback",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Bounded w\n\u00d7 tokens",
+    "fits": true
+  },
+  {
+    "text": "Joint\nhead",
+    "fits": true
+  }
+]

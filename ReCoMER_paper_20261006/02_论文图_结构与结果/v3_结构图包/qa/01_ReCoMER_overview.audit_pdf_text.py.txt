@@ -1,0 +1,10 @@
+{
+  "pdf": "C:\\Users\\Ф����������ǿ1234\\Desktop\\MHnoU_��Ŀ������_20261001\\�ṹͼ\\���Ľṹͼ_v3_�������_20261004\\01_ReCoMER_overview.pdf",
+  "auditable": true,
+  "minimum_required_pt": 5.0,
+  "minimum_found_pt": 5.88,
+  "text_run_count": 80,
+  "below_minimum_count": 0,
+  "below_minimum": [],
+  "warnings": []
+}

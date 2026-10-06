@@ -1,0 +1,17 @@
+{
+  "admitted": ["mosei_full", "meld_roberta", "m3ed_roberta", "mosi", "chsims"],
+  "selection_basis": "Feature provenance and coverage, NOT observed performance in this experiment; all admitted representations will be reported including negative results",
+  "not_selected": {
+    "mosei_qwen": "Same Qwen/WavLM as mosei_full but retains old Facet vision; avoid redundant preliminary fits",
+    "m3ed_ftT": "No pack contract found in this directory; another documented finetuned RoBERTa pack available"
+  },
+  "audit_notes": [
+    "MOSEI_full has exactly the reference train/valid IDs, labels, and histories. One WavLM-invalid training row changes the audio mask; disclosed, not silently replaced.",
+    "MOSEI_full keeps reference vision masks despite the CLIP extraction receipt reporting full coverage. Current packed masks are preserved; this may underuse available CLIP rows.",
+    "MELD has split-local IDs; 675 identical ID strings across train/valid do not alone establish same underlying utterance. Do not claim verified global disjointness from these IDs.",
+    "MELD/M3ED RoBERTa feature extractors were finetuned on train and selected on valid at seed17. Repeated downstream seeds are conditional on this ONE fixed feature extractor, not independent full-pipeline finetunes.",
+    "CH-SIMS_v2 full_packed is version2 (2143 train,647 valid), not original CH-SIMS; comparisons must use the correct version and continuous-label protocol."
+  ],
+  "test_read": false,
+  "official_test_finalization": "Not authorized in this turn; no sealed test tensor is opened"
+}

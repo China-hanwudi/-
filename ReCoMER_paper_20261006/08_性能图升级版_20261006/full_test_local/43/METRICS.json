@@ -1,0 +1,862 @@
+{
+  "seed": 43,
+  "split": "test",
+  "metrics": {
+    "MHnoU": {
+      "n": 4201,
+      "num_classes": 7,
+      "accuracy": 0.521304451321114,
+      "balanced_accuracy": 0.2987983766875457,
+      "macro_f1": 0.3033396992736473,
+      "weighted_f1": 0.45065555764652027,
+      "macro_precision": 0.4307750139206506,
+      "macro_recall": 0.2987983766875457,
+      "mcc": 0.29023125028972724,
+      "nll": 1.3397589974098347,
+      "per_class": [
+        {
+          "class_index": 0,
+          "precision": 0.5127551020408163,
+          "recall": 0.5614525139664804,
+          "f1": 0.536,
+          "support": 358,
+          "predicted": 392,
+          "class_name": "Happy"
+        },
+        {
+          "class_index": 1,
+          "precision": 0.5210084033613446,
+          "recall": 0.9024258760107817,
+          "f1": 0.6606156274664563,
+          "support": 1855,
+          "predicted": 3213,
+          "class_name": "Neutral"
+        },
+        {
+          "class_index": 2,
+          "precision": 0.5583333333333333,
+          "recall": 0.09128065395095368,
+          "f1": 0.15690866510538642,
+          "support": 734,
+          "predicted": 120,
+          "class_name": "Sad"
+        },
+        {
+          "class_index": 3,
+          "precision": 0.18248175182481752,
+          "recall": 0.11467889908256881,
+          "f1": 0.14084507042253522,
+          "support": 218,
+          "predicted": 137,
+          "class_name": "Disgust"
+        },
+        {
+          "class_index": 4,
+          "precision": 0.6867924528301886,
+          "recall": 0.24728260869565216,
+          "f1": 0.3636363636363636,
+          "support": 736,
+          "predicted": 265,
+          "class_name": "Anger"
+        },
+        {
+          "class_index": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 65,
+          "predicted": 0,
+          "class_name": "Fear"
+        },
+        {
+          "class_index": 6,
+          "precision": 0.5540540540540541,
+          "recall": 0.17446808510638298,
+          "f1": 0.2653721682847896,
+          "support": 235,
+          "predicted": 74,
+          "class_name": "Surprise"
+        }
+      ],
+      "confusion_matrix": [
+        [
+          201,
+          151,
+          1,
+          2,
+          2,
+          0,
+          1
+        ],
+        [
+          100,
+          1674,
+          14,
+          25,
+          30,
+          0,
+          12
+        ],
+        [
+          20,
+          601,
+          67,
+          21,
+          23,
+          0,
+          2
+        ],
+        [
+          14,
+          162,
+          3,
+          25,
+          13,
+          0,
+          1
+        ],
+        [
+          24,
+          441,
+          20,
+          53,
+          182,
+          0,
+          16
+        ],
+        [
+          5,
+          47,
+          11,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          28,
+          137,
+          4,
+          10,
+          15,
+          0,
+          41
+        ]
+      ]
+    },
+    "cRBEF": {
+      "n": 4201,
+      "num_classes": 7,
+      "accuracy": 0.6041418709830992,
+      "balanced_accuracy": 0.4546624122228992,
+      "macro_f1": 0.4701935082182946,
+      "weighted_f1": 0.5860044424048965,
+      "macro_precision": 0.5067560726149841,
+      "macro_recall": 0.4546624122228992,
+      "mcc": 0.438111771050089,
+      "nll": 1.2559444328743725,
+      "per_class": [
+        {
+          "class_index": 0,
+          "precision": 0.5318066157760815,
+          "recall": 0.5837988826815642,
+          "f1": 0.5565912117177096,
+          "support": 358,
+          "predicted": 393,
+          "class_name": "Happy"
+        },
+        {
+          "class_index": 1,
+          "precision": 0.6292703500632645,
+          "recall": 0.8043126684636118,
+          "f1": 0.7061050638902034,
+          "support": 1855,
+          "predicted": 2371,
+          "class_name": "Neutral"
+        },
+        {
+          "class_index": 2,
+          "precision": 0.5552884615384616,
+          "recall": 0.31471389645776565,
+          "f1": 0.40173913043478254,
+          "support": 734,
+          "predicted": 416,
+          "class_name": "Sad"
+        },
+        {
+          "class_index": 3,
+          "precision": 0.3472222222222222,
+          "recall": 0.22935779816513763,
+          "f1": 0.27624309392265195,
+          "support": 218,
+          "predicted": 144,
+          "class_name": "Disgust"
+        },
+        {
+          "class_index": 4,
+          "precision": 0.6602564102564102,
+          "recall": 0.5597826086956522,
+          "f1": 0.6058823529411765,
+          "support": 736,
+          "predicted": 624,
+          "class_name": "Anger"
+        },
+        {
+          "class_index": 5,
+          "precision": 0.1891891891891892,
+          "recall": 0.1076923076923077,
+          "f1": 0.13725490196078433,
+          "support": 65,
+          "predicted": 37,
+          "class_name": "Fear"
+        },
+        {
+          "class_index": 6,
+          "precision": 0.6342592592592593,
+          "recall": 0.5829787234042553,
+          "f1": 0.607538802660754,
+          "support": 235,
+          "predicted": 216,
+          "class_name": "Surprise"
+        }
+      ],
+      "confusion_matrix": [
+        [
+          209,
+          129,
+          1,
+          2,
+          9,
+          0,
+          8
+        ],
+        [
+          119,
+          1492,
+          104,
+          36,
+          63,
+          11,
+          30
+        ],
+        [
+          20,
+          372,
+          231,
+          13,
+          72,
+          15,
+          11
+        ],
+        [
+          14,
+          93,
+          7,
+          50,
+          50,
+          0,
+          4
+        ],
+        [
+          12,
+          200,
+          52,
+          37,
+          412,
+          0,
+          23
+        ],
+        [
+          3,
+          25,
+          20,
+          0,
+          7,
+          7,
+          3
+        ],
+        [
+          16,
+          60,
+          1,
+          6,
+          11,
+          4,
+          137
+        ]
+      ]
+    },
+    "equal_weight": {
+      "n": 4201,
+      "num_classes": 7,
+      "accuracy": 0.6055701023565818,
+      "balanced_accuracy": 0.43439087101849827,
+      "macro_f1": 0.4627636090833097,
+      "weighted_f1": 0.5740726448787017,
+      "macro_precision": 0.549127782189963,
+      "macro_recall": 0.43439087101849827,
+      "mcc": 0.4334021751182968,
+      "nll": 1.1244337022179276,
+      "per_class": [
+        {
+          "class_index": 0,
+          "precision": 0.5691489361702128,
+          "recall": 0.5977653631284916,
+          "f1": 0.5831062670299728,
+          "support": 358,
+          "predicted": 376,
+          "class_name": "Happy"
+        },
+        {
+          "class_index": 1,
+          "precision": 0.5960044395116537,
+          "recall": 0.8684636118598382,
+          "f1": 0.7068889863975426,
+          "support": 1855,
+          "predicted": 2703,
+          "class_name": "Neutral"
+        },
+        {
+          "class_index": 2,
+          "precision": 0.5573770491803278,
+          "recall": 0.23160762942779292,
+          "f1": 0.3272377285851781,
+          "support": 734,
+          "predicted": 305,
+          "class_name": "Sad"
+        },
+        {
+          "class_index": 3,
+          "precision": 0.43564356435643564,
+          "recall": 0.2018348623853211,
+          "f1": 0.27586206896551724,
+          "support": 218,
+          "predicted": 101,
+          "class_name": "Disgust"
+        },
+        {
+          "class_index": 4,
+          "precision": 0.724609375,
+          "recall": 0.5040760869565217,
+          "f1": 0.594551282051282,
+          "support": 736,
+          "predicted": 512,
+          "class_name": "Anger"
+        },
+        {
+          "class_index": 5,
+          "precision": 0.25,
+          "recall": 0.09230769230769231,
+          "f1": 0.1348314606741573,
+          "support": 65,
+          "predicted": 24,
+          "class_name": "Fear"
+        },
+        {
+          "class_index": 6,
+          "precision": 0.7111111111111111,
+          "recall": 0.5446808510638298,
+          "f1": 0.6168674698795181,
+          "support": 235,
+          "predicted": 180,
+          "class_name": "Surprise"
+        }
+      ],
+      "confusion_matrix": [
+        [
+          214,
+          131,
+          0,
+          2,
+          4,
+          0,
+          7
+        ],
+        [
+          102,
+          1611,
+          71,
+          15,
+          38,
+          5,
+          13
+        ],
+        [
+          16,
+          464,
+          170,
+          11,
+          56,
+          10,
+          7
+        ],
+        [
+          12,
+          124,
+          4,
+          44,
+          32,
+          0,
+          2
+        ],
+        [
+          12,
+          261,
+          43,
+          27,
+          371,
+          0,
+          22
+        ],
+        [
+          4,
+          34,
+          17,
+          0,
+          3,
+          6,
+          1
+        ],
+        [
+          16,
+          78,
+          0,
+          2,
+          8,
+          3,
+          128
+        ]
+      ]
+    },
+    "ReCoMER": {
+      "n": 4201,
+      "num_classes": 7,
+      "accuracy": 0.6098547964770292,
+      "balanced_accuracy": 0.44803269937044166,
+      "macro_f1": 0.4743935314239921,
+      "weighted_f1": 0.5839470659050435,
+      "macro_precision": 0.5450806213910082,
+      "macro_recall": 0.44803269937044166,
+      "mcc": 0.44115257831190835,
+      "nll": 1.1231208800111665,
+      "per_class": [
+        {
+          "class_index": 0,
+          "precision": 0.5706666666666667,
+          "recall": 0.5977653631284916,
+          "f1": 0.5839017735334243,
+          "support": 358,
+          "predicted": 375,
+          "class_name": "Happy"
+        },
+        {
+          "class_index": 1,
+          "precision": 0.6081081081081081,
+          "recall": 0.8490566037735849,
+          "f1": 0.7086614173228346,
+          "support": 1855,
+          "predicted": 2590,
+          "class_name": "Neutral"
+        },
+        {
+          "class_index": 2,
+          "precision": 0.5621468926553672,
+          "recall": 0.27111716621253407,
+          "f1": 0.3658088235294118,
+          "support": 734,
+          "predicted": 354,
+          "class_name": "Sad"
+        },
+        {
+          "class_index": 3,
+          "precision": 0.43243243243243246,
+          "recall": 0.22018348623853212,
+          "f1": 0.2917933130699088,
+          "support": 218,
+          "predicted": 111,
+          "class_name": "Disgust"
+        },
+        {
+          "class_index": 4,
+          "precision": 0.7043795620437956,
+          "recall": 0.5244565217391305,
+          "f1": 0.6012461059190031,
+          "support": 736,
+          "predicted": 548,
+          "class_name": "Anger"
+        },
+        {
+          "class_index": 5,
+          "precision": 0.25925925925925924,
+          "recall": 0.1076923076923077,
+          "f1": 0.15217391304347827,
+          "support": 65,
+          "predicted": 27,
+          "class_name": "Fear"
+        },
+        {
+          "class_index": 6,
+          "precision": 0.6785714285714286,
+          "recall": 0.5659574468085107,
+          "f1": 0.617169373549884,
+          "support": 235,
+          "predicted": 196,
+          "class_name": "Surprise"
+        }
+      ],
+      "confusion_matrix": [
+        [
+          214,
+          132,
+          0,
+          1,
+          4,
+          0,
+          7
+        ],
+        [
+          106,
+          1575,
+          85,
+          19,
+          44,
+          6,
+          20
+        ],
+        [
+          14,
+          428,
+          199,
+          10,
+          64,
+          11,
+          8
+        ],
+        [
+          11,
+          114,
+          5,
+          48,
+          37,
+          0,
+          3
+        ],
+        [
+          10,
+          240,
+          48,
+          30,
+          386,
+          0,
+          22
+        ],
+        [
+          4,
+          30,
+          17,
+          0,
+          4,
+          7,
+          3
+        ],
+        [
+          16,
+          71,
+          0,
+          3,
+          9,
+          3,
+          133
+        ]
+      ]
+    },
+    "TAV": {
+      "n": 4201,
+      "num_classes": 7,
+      "accuracy": 0.5886693644370388,
+      "balanced_accuracy": 0.4466905988327102,
+      "macro_f1": 0.4650610525501802,
+      "weighted_f1": 0.5702654613812628,
+      "macro_precision": 0.5040646262180918,
+      "macro_recall": 0.4466905988327102,
+      "mcc": 0.4145392404782275,
+      "nll": 1.2807291128868499,
+      "per_class": [
+        {
+          "class_index": 0,
+          "precision": 0.5270655270655271,
+          "recall": 0.5167597765363129,
+          "f1": 0.5218617771509168,
+          "support": 358,
+          "predicted": 351,
+          "class_name": "Happy"
+        },
+        {
+          "class_index": 1,
+          "precision": 0.6142975893599335,
+          "recall": 0.7967654986522911,
+          "f1": 0.693733865289838,
+          "support": 1855,
+          "predicted": 2406,
+          "class_name": "Neutral"
+        },
+        {
+          "class_index": 2,
+          "precision": 0.5520833333333334,
+          "recall": 0.2888283378746594,
+          "f1": 0.3792486583184258,
+          "support": 734,
+          "predicted": 384,
+          "class_name": "Sad"
+        },
+        {
+          "class_index": 3,
+          "precision": 0.35795454545454547,
+          "recall": 0.2889908256880734,
+          "f1": 0.3197969543147208,
+          "support": 218,
+          "predicted": 176,
+          "class_name": "Disgust"
+        },
+        {
+          "class_index": 4,
+          "precision": 0.6204724409448819,
+          "recall": 0.5353260869565217,
+          "f1": 0.574762946754194,
+          "support": 736,
+          "predicted": 635,
+          "class_name": "Anger"
+        },
+        {
+          "class_index": 5,
+          "precision": 0.225,
+          "recall": 0.13846153846153847,
+          "f1": 0.17142857142857143,
+          "support": 65,
+          "predicted": 40,
+          "class_name": "Fear"
+        },
+        {
+          "class_index": 6,
+          "precision": 0.631578947368421,
+          "recall": 0.5617021276595745,
+          "f1": 0.5945945945945945,
+          "support": 235,
+          "predicted": 209,
+          "class_name": "Surprise"
+        }
+      ],
+      "confusion_matrix": [
+        [
+          185,
+          147,
+          3,
+          2,
+          11,
+          0,
+          10
+        ],
+        [
+          114,
+          1478,
+          97,
+          48,
+          79,
+          12,
+          27
+        ],
+        [
+          16,
+          379,
+          212,
+          16,
+          82,
+          14,
+          15
+        ],
+        [
+          7,
+          88,
+          5,
+          63,
+          51,
+          0,
+          4
+        ],
+        [
+          10,
+          226,
+          47,
+          40,
+          394,
+          0,
+          19
+        ],
+        [
+          3,
+          26,
+          19,
+          0,
+          6,
+          9,
+          2
+        ],
+        [
+          16,
+          62,
+          1,
+          7,
+          12,
+          5,
+          132
+        ]
+      ]
+    },
+    "AV": {
+      "n": 4201,
+      "num_classes": 7,
+      "accuracy": 0.5151154487026899,
+      "balanced_accuracy": 0.3172583566294126,
+      "macro_f1": 0.3170483513799149,
+      "weighted_f1": 0.4870736470519581,
+      "macro_precision": 0.32743980099236253,
+      "macro_recall": 0.3172583566294126,
+      "mcc": 0.299520178914635,
+      "nll": 1.468922523052575,
+      "per_class": [
+        {
+          "class_index": 0,
+          "precision": 0.4726775956284153,
+          "recall": 0.48324022346368717,
+          "f1": 0.47790055248618785,
+          "support": 358,
+          "predicted": 366,
+          "class_name": "Happy"
+        },
+        {
+          "class_index": 1,
+          "precision": 0.559329140461216,
+          "recall": 0.7191374663072776,
+          "f1": 0.629245283018868,
+          "support": 1855,
+          "predicted": 2385,
+          "class_name": "Neutral"
+        },
+        {
+          "class_index": 2,
+          "precision": 0.41901408450704225,
+          "recall": 0.3242506811989101,
+          "f1": 0.3655913978494624,
+          "support": 734,
+          "predicted": 568,
+          "class_name": "Sad"
+        },
+        {
+          "class_index": 3,
+          "precision": 0.038461538461538464,
+          "recall": 0.0045871559633027525,
+          "f1": 0.00819672131147541,
+          "support": 218,
+          "predicted": 26,
+          "class_name": "Disgust"
+        },
+        {
+          "class_index": 4,
+          "precision": 0.5449275362318841,
+          "recall": 0.5108695652173914,
+          "f1": 0.5273492286115008,
+          "support": 736,
+          "predicted": 690,
+          "class_name": "Anger"
+        },
+        {
+          "class_index": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 65,
+          "predicted": 3,
+          "class_name": "Fear"
+        },
+        {
+          "class_index": 6,
+          "precision": 0.25766871165644173,
+          "recall": 0.17872340425531916,
+          "f1": 0.21105527638190957,
+          "support": 235,
+          "predicted": 163,
+          "class_name": "Surprise"
+        }
+      ],
+      "confusion_matrix": [
+        [
+          173,
+          133,
+          16,
+          3,
+          22,
+          0,
+          11
+        ],
+        [
+          112,
+          1334,
+          194,
+          8,
+          158,
+          0,
+          49
+        ],
+        [
+          27,
+          388,
+          238,
+          3,
+          63,
+          3,
+          12
+        ],
+        [
+          15,
+          139,
+          19,
+          1,
+          40,
+          0,
+          4
+        ],
+        [
+          15,
+          229,
+          68,
+          8,
+          376,
+          0,
+          40
+        ],
+        [
+          6,
+          29,
+          14,
+          1,
+          10,
+          0,
+          5
+        ],
+        [
+          18,
+          133,
+          19,
+          2,
+          21,
+          0,
+          42
+        ]
+      ]
+    }
+  },
+  "model_sha256": "fb33f35f8554ad2de39c96d6d8a28ca28eba9aef0c324b801377fb53690b01ea",
+  "eta": 1.0,
+  "cRBEF_seed_fixed": 17,
+  "test_selected": false
+}

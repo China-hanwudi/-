@@ -1,0 +1,32 @@
+{
+  "status": "rendered_and_visually_checked",
+  "renderer": "PIL high-resolution raster plus SVG wrapper",
+  "style_reference": "Feishu paper-chart guide and Image 2 visual draft",
+  "quantitative_source": "results_data_image2_style.json",
+  "figures": [
+    {
+      "stem": "07_ReCoMER_results_overview_image2_style",
+      "panels": [
+        "frozen M3ED test comparison",
+        "module effects across datasets",
+        "integrated paired ablation deltas"
+      ],
+      "data_integrity": "recorded values only; positive module effect means WF1 increase or MAE reduction",
+      "visual_check": "passed"
+    },
+    {
+      "stem": "08_ReCoMER_exact_feature_checks_image2_style",
+      "panels": [
+        "exact-feature M3ED controls",
+        "exact-feature cRBEF replication"
+      ],
+      "data_integrity": "recorded means and standard deviations only",
+      "visual_check": "passed"
+    }
+  ],
+  "notes": [
+    "The Image 2-generated draft was used only for layout and palette inspiration; its invented example values were not copied.",
+    "The no-history-abstention delta is plotted exactly as the recorded Full minus control value (-0.487 pp).",
+    "PNG, TIFF, PDF and SVG exports were written for both figures."
+  ]
+}

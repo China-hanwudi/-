@@ -1,0 +1,26 @@
+{
+  "status": "rendered_and_visually_checked",
+  "checked_at": "2026-10-05",
+  "figures": [
+    {
+      "file": "09_ReCoMER_gate_sensitivity_image2_style",
+      "check": "PASS",
+      "data_boundary": "Frozen recorded formula probes; not a continuous alpha/lambda/tau sweep."
+    },
+    {
+      "file": "10_ReCoMER_modality_pca_image2_style",
+      "check": "PASS",
+      "data_boundary": "PCA projection of exact M3ED text/audio/visual features; not t-SNE and not a fabricated model comparison."
+    },
+    {
+      "file": "11_ReCoMER_confusion_matrices_image2_style",
+      "check": "PASS",
+      "data_boundary": "Mean row-normalized confusion matrices from formal M3ED test predictions for seeds 43, 47 and 59."
+    }
+  ],
+  "format_check": {
+    "each_figure_has": ["pdf", "png", "svg", "tiff"],
+    "source_script": "draw_additional_results_image2_style_pil.py",
+    "numeric_policy": "No synthetic performance values were introduced."
+  }
+}

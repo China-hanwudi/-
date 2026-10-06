@@ -1,0 +1,13 @@
+{
+  "status": "COMPLETE",
+  "archive": "C:\\Users\\肖田泽宇宙最强1234\\Desktop\\MHnoU_项目接力包_20261001\\最终代码\\ReCoMER_完整代码与模型_20261004.zip",
+  "archive_bytes": 73687968,
+  "sha256": "aa1b2a6c0957882f7e3d6a11603df8745de8457657a3324c0ad1f4433bf9327d",
+  "files": 174,
+  "models": [
+    43,
+    47,
+    59
+  ],
+  "official_test_evaluated": false
+}

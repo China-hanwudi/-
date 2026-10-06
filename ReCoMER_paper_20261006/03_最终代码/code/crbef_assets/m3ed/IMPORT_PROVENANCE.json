@@ -1,0 +1,89 @@
+{
+  "source_zip": "C:\\Users\\肖田泽宇宙最强1234\\Documents\\xwechat_files\\wxid_93dksa5lo6t432_aff1\\temp\\RWTemp\\2026-10\\f4965f2f180af964a926a4f3c8709540\\CRBEF_uniform_h_complete_candidate_20261003.zip",
+  "source_zip_sha256": "2ea9d68eb7cbc05992bdb21d7c73d57bdfa2e50b1580c0e0f1891928ec07ec61",
+  "class_names": [
+    "Happy",
+    "Neutral",
+    "Sad",
+    "Disgust",
+    "Anger",
+    "Fear",
+    "Surprise"
+  ],
+  "active_components": [
+    "TAV",
+    "rich AV",
+    "reliability gate"
+  ],
+  "old_uniform_h_imported": false,
+  "old_outer_fuser_imported": false,
+  "feature_extractors_included": false,
+  "upstream_full_system_OOF": false,
+  "copied_files": {
+    "checkpoints/source/TAV.pt": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\TAV.pt",
+      "sha256": "7e74c997977c4771c37aa55de17b3a0d6b051b11565d1cec10c0fc1ed6bc0b85",
+      "bytes": 3773044
+    },
+    "checkpoints/source/AV.pt": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\AV.pt",
+      "sha256": "919b6d6b28d474aed04012e170a4bd9e03751824f4f34c5fb4a77193f69cfcb4",
+      "bytes": 6005123
+    },
+    "checkpoints/source/CR_gate.pt": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\CR_gate.pt",
+      "sha256": "f7c5ad667e1b74705d16b1e8cad6354f9a8aa106094858a3b444cd9144a52ff7",
+      "bytes": 1315
+    },
+    "checkpoints/source/normalizers/T.npz": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\normalizers\\T.npz",
+      "sha256": "a686717f069eca95a1b254745467e0ae39675f18c8dacee8cde1260cdd68e021",
+      "bytes": 95759
+    },
+    "checkpoints/source/normalizers/A.npz": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\normalizers\\A.npz",
+      "sha256": "1102ab34b35ce027167f5a03b677ebcfe88f9091a134f03e30d504d75fcad72d",
+      "bytes": 114515
+    },
+    "checkpoints/source/normalizers/V.npz": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\normalizers\\V.npz",
+      "sha256": "e8855ddd14ce47211dd967ca19e20d0515001341ce666bf1283ed5641a9e6638",
+      "bytes": 89240
+    },
+    "code/source_definitions/head.py": {
+      "destination": "最终代码\\code\\n6\\crbef_source\\head.py",
+      "sha256": "613eb79b316dc22eb08e05a277942b43870f91d820ac434f5fe7cc63d5bfc75c",
+      "bytes": 1016
+    },
+    "code/source_definitions/rich.py": {
+      "destination": "最终代码\\code\\n6\\crbef_source\\rich.py",
+      "sha256": "32eb2244c31dc83d213897f726083b0b7882c435c3cefc5646d466b550172863",
+      "bytes": 887
+    },
+    "MODEL_CARD.json": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\ORIGINAL_MODEL_CARD.json",
+      "sha256": "cb0df860f69f53b703a5a606b4365911623784f6d2bd6a8cbb084b16b13d87fb",
+      "bytes": 2345
+    },
+    "EXTERNAL_ASSETS.json": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\EXTERNAL_ASSETS.json",
+      "sha256": "87f570c07ecd681a75466ba3edb9d03bbad8f0c8c1ddb6fd08bb335512174ac1",
+      "bytes": 1013
+    },
+    "evidence/source/SOURCE_FROZEN.json": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\SOURCE_FROZEN.json",
+      "sha256": "940873a9843434856db52bb41fece8eead2201a29994ea86ceeadd6f06144926",
+      "bytes": 334198
+    },
+    "evidence/source/PROTOCOL.txt": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\SOURCE_PROTOCOL.txt",
+      "sha256": "03066a66b81dd1c3960842eed07e186432ab03c8ed47e4a624901534cbbdb027",
+      "bytes": 5625
+    },
+    "data/UPSTREAM_ROLE_SOURCES.json": {
+      "destination": "最终代码\\code\\crbef_assets\\m3ed\\UPSTREAM_ROLE_SOURCES.json",
+      "sha256": "1103055217d1945d1c30c551a61e23fe5dd354361b43051d31271a853c81ba1b",
+      "bytes": 816
+    }
+  }
+}

@@ -1,0 +1,564 @@
+{
+  "status": "exploratory 3-seed screen",
+  "datasets": {
+    "mosei_full": {
+      "metric": "mae",
+      "planned_seeds": [
+        17,
+        29,
+        43
+      ],
+      "complete_seeds": [
+        17,
+        29,
+        43
+      ],
+      "missing": [],
+      "all_complete": true,
+      "test_read": false,
+      "scope": "fixed valid split; seed uncertainty, not population generalization",
+      "means": {
+        "uniform": 0.5042847027444975,
+        "constant_task": 0.4981397778183552,
+        "mlp_task": 0.5076537994289086,
+        "evidence_task": 0.5025473093597722
+      },
+      "pairs": [
+        {
+          "seed": 17,
+          "uniform": 0.5003635520075673,
+          "constant_task": 0.49225158722028894,
+          "mlp_task": 0.5020842767190656,
+          "evidence_task": 0.4940652571312928,
+          "evidence_mean_weight": [
+            0.3492244780063629,
+            0.41416609287261963,
+            0.23660950362682343
+          ]
+        },
+        {
+          "seed": 29,
+          "uniform": 0.5086572796314405,
+          "constant_task": 0.5044375025363115,
+          "mlp_task": 0.518081186859177,
+          "evidence_task": 0.5177212853419217,
+          "evidence_mean_weight": [
+            0.33418285846710205,
+            0.2553987503051758,
+            0.41041845083236694
+          ]
+        },
+        {
+          "seed": 43,
+          "uniform": 0.5038332765944847,
+          "constant_task": 0.49773024369846536,
+          "mlp_task": 0.5027959347084834,
+          "evidence_task": 0.495855385606102,
+          "evidence_mean_weight": [
+            0.31195130944252014,
+            0.4326006770133972,
+            0.2554481029510498
+          ]
+        }
+      ],
+      "comparisons": {
+        "uniform": {
+          "n": 3,
+          "mean_gain": 0.0017373933847253387,
+          "ci95": [
+            -0.02159339836722914,
+            0.025068185136679817
+          ],
+          "wins": 2,
+          "sign_flip_p_two_sided": 1.0,
+          "gains": [
+            0.006298294876274535,
+            -0.009064005710481271,
+            0.007977890988382752
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "constant_task": {
+          "n": 3,
+          "mean_gain": -0.004407531541416913,
+          "ci95": [
+            -0.024045136988425857,
+            0.015230073905592029
+          ],
+          "wins": 1,
+          "sign_flip_p_two_sided": 0.75,
+          "gains": [
+            -0.0018136699110038457,
+            -0.013283782805610267,
+            0.001874858092363374
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "mlp_task": {
+          "n": 3,
+          "mean_gain": 0.005106490069136512,
+          "ci95": [
+            -0.0051924560249919744,
+            0.015405436163264997
+          ],
+          "wins": 3,
+          "sign_flip_p_two_sided": 0.25,
+          "gains": [
+            0.008019019587772847,
+            0.00035990151725528996,
+            0.006940549102381399
+          ],
+          "holm_p_current_complete_family": 1.0
+        }
+      }
+    },
+    "meld_roberta": {
+      "metric": "weighted_f1",
+      "planned_seeds": [
+        17,
+        29,
+        43
+      ],
+      "complete_seeds": [
+        17,
+        29,
+        43
+      ],
+      "missing": [],
+      "all_complete": true,
+      "test_read": false,
+      "scope": "fixed valid split; seed uncertainty, not population generalization",
+      "means": {
+        "uniform": 0.6428048838897445,
+        "constant_task": 0.6399709494922258,
+        "mlp_task": 0.6402614668496978,
+        "evidence_task": 0.6398394467188896
+      },
+      "pairs": [
+        {
+          "seed": 17,
+          "uniform": 0.6416621473131406,
+          "constant_task": 0.6400601423777477,
+          "mlp_task": 0.6413869317069535,
+          "evidence_task": 0.638797594325882,
+          "evidence_mean_weight": [
+            0.421432226896286,
+            0.28664717078208923,
+            0.29192060232162476
+          ]
+        },
+        {
+          "seed": 29,
+          "uniform": 0.6453297584724242,
+          "constant_task": 0.6410885897159806,
+          "mlp_task": 0.6402375469199687,
+          "evidence_task": 0.6413302791233073,
+          "evidence_mean_weight": [
+            0.43384432792663574,
+            0.27486300468444824,
+            0.2912927269935608
+          ]
+        },
+        {
+          "seed": 43,
+          "uniform": 0.6414227458836691,
+          "constant_task": 0.6387641163829493,
+          "mlp_task": 0.6391599219221711,
+          "evidence_task": 0.6393904667074793,
+          "evidence_mean_weight": [
+            0.43164512515068054,
+            0.2946530282497406,
+            0.27370190620422363
+          ]
+        }
+      ],
+      "comparisons": {
+        "uniform": {
+          "n": 3,
+          "mean_gain": -0.0029654371708551044,
+          "ci95": [
+            -0.005418455357826218,
+            -0.0005124189838839905
+          ],
+          "wins": 0,
+          "sign_flip_p_two_sided": 0.25,
+          "gains": [
+            -0.0028645529872586284,
+            -0.00399947934911693,
+            -0.002032279176189755
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "constant_task": {
+          "n": 3,
+          "mean_gain": -0.00013150277333628946,
+          "ci95": [
+            -0.0026112130006573607,
+            0.002348207453984782
+          ],
+          "wins": 2,
+          "sign_flip_p_two_sided": 1.0,
+          "gains": [
+            -0.0012625480518656529,
+            0.0002416894073267173,
+            0.0006263503245300672
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "mlp_task": {
+          "n": 3,
+          "mean_gain": -0.00042202013080820205,
+          "ci95": [
+            -0.005206026837569954,
+            0.00436198657595355
+          ],
+          "wins": 2,
+          "sign_flip_p_two_sided": 1.0,
+          "gains": [
+            -0.002589337381071477,
+            0.0010927322033386089,
+            0.00023054478530826206
+          ],
+          "holm_p_current_complete_family": 1.0
+        }
+      }
+    },
+    "m3ed_roberta": {
+      "metric": "weighted_f1",
+      "planned_seeds": [
+        17,
+        29,
+        43
+      ],
+      "complete_seeds": [
+        17,
+        29,
+        43
+      ],
+      "missing": [],
+      "all_complete": true,
+      "test_read": false,
+      "scope": "fixed valid split; seed uncertainty, not population generalization",
+      "means": {
+        "uniform": 0.5426854301149102,
+        "constant_task": 0.5445849495784127,
+        "mlp_task": 0.5464082354193409,
+        "evidence_task": 0.5462693756130884
+      },
+      "pairs": [
+        {
+          "seed": 17,
+          "uniform": 0.5397033654430002,
+          "constant_task": 0.542455001679809,
+          "mlp_task": 0.5476849659949383,
+          "evidence_task": 0.5481989594826697,
+          "evidence_mean_weight": [
+            0.3863714337348938,
+            0.3466450273990631,
+            0.2669835686683655
+          ]
+        },
+        {
+          "seed": 29,
+          "uniform": 0.5475582525112622,
+          "constant_task": 0.5489188594781196,
+          "mlp_task": 0.5482550601580866,
+          "evidence_task": 0.5449780890761431,
+          "evidence_mean_weight": [
+            0.38814759254455566,
+            0.349352091550827,
+            0.2625003457069397
+          ]
+        },
+        {
+          "seed": 43,
+          "uniform": 0.5407946723904682,
+          "constant_task": 0.5423809875773099,
+          "mlp_task": 0.5432846801049981,
+          "evidence_task": 0.5456310782804524,
+          "evidence_mean_weight": [
+            0.3945886492729187,
+            0.34222257137298584,
+            0.26318877935409546
+          ]
+        }
+      ],
+      "comparisons": {
+        "uniform": {
+          "n": 3,
+          "mean_gain": 0.003583945498178198,
+          "ci95": [
+            -0.010434295561669108,
+            0.017602186558025507
+          ],
+          "wins": 2,
+          "sign_flip_p_two_sided": 0.5,
+          "gains": [
+            0.008495594039669485,
+            -0.0025801634351191316,
+            0.004836405889984241
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "constant_task": {
+          "n": 3,
+          "mean_gain": 0.001684426034675594,
+          "ci95": [
+            -0.010807346291332438,
+            0.014176198360683625
+          ],
+          "wins": 2,
+          "sign_flip_p_two_sided": 0.75,
+          "gains": [
+            0.005743957802860744,
+            -0.00394077040197649,
+            0.0032500907031425275
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "mlp_task": {
+          "n": 3,
+          "mean_gain": -0.0001388598062525744,
+          "ci95": [
+            -0.007263284270075645,
+            0.006985564657570497
+          ],
+          "wins": 2,
+          "sign_flip_p_two_sided": 1.0,
+          "gains": [
+            0.0005139934877314012,
+            -0.0032769710819434694,
+            0.002346398175454345
+          ],
+          "holm_p_current_complete_family": 1.0
+        }
+      }
+    },
+    "mosi": {
+      "metric": "mae",
+      "planned_seeds": [
+        17,
+        29,
+        43
+      ],
+      "complete_seeds": [
+        17,
+        29,
+        43
+      ],
+      "missing": [],
+      "all_complete": true,
+      "test_read": false,
+      "scope": "fixed valid split; seed uncertainty, not population generalization",
+      "means": {
+        "uniform": 0.7169349798729326,
+        "constant_task": 0.7974840424618693,
+        "mlp_task": 0.7082683373963815,
+        "evidence_task": 0.710893736718415
+      },
+      "pairs": [
+        {
+          "seed": 17,
+          "uniform": 0.7267897509070984,
+          "constant_task": 0.8406405124211416,
+          "mlp_task": 0.7163517422746363,
+          "evidence_task": 0.7124033324322846,
+          "evidence_mean_weight": [
+            0.3260559141635895,
+            0.2796490788459778,
+            0.3942949175834656
+          ]
+        },
+        {
+          "seed": 29,
+          "uniform": 0.7141189024698266,
+          "constant_task": 0.7187661676622895,
+          "mlp_task": 0.7080047582499845,
+          "evidence_task": 0.7153822063472464,
+          "evidence_mean_weight": [
+            0.3151884078979492,
+            0.4257914125919342,
+            0.259020060300827
+          ]
+        },
+        {
+          "seed": 43,
+          "uniform": 0.7098962862418728,
+          "constant_task": 0.833045447302177,
+          "mlp_task": 0.7004485116645238,
+          "evidence_task": 0.704895671375714,
+          "evidence_mean_weight": [
+            0.3130575716495514,
+            0.41659700870513916,
+            0.2703453600406647
+          ]
+        }
+      ],
+      "comparisons": {
+        "uniform": {
+          "n": 3,
+          "mean_gain": 0.006041243154517632,
+          "ci95": [
+            -0.013525285242774687,
+            0.025607771551809953
+          ],
+          "wins": 2,
+          "sign_flip_p_two_sided": 0.5,
+          "gains": [
+            0.014386418474813811,
+            -0.0012633038774197969,
+            0.005000614866158881
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "constant_task": {
+          "n": 3,
+          "mean_gain": 0.08659030574345439,
+          "ci95": [
+            -0.0924137296771162,
+            0.26559434116402497
+          ],
+          "wins": 3,
+          "sign_flip_p_two_sided": 0.25,
+          "gains": [
+            0.12823717998885698,
+            0.003383961315043149,
+            0.12814977592646304
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "mlp_task": {
+          "n": 3,
+          "mean_gain": -0.002625399322033428,
+          "ci95": [
+            -0.017228637487096347,
+            0.01197783884302949
+          ],
+          "wins": 1,
+          "sign_flip_p_two_sided": 0.5,
+          "gains": [
+            0.0039484098423516745,
+            -0.007377448097261818,
+            -0.004447159711190141
+          ],
+          "holm_p_current_complete_family": 1.0
+        }
+      }
+    },
+    "chsims": {
+      "metric": "mae",
+      "planned_seeds": [
+        17,
+        29,
+        43
+      ],
+      "complete_seeds": [
+        17,
+        29,
+        43
+      ],
+      "missing": [],
+      "all_complete": true,
+      "test_read": false,
+      "scope": "fixed valid split; seed uncertainty, not population generalization",
+      "means": {
+        "uniform": 0.3365134103972194,
+        "constant_task": 0.33125046518473417,
+        "mlp_task": 0.337239043317382,
+        "evidence_task": 0.33211423359026326
+      },
+      "pairs": [
+        {
+          "seed": 17,
+          "uniform": 0.3328952693928845,
+          "constant_task": 0.32958010724893955,
+          "mlp_task": 0.32924888656119106,
+          "evidence_task": 0.32836142741143703,
+          "evidence_mean_weight": [
+            0.2894664406776428,
+            0.2775140702724457,
+            0.4330194592475891
+          ]
+        },
+        {
+          "seed": 29,
+          "uniform": 0.3342548662399329,
+          "constant_task": 0.3251900347482292,
+          "mlp_task": 0.330136981599862,
+          "evidence_task": 0.32655649888437166,
+          "evidence_mean_weight": [
+            0.29362696409225464,
+            0.2779974043369293,
+            0.4283756613731384
+          ]
+        },
+        {
+          "seed": 43,
+          "uniform": 0.34239009555884087,
+          "constant_task": 0.33898125355703385,
+          "mlp_task": 0.3523312617910931,
+          "evidence_task": 0.3414247744749811,
+          "evidence_mean_weight": [
+            0.309947669506073,
+            0.43289026618003845,
+            0.25716203451156616
+          ]
+        }
+      ],
+      "comparisons": {
+        "uniform": {
+          "n": 3,
+          "mean_gain": 0.004399176806956155,
+          "ci95": [
+            -0.0039687468289045765,
+            0.012767100442816887
+          ],
+          "wins": 3,
+          "sign_flip_p_two_sided": 0.25,
+          "gains": [
+            0.004533841981447462,
+            0.007698367355561231,
+            0.0009653210838597714
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "constant_task": {
+          "n": 3,
+          "mean_gain": -0.0008637684055290603,
+          "ci95": [
+            -0.005539266566972112,
+            0.0038117297559139914
+          ],
+          "wins": 1,
+          "sign_flip_p_two_sided": 0.5,
+          "gains": [
+            0.001218679837502512,
+            -0.0013664641361424423,
+            -0.0024435209179472506
+          ],
+          "holm_p_current_complete_family": 1.0
+        },
+        "mlp_task": {
+          "n": 3,
+          "mean_gain": 0.00512480972711878,
+          "ci95": [
+            -0.007755376225679396,
+            0.018004995679916955
+          ],
+          "wins": 3,
+          "sign_flip_p_two_sided": 0.25,
+          "gains": [
+            0.0008874591497540218,
+            0.0035804827154903296,
+            0.01090648731611199
+          ],
+          "holm_p_current_complete_family": 1.0
+        }
+      }
+    }
+  },
+  "higher_gain_is_better": true,
+  "test_read": false,
+  "holm_family_comparisons": 15,
+  "all_complete": true
+}

@@ -1,0 +1,144 @@
+{
+  "pdf": "C:\\Users\\Ф����������ǿ1234\\Desktop\\����\\���Ľṹͼ_v3_�������_20261004\\08_����ͼ������_20261006\\figF_calibration_brier.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 15,
+  "text_trace_count": 15,
+  "stroke_path_count": 34,
+  "filled_region_count": 22,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 5,
+    "warn": 0,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.652",
+      "text_bbox": [
+        60.92605972290039,
+        23.714000701904297,
+        80.953857421875,
+        30.714000701904297
+      ],
+      "other_text": null,
+      "other_bbox": [
+        70.94168090820312,
+        28.213699340820312,
+        70.94168090820312,
+        138.10816955566406
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        6
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.580",
+      "text_bbox": [
+        116.55284881591797,
+        40.41239547729492,
+        136.58065795898438,
+        47.41239547729492
+      ],
+      "other_text": null,
+      "other_bbox": [
+        126.5684814453125,
+        28.213699340820312,
+        126.5684814453125,
+        138.10816955566406
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        8
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "0.552",
+      "text_bbox": [
+        172.1796417236328,
+        42.8680534362793,
+        192.2074432373047,
+        49.8680534362793
+      ],
+      "other_text": null,
+      "other_bbox": [
+        38.12187576293945,
+        28.213699340820312,
+        270.6418762207031,
+        138.10816955566406
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        10,
+        20
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "0.549",
+      "text_bbox": [
+        227.8064422607422,
+        43.68845748901367,
+        247.83424377441406,
+        50.68845748901367
+      ],
+      "other_text": null,
+      "other_bbox": [
+        38.12187576293945,
+        28.213699340820312,
+        270.6418762207031,
+        138.10816955566406
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        12,
+        20
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 15.0% of the smaller box",
+      "text": "Equal-weight",
+      "text_bbox": [
+        135.59689331054688,
+        144.83938598632812,
+        184.4419403076172,
+        167.08999633789062
+      ],
+      "other_text": "mean �� sample SD; n=3 frozen-test reports",
+      "other_bbox": [
+        124.9729232788086,
+        164.23806762695312,
+        268.32061767578125,
+        170.73806762695312
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    }
+  ]
+}

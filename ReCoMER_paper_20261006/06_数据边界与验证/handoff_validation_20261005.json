@@ -1,0 +1,77 @@
+{
+  "checked_at": "2026-10-05",
+  "package_root": "C:\\Users\\肖田泽宇宙最强1234\\Desktop\\论文\\论文结构图_v3_具体表达_20261004",
+  "file_count": 345,
+  "total_size_bytes": 43911830.0,
+  "forbidden_file_count": 0,
+  "forbidden_extensions": [
+    ".pt",
+    ".npz",
+    ".npy",
+    ".pkl",
+    ".ckpt",
+    ".pth",
+    ".bin"
+  ],
+  "figure_bundle_counts": {
+    "svg": [
+      11
+    ],
+    "pdf": [
+      12
+    ],
+    "png": [
+      12
+    ],
+    "tiff": [
+      11
+    ]
+  },
+  "seven_final_png_count": [
+    7
+  ],
+  "key_files": [
+    {
+      "path": "00_交接说明\\00_README_先读这里.md",
+      "sha256": "D3D579D11FA34F3F0CC831AC56DAE2F6C6965E80622A2FD825D914FEE4167EC8",
+      "bytes": 2084
+    },
+    {
+      "path": "00_交接说明\\01_给Kimi的工作指令.md",
+      "sha256": "DEE98501EA283FCC01CA9708055511F7A7C1B76C9ADA3561A3C63BE06F20D125",
+      "bytes": 3029
+    },
+    {
+      "path": "00_交接说明\\02_项目事实与证据边界.md",
+      "sha256": "02E1EA19A6A27D4A66D331C90E285EC780D9A5D04038372394319AF013341CEF",
+      "bytes": 4097
+    },
+    {
+      "path": "01_论文稿件\\ReCoMER_完整论文_20261005.docx",
+      "sha256": "9B92965FF664C2CF65FF518228C74A2C9671BFAE86E6D4EEF8AEF9378C02B3B1",
+      "bytes": 10699717
+    },
+    {
+      "path": "01_论文稿件\\ReCoMER_完整论文_20261005.pdf",
+      "sha256": "FFACD07D8267CBAED45905BD85D5F1A3158549099A3FAF756B288EDBC689E6C3",
+      "bytes": 1635922
+    },
+    {
+      "path": "03_最终代码\\code\\n6\\recomer.py",
+      "sha256": "A1A96119BB86569FE316D282DDA0ED77A1CB0BA68E81E2274EEB6AD667B9D25B",
+      "bytes": 5051
+    },
+    {
+      "path": "05_实验结果_汇总\\ReCoMER_完整模型_元数据\\SUMMARY.json",
+      "sha256": "A1A7241AD4CE30BD3F0D9E1D7AFC827FDBA55E3CC11FDF35AFB942741BDAF711",
+      "bytes": 6389
+    },
+    {
+      "path": "02_论文图_结构与结果\\v3_结构图包\\figure_manifest.json",
+      "sha256": "8D4D440490268843AFECC060CC3FAE1821A4870B7ECD909CA1A1917E2913EF15",
+      "bytes": 3245
+    }
+  ],
+  "result": "PASS",
+  "note": "数据集、原始媒体、特征缓存和模型权重未复制；指标摘要、实验协议、源码、图源和验证记录已保留。"
+}

@@ -1,0 +1,72 @@
+{
+  "pdf": "C:\\Users\\肖田泽宇宙最强1234\\Desktop\\论文\\论文结构图_v3_具体表达_20261004\\08_性能图升级版_20261006\\figI_weight_stability.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 16,
+  "text_trace_count": 16,
+  "stroke_path_count": 123,
+  "filled_region_count": 80,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 2,
+    "warn": 0,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "MELD",
+      "text_bbox": [
+        102.53468322753906,
+        28.183345794677734,
+        122.301513671875,
+        35.183345794677734
+      ],
+      "other_text": null,
+      "other_bbox": [
+        112.4175033569336,
+        20.043746948242188,
+        112.4175033569336,
+        176.90374755859375
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        4
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "M3ED",
+      "text_bbox": [
+        241.3212432861328,
+        28.183345794677734,
+        261.6342468261719,
+        35.183345794677734
+      ],
+      "other_text": null,
+      "other_bbox": [
+        251.4774932861328,
+        20.043746948242188,
+        251.4774932861328,
+        176.90374755859375
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        10
+      ]
+    }
+  ]
+}

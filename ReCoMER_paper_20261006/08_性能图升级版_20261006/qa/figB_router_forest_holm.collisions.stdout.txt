@@ -1,0 +1,769 @@
+{
+  "pdf": "C:\\Users\\Ф����������ǿ1234\\Desktop\\����\\���Ľṹͼ_v3_�������_20261004\\08_����ͼ������_20261006\\figB_router_forest_holm.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 36,
+  "text_trace_count": 34,
+  "stroke_path_count": 45,
+  "filled_region_count": 37,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 14,
+    "warn": 16,
+    "contained_fill_overlays": 2,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 5 stroked path(s)",
+      "text": "MOSEI (MAE reduction  better)",
+      "text_bbox": [
+        180.2257537841797,
+        77.25990295410156,
+        330.1773376464844,
+        85.55989837646484
+      ],
+      "other_text": null,
+      "other_bbox": [
+        189.20074462890625,
+        79.88063049316406,
+        301.3882751464844,
+        209.40399169921875
+      ],
+      "object_count": 5,
+      "object_indexes": [
+        2,
+        5,
+        8,
+        10,
+        25
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 5 stroked path(s)",
+      "text": "MELD (WF1 gain  better)",
+      "text_bbox": [
+        180.2257537841797,
+        120.57266235351562,
+        302.0314636230469,
+        128.87266540527344
+      ],
+      "other_text": null,
+      "other_bbox": [
+        189.20074462890625,
+        79.88063049316406,
+        301.3882751464844,
+        209.40399169921875
+      ],
+      "object_count": 5,
+      "object_indexes": [
+        2,
+        5,
+        8,
+        10,
+        25
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 5 stroked path(s)",
+      "text": "M3ED (WF1 gain  better)",
+      "text_bbox": [
+        180.2257537841797,
+        163.94793701171875,
+        302.5148620605469,
+        172.24794006347656
+      ],
+      "other_text": null,
+      "other_bbox": [
+        189.20074462890625,
+        79.88063049316406,
+        301.3882751464844,
+        209.40399169921875
+      ],
+      "object_count": 5,
+      "object_indexes": [
+        2,
+        5,
+        8,
+        10,
+        25
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 5 stroked path(s)",
+      "text": "-0.33 [-0.54, -0.12]   2/10 wins   Holm p = 0.0586",
+      "text_bbox": [
+        261.3600158691406,
+        176.28590393066406,
+        434.3843994140625,
+        183.18589782714844
+      ],
+      "other_text": null,
+      "other_bbox": [
+        263.992431640625,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 5,
+      "object_indexes": [
+        8,
+        10,
+        12,
+        14,
+        25
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 3 stroked path(s)",
+      "text": "+0.09 [-0.09, +0.26]   6/10 wins   Holm p = 0.6133 n.s.",
+      "text_bbox": [
+        289.72430419921875,
+        200.38327026367188,
+        481.6891784667969,
+        207.28326416015625
+      ],
+      "other_text": null,
+      "other_bbox": [
+        301.3882751464844,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 3,
+      "object_indexes": [
+        10,
+        12,
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 3 stroked path(s)",
+      "text": "-0.04 [-0.36, +0.29]   4/10 wins   Holm p = 0.8242 n.s.",
+      "text_bbox": [
+        291.6685791015625,
+        157.0080108642578,
+        480.3421630859375,
+        163.9080047607422
+      ],
+      "other_text": null,
+      "other_bbox": [
+        301.3882751464844,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 3,
+      "object_indexes": [
+        10,
+        12,
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "+0.34 [+0.09, +0.59]   8/10 wins   Holm p = 0.0586",
+      "text_bbox": [
+        314.22686767578125,
+        132.91064453125,
+        497.1251220703125,
+        139.81063842773438
+      ],
+      "other_text": null,
+      "other_bbox": [
+        338.7840881347656,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        12,
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "+0.42 [+0.21, +0.63]   10/10 wins   Holm p = 0.0117 **",
+      "text_bbox": [
+        317.33160400390625,
+        188.3345947265625,
+        511.51824951171875,
+        195.23458862304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        338.7840881347656,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        12,
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "+0.45 [+0.21, +0.70]   10/10 wins   Holm p = 0.0059 ***",
+      "text_bbox": [
+        322.12481689453125,
+        113.63274383544922,
+        519.761474609375,
+        120.53274536132812
+      ],
+      "other_text": null,
+      "other_bbox": [
+        338.7840881347656,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        12,
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "+0.51 [+0.27, +0.74]   10/10 wins   Holm p = 0.0059 ***",
+      "text_bbox": [
+        325.40643310546875,
+        101.58405303955078,
+        523.0430908203125,
+        108.48405456542969
+      ],
+      "other_text": null,
+      "other_bbox": [
+        338.7840881347656,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        12,
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "+0.67 [+0.49, +0.85]   10/10 wins   Holm p = 0.0059 ***",
+      "text_bbox": [
+        333.83251953125,
+        89.5353775024414,
+        531.4691772460938,
+        96.43537902832031
+      ],
+      "other_text": null,
+      "other_bbox": [
+        338.7840881347656,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        12,
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "+0.51 [+0.00, +1.01]   7/10 wins   Holm p = 0.1523 n.s.",
+      "text_bbox": [
+        345.7839050292969,
+        144.95932006835938,
+        541.0400390625,
+        151.85931396484375
+      ],
+      "other_text": null,
+      "other_bbox": [
+        376.179931640625,
+        79.88063049316406,
+        376.179931640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        14
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 59.0% of the smaller box",
+      "text": "marginal (0.05",
+      "text_bbox": [
+        266.3579406738281,
+        250.35093688964844,
+        367.34808349609375,
+        257.2509460449219
+      ],
+      "other_text": "p < 0.10, )",
+      "other_bbox": [
+        324.8606262207031,
+        246.85955810546875,
+        367.34808349609375,
+        258.56195068359375
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 59.0% of the smaller box",
+      "text": "not significant (p",
+      "text_bbox": [
+        393.59356689453125,
+        250.35093688964844,
+        479.9596862792969,
+        257.2509460449219
+      ],
+      "other_text": "0.10)",
+      "other_bbox": [
+        459.715087890625,
+        246.85955810546875,
+        479.9596862792969,
+        258.56195068359375
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "Fixed-backbone ten-seed protocol (seeds 7101) �� paired seed-level 95% CI �� Holm correction over the full comparison family",
+      "text_bbox": [
+        7.199999809265137,
+        30.477556228637695,
+        458.6919250488281,
+        37.677555084228516
+      ],
+      "other_text": null,
+      "other_bbox": [
+        163.42218017578125,
+        33.48719024658203,
+        166.31658935546875,
+        33.99119186401367
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        51
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "MOSEI (MAE reduction  better)",
+      "text_bbox": [
+        180.2257537841797,
+        77.25990295410156,
+        330.1773376464844,
+        85.55989837646484
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        77.31409454345703,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        1000,
+        39
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "MELD (WF1 gain  better)",
+      "text_bbox": [
+        180.2257537841797,
+        120.57266235351562,
+        302.0314636230469,
+        128.87266540527344
+      ],
+      "other_text": null,
+      "other_bbox": [
+        260.8149719238281,
+        120.6268539428711,
+        264.5748596191406,
+        126.70245361328125
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        40
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "M3ED (WF1 gain  better)",
+      "text_bbox": [
+        180.2257537841797,
+        163.94793701171875,
+        302.5148620605469,
+        172.24794006347656
+      ],
+      "other_text": null,
+      "other_bbox": [
+        261.2983703613281,
+        164.00213623046875,
+        265.0582580566406,
+        170.07772827148438
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        41
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "-0.33 [-0.54, -0.12]   2/10 wins   Holm p = 0.0586",
+      "text_bbox": [
+        261.3600158691406,
+        176.28590393066406,
+        434.3843994140625,
+        183.18589782714844
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        437.0155029296875,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        1000,
+        36
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "marginal (0.05",
+      "text_bbox": [
+        266.3579406738281,
+        250.35093688964844,
+        367.34808349609375,
+        257.2509460449219
+      ],
+      "other_text": null,
+      "other_bbox": [
+        319.83154296875,
+        250.337158203125,
+        364.47637939453125,
+        256.02276611328125
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        54,
+        55
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "+0.09 [-0.09, +0.26]   6/10 wins   Holm p = 0.6133 n.s.",
+      "text_bbox": [
+        289.72430419921875,
+        200.38327026367188,
+        481.6891784667969,
+        207.28326416015625
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        1000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "-0.04 [-0.36, +0.29]   4/10 wins   Holm p = 0.8242 n.s.",
+      "text_bbox": [
+        291.6685791015625,
+        157.0080108642578,
+        480.3421630859375,
+        163.9080047607422
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        1000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "+0.34 [+0.09, +0.59]   8/10 wins   Holm p = 0.0586",
+      "text_bbox": [
+        314.22686767578125,
+        132.91064453125,
+        497.1251220703125,
+        139.81063842773438
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        499.7215270996094,
+        209.40399169921875
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        1000,
+        32
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "+0.42 [+0.21, +0.63]   10/10 wins   Holm p = 0.0117 **",
+      "text_bbox": [
+        317.33160400390625,
+        188.3345947265625,
+        511.51824951171875,
+        195.23458862304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        1000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "+0.45 [+0.21, +0.70]   10/10 wins   Holm p = 0.0059 ***",
+      "text_bbox": [
+        322.12481689453125,
+        113.63274383544922,
+        519.761474609375,
+        120.53274536132812
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        1000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "p < 0.10, )",
+      "text_bbox": [
+        324.8606262207031,
+        246.85955810546875,
+        367.34808349609375,
+        258.56195068359375
+      ],
+      "other_text": null,
+      "other_bbox": [
+        361.41278076171875,
+        250.337158203125,
+        364.47637939453125,
+        256.02276611328125
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        55
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "+0.51 [+0.27, +0.74]   10/10 wins   Holm p = 0.0059 ***",
+      "text_bbox": [
+        325.40643310546875,
+        101.58405303955078,
+        523.0430908203125,
+        108.48405456542969
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        1000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "+0.67 [+0.49, +0.85]   10/10 wins   Holm p = 0.0059 ***",
+      "text_bbox": [
+        333.83251953125,
+        89.5353775024414,
+        531.4691772460938,
+        96.43537902832031
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        1000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "+0.51 [+0.00, +1.01]   7/10 wins   Holm p = 0.1523 n.s.",
+      "text_bbox": [
+        345.7839050292969,
+        144.95932006835938,
+        541.0400390625,
+        151.85931396484375
+      ],
+      "other_text": null,
+      "other_bbox": [
+        177.98199462890625,
+        79.88063049316406,
+        398.617431640625,
+        209.40399169921875
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        1000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "not significant (p",
+      "text_bbox": [
+        393.59356689453125,
+        250.35093688964844,
+        479.9596862792969,
+        257.2509460449219
+      ],
+      "other_text": null,
+      "other_bbox": [
+        454.6860046386719,
+        251.35147094726562,
+        459.0054016113281,
+        255.3672637939453
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        57
+      ]
+    }
+  ]
+}

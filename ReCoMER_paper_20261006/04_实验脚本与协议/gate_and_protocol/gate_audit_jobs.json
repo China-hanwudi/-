@@ -1,0 +1,152 @@
+[
+  {
+    "name": "mosei_seed7",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed7/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed13",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed13/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed17",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed17/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed23",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed23/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed29",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed29/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed37",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed37/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed43",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed43/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed53",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed53/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed71",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed71/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "mosei_seed101",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/mosei/seed101/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MOSEI/packed"
+  },
+  {
+    "name": "meld_seed7",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed7/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed13",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed13/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed17",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed17/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed23",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed23/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed29",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed29/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed37",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed37/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed43",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed43/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed53",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed53/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed71",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed71/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "meld_seed101",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_crossdataset_20261001/meld/seed101/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/MELD/packed"
+  },
+  {
+    "name": "m3ed_seed7",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed7/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed13",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed13/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed17",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed17/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed23",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed23/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed29",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed29/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed37",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed37/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed43",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed43/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed53",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed53/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed71",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed71/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  },
+  {
+    "name": "m3ed_seed101",
+    "ckpt": "/data/emo/肖田泽科研/模型/model6_innovation_validation_20260930/experiments/revised_gate_confirm/shapley_cc_lam03/seed101/best.pt",
+    "data": "/data/emo/肖田泽科研/数据/M3ED/packed_audio_e2_zh_hubert_large"
+  }
+]

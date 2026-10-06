@@ -1,0 +1,77 @@
+{
+ "43": {
+  "continuation": {
+   "n": 976,
+   "acc_history_on": 0.7131147540983607,
+   "acc_history_off": 0.7100409836065574,
+   "wf1_history_on_mean": 0.454816181634141,
+   "wf1_history_off_mean": 0.45083483914910144,
+   "wf1_deployed": 0.454816181634141
+  },
+  "transition": {
+   "n": 1353,
+   "acc_history_on": 0.5912786400591279,
+   "acc_history_off": 0.5920177383592018,
+   "wf1_history_on_mean": 0.4943480466288467,
+   "wf1_history_off_mean": 0.4963648412461599,
+   "wf1_deployed": 0.4943480466288467
+  },
+  "all": {
+   "n": 2610,
+   "acc_history_on": 0.6490421455938697,
+   "acc_history_off": 0.6482758620689655,
+   "wf1_history_on_mean": 0.5092835501263187,
+   "wf1_history_off_mean": 0.5095037823452314
+  }
+ },
+ "47": {
+  "continuation": {
+   "n": 976,
+   "acc_history_on": 0.7192622950819673,
+   "acc_history_off": 0.7172131147540983,
+   "wf1_history_on_mean": 0.4539359326164222,
+   "wf1_history_off_mean": 0.4527432362198999,
+   "wf1_deployed": 0.4539359326164222
+  },
+  "transition": {
+   "n": 1353,
+   "acc_history_on": 0.5986696230598669,
+   "acc_history_off": 0.597930524759793,
+   "wf1_history_on_mean": 0.5073100996694928,
+   "wf1_history_off_mean": 0.506404027830378,
+   "wf1_deployed": 0.5073100996694928
+  },
+  "all": {
+   "n": 2610,
+   "acc_history_on": 0.6540229885057471,
+   "acc_history_off": 0.6528735632183909,
+   "wf1_history_on_mean": 0.5132343569143589,
+   "wf1_history_off_mean": 0.5122864523628764
+  }
+ },
+ "59": {
+  "continuation": {
+   "n": 976,
+   "acc_history_on": 0.7059426229508197,
+   "acc_history_off": 0.701844262295082,
+   "wf1_history_on_mean": 0.45829920226503884,
+   "wf1_history_off_mean": 0.44925229914374504,
+   "wf1_deployed": 0.45829920226503884
+  },
+  "transition": {
+   "n": 1353,
+   "acc_history_on": 0.5986696230598669,
+   "acc_history_off": 0.5971914264597191,
+   "wf1_history_on_mean": 0.5078797282298204,
+   "wf1_history_off_mean": 0.5065869617165852,
+   "wf1_deployed": 0.5078797282298204
+  },
+  "all": {
+   "n": 2610,
+   "acc_history_on": 0.650191570881226,
+   "acc_history_off": 0.6478927203065135,
+   "wf1_history_on_mean": 0.5154344557666898,
+   "wf1_history_off_mean": 0.5126677315515785
+  }
+ }
+}

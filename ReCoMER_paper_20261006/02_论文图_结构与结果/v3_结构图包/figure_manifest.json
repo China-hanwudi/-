@@ -1,0 +1,91 @@
+[
+  {
+    "name": "01_ReCoMER_overview",
+    "title": "ReCoMER system overview",
+    "status": "code-grounded",
+    "width_mm": 183,
+    "height_mm": 136,
+    "alignment": "NOT APPLICABLE",
+    "box_fit_failures": 0
+  },
+  {
+    "name": "02_M1_closed_loop",
+    "title": "Prediction-path mechanism comparison",
+    "status": "code-grounded",
+    "width_mm": 183,
+    "height_mm": 148,
+    "alignment": "PASS",
+    "box_fit_failures": 0
+  },
+  {
+    "name": "03_M2_contribution_router",
+    "title": "Exact contribution supervision and bounded deployment",
+    "status": "code-grounded",
+    "width_mm": 183,
+    "height_mm": 139,
+    "alignment": "PASS",
+    "box_fit_failures": 0
+  },
+  {
+    "name": "04_M3_history_admission",
+    "title": "Historical selection versus executable hard rejection",
+    "status": "code-grounded",
+    "width_mm": 183,
+    "height_mm": 142,
+    "alignment": "PASS",
+    "box_fit_failures": 0
+  },
+  {
+    "name": "05_cRBEF_reference_structure",
+    "title": "cRBEF reference evidence mechanism",
+    "status": "reference-method reconstruction; v2 expert internals not verified",
+    "width_mm": 183,
+    "height_mm": 125,
+    "alignment": "NOT APPLICABLE",
+    "box_fit_failures": 0
+  },
+  {
+    "name": "06_local_current_fusion",
+    "title": "Candidate-restricted bounded outer fusion",
+    "status": "code-grounded",
+    "width_mm": 183,
+    "height_mm": 140,
+    "alignment": "NOT APPLICABLE",
+    "box_fit_failures": 0
+  },
+  {
+    "name": "07_ReCoMER_results_overview_image2_style",
+    "title": "Formal test comparison, module effects and integrated paired ablations",
+    "status": "exact recorded results; Image2-inspired layout",
+    "source": "results_data_image2_style.json",
+    "formats": ["pdf", "png", "svg", "tiff"]
+  },
+  {
+    "name": "08_ReCoMER_exact_feature_checks_image2_style",
+    "title": "Exact-feature M3ED controls and cRBEF replication",
+    "status": "exact recorded results; supplementary protocol",
+    "source": "results_data_image2_style.json",
+    "formats": ["pdf", "png", "svg", "tiff"]
+  },
+  {
+    "name": "09_ReCoMER_gate_sensitivity_image2_style",
+    "title": "Frozen cRBEF gate-formula sensitivity",
+    "status": "exact formula-probe records; not a continuous hyperparameter sweep",
+    "source": "最终代码/实验结果/ReCoMER_正式测试与消融_20261004/CR_GATE_FORMULA_SENSITIVITY.json",
+    "formats": ["pdf", "png", "svg", "tiff"]
+  },
+  {
+    "name": "10_ReCoMER_modality_pca_image2_style",
+    "title": "Text, audio and visual representation spaces on exact M3ED features",
+    "status": "PCA projection of recorded test features; no invented cross-model comparison",
+    "source": "最终代码/实验结果/ReCoMER_正式测试与消融_20261004/CR17_TEST_FEATURES.npz",
+    "formats": ["pdf", "png", "svg", "tiff"]
+  },
+  {
+    "name": "11_ReCoMER_confusion_matrices_image2_style",
+    "title": "Mean row-normalized confusion structure across formal M3ED seeds",
+    "status": "exact predictions from formal test seeds 43, 47 and 59",
+    "source": "最终代码/实验结果/ReCoMER_正式测试与消融_20261004/full_test/{43,47,59}/PREDICTIONS.npz",
+    "formats": ["pdf", "png", "svg", "tiff"]
+  }
+]

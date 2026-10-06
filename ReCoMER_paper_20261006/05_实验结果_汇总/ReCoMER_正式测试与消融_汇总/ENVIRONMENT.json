@@ -1,0 +1,14 @@
+{
+  "python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+  "packages": {
+    "torch": "2.8.0+cu128",
+    "numpy": "2.2.6",
+    "transformers": "5.15.0",
+    "peft": "0.20.0",
+    "gptqmodel": "7.4.0",
+    "accelerate": "1.14.0",
+    "safetensors": "0.8.0"
+  },
+  "hardware": "NVIDIA GeForce RTX 5090",
+  "code_scope": "all original production code and models preserved"
+}

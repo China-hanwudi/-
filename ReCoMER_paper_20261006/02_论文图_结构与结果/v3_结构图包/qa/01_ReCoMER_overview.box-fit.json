@@ -1,0 +1,66 @@
+[
+  {
+    "text": "I'm fine.",
+    "fits": true
+  },
+  {
+    "text": "T encoder",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "A encoder",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "V encoder",
+    "fits": true
+  },
+  {
+    "text": "$h_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Historical\nadmission\n\n+ residual\nfeedback",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Past dialogue",
+    "fits": true
+  },
+  {
+    "text": "Shapley teacher \u00b7 train only",
+    "fits": true
+  },
+  {
+    "text": "T / A / V",
+    "fits": true
+  },
+  {
+    "text": "cRBEF v2\nExternal frozen predictor",
+    "fits": true
+  },
+  {
+    "text": "local_current\nBounded class correction",
+    "fits": true
+  }
+]

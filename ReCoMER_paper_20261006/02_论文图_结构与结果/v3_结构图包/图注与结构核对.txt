@@ -1,0 +1,63 @@
+ReCoMER 论文结构图包 v3：对象与计算的明确表达
+日期：2026-10-04
+
+交付：六张独立 SVG / PDF / PNG；合并 PDF；六图预览；可复现 Python 绘图源文件。
+主图宽度统一为 183 mm；矢量 PDF 嵌入 TrueType 字体；SVG 保留可编辑文字。
+PNG 是预览文件，正式缩放与排版使用 PDF / SVG。六张图不包含实验数据或模拟性能。
+文本短句、人脸、音频波形和历史气泡是示意图标，并非数据集真实样本。情绪清单显示符号概率，不是测得概率；示例名称不固定类别数或顺序。
+总图将加权特征明确画为 w_m h'_m，最后给出最终预测；内部表征保持数学符号，不赋予没有依据的具体语义。
+图中 M1/M2/M3 是本文三个创新点的便于阅读的编号，不等同于代码里的 use_m1/use_m2/use_m3 实验开关。
+
+01 ReCoMER 总架构
+当前文本、音频、视觉分别编码；每个模态的当前句与历史句共享该模态编码器，三个模态不共用同一套编码权重。
+历史经过候选选择、空选项竞争和当前句级硬准入，形成反馈后的表示。EvidenceRouter 对反馈后的单模态证据重新估计贡献，以有界权重缩放当前 token，联合头产生 MHnoU 预测。
+cRBEF v2 在当前包中作为独立外部预测接口。其预测与 MHnoU 概率构成等权基线，参考预测和相对模态证据进入 local_current 特征与局部校正。
+实线为推理或数据流；虚线教师只参与训练。
+English caption: ReCoMER architecture. MHnoU admits historical evidence before updating current modality representations. A contribution-supervised EvidenceRouter assigns bounded weights to the corrected current tokens, which are processed by the joint head. An independent cRBEF predictor provides complementary predictions and evidence. The local_current module applies a bounded class-wise correction to the equal-probability baseline using matched reference predictions and relative modality evidence. The exact Shapley teacher is used during training only.
+
+02 创新点一：闭环路径对照
+展示三个输出路径：当前与原始历史 token 联合输入；历史反馈后按权重组合 solo logits；历史反馈后重新评估贡献并把加权当前 token 输入 joint head。
+推荐 closed_loop 路径只将三个反馈后的当前模态 token 输入最终 joint head，不重复加入 raw history token。
+这里的“闭环”是历史反馈改变表示后再判断，不是多轮迭代循环。该图解释结构，没有宣称任何一个路径取得统计显著增益。
+English caption: Prediction-path comparison. Direct token assembly allows history to enter the joint head, whereas admitted feedback modifies the current modality representations before prediction. The solo-weighted comparison combines modality logits. The implemented closed_loop path instead reassesses the corrected representations and sends only weighted current tokens to the final joint transformer, avoiding duplicate admission of raw historical tokens.
+
+03 创新点二：Shapley 贡献监督与有界部署
+训练教师对三模态七个非空子集逐样本计算效用，空集合效用固定为零。分类效用为真实类别对数概率；回归效用为负绝对误差。三维 Shapley 向量按样本标准化，监督部署贡献分数。
+EvidenceRouter 使用各模态局部投影、共享均值上下文、与均值的差异，以及单模态预测统计，输出每模态贡献 μ。输入在实现中 detach。
+部署权重中心化且除以最大绝对偏差；图中 λ=0.3 是推荐配置。实际 token 有效性还由模态掩码控制，不能将有界权重公式理解为缺失模态必然参与。
+English caption: Measured contribution supervision and bounded deployment. Exact three-player Shapley values are computed from seven non-empty modality subsets and standardized per sample to supervise the router. At deployment, detached local and cross-modal evidence produces modality scores, which are centered and bounded before weighting the current tokens. Ground-truth labels are required for the teacher but are not used by the deployment router.
+
+04 创新点三：历史选择与硬准入
+初始历史注意力含空候选；24维特征经小校准器预测 keep probability，并修正空候选 logit。随后重新进行真实槽与空候选的竞争。
+硬准入由 keep probability 的阈值比较与 has_history 条件共同决定，而不是由“空候选是否成为 argmax”直接决定。
+句级 gate 决定是否使用历史池化残差；每个历史槽的 attention 决定保留内容的比例。因此这不是对每条历史候选分别做一个硬开关。
+g=0 时历史残差切断；在仍包含 raw history 的比较路径中，相应 token 会被掩蔽。closed_loop 本身始终不把 raw history token 输入最终头。
+空候选概率、keep probability、实际应用的 hard gate 是三种不同量。训练可使用 straight-through 路径；eval 使用实际硬决策。
+English caption: Utility-calibrated historical admission. A small calibrator estimates utterance-level keep probability and modifies the null-candidate score before attention is recomputed. The hard admission gate independently controls the pooled historical residual. Rejection removes the residual and masks raw-history tokens in paths that contain them. Null mass, keep probability and applied admission are distinct quantities.
+
+05 cRBEF 参考方法结构
+依据已有 cRBEF 方法说明重建：冻结文本锚点提供 p0，AV-only 分支提供 pAV，训练类别先验用于计算 log pAV − log π；六维置信统计驱动具有七个参数的线性 sigmoid gate。
+融合 logits 为 log p0 + g*(log pAV − log π)，归一化后输出 cRBEF 概率。
+本图不是从当前 v2 专家训练源码核实的内部网络；最终代码没有该训练器。当前代码中的 CRBEFExternalFusion 是兼容旧单标量适配器，也不能与 cRBEF 专家内部直接画等号。
+该参考图的虚线表示置信特征流，推理时同样执行；不要与总图的“训练监督虚线”混用。
+English caption: Reference cRBEF evidence fusion. A frozen text-anchored predictor is augmented by prior-calibrated AV log evidence. Six confidence statistics drive a linear sigmoid gate with seven parameters. Solid arrows show probability or evidence flow; dashed arrows show confidence-feature flow. This diagram reconstructs the available reference-method description and does not establish the internal architecture of the external v2 expert used by the current integration.
+
+06 当前 local_current 外层融合
+P 的四路概率严格对应 cRBEF、MHnoU、TAV_reference、no_history_reference。C 是三个模态的相对类别证据，不等同于 Shapley 教师。
+23维类别特征分解为6个基础特征、4个全局置信统计、2个 top-class 标记、8个参考相关特征、3个模态证据。
+候选集合由两路 top-two 与等权基线 argmax 联合定义；实际代码以概率阈值实现，遇到并列概率时可包含多于两个类别。
+共享 MLP 为23→32→1；raw 经 tanh 转成有界 log-scale 修正。只在候选集合内重新分配原有概率总量，集合外保持基线 q。
+默认 correction_fraction=0.25、delta_scale=1.5；η 在0到1之间。以上是配置默认值，不是实验选择的证明。
+输出 q + correction_fraction*η*(corrected-q)，最后进行数值截断与归一化。未拟合模型因末层零初始化而返回等权基线。
+校正器训练使用匹配的 train/OOF 预测；校准与测试应分离。图只展示结构与拟合协议，不声称完整系统已完成 OOF 验证。
+English caption: Bounded local_current fusion. Four probability sources and relative modality evidence form 23 features for each class. A shared 23–32–1 network produces bounded corrections within a candidate class set. Candidate probability mass is redistributed while non-candidate classes retain the baseline values. The corrected distribution is blended with the equal-probability baseline under a bounded update. Both source predictors remain frozen; the corrector is fitted on train or OOF predictions and correction strength is selected separately.
+
+结构核对所依据的当前接口
+UGFModel.encode / forward / build_tokens / measure_shapley / deploy_weights
+HistoryAttnPool.attend / apply; HistoryUtilityCalibrator; EvidenceRouter.forward
+local_current_features; local_current_candidate_mask; LocalCurrentFusion.forward; fit_local_current
+
+自动检查
+最终 PDF 字号审计、文字与线条碰撞审计见 qa/；多 panel 图另有渲染后轴框对齐报告。
+box-fit 检查只是文字是否放入模块的辅助验证，不代替逐图视觉与语义核对。
+单一连续示意图没有可比较的多 panel 轴框，其 alignment=NOT APPLICABLE 是正常结果。

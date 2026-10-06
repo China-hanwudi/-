@@ -1,0 +1,66 @@
+{
+  "name": "CRBEF + original uniform_h architecture + local_current",
+  "status": "research_candidate_not_validated_production_winner",
+  "source_instance": "round017 final, seed17; research recipe not exact original deployed checkpoints",
+  "fusion_instance": "round019 teacher_excluded/local_current; six membership draws, fuser seed17",
+  "default_repetition": 0,
+  "default_reason": "First declared membership, for inspecting and running the interface; NOT selected as highest-scoring checkpoint.",
+  "members": [
+    {
+      "repetition": 0,
+      "path": "checkpoints/fusion/r0_teacher_excluded_local_current/model.pt",
+      "eta": 1.0,
+      "fit_rows": 720,
+      "sha256": "883900c92f8296099bb3d18417847311d406dc2422bd6f4b9a257333e33807a3"
+    },
+    {
+      "repetition": 1,
+      "path": "checkpoints/fusion/r1_teacher_excluded_local_current/model.pt",
+      "eta": 0.0,
+      "fit_rows": 720,
+      "sha256": "719bb44be713acf530dd137b4aedb22500b5b7304829d27aaaa1141b7b110b52"
+    },
+    {
+      "repetition": 2,
+      "path": "checkpoints/fusion/r2_teacher_excluded_local_current/model.pt",
+      "eta": 1.0,
+      "fit_rows": 720,
+      "sha256": "e2a79de5b7d438d7aa1f7ab3a94f1f8f9c748075fbb69dcd1420ff34b9812657"
+    },
+    {
+      "repetition": 3,
+      "path": "checkpoints/fusion/r3_teacher_excluded_local_current/model.pt",
+      "eta": 0.5,
+      "fit_rows": 720,
+      "sha256": "efa12d972bd7f2faaea42078084ebf1bc9908d279f81443ef995e11f03e1775e"
+    },
+    {
+      "repetition": 4,
+      "path": "checkpoints/fusion/r4_teacher_excluded_local_current/model.pt",
+      "eta": 1.0,
+      "fit_rows": 720,
+      "sha256": "775b27c173a9c74f4ec728115f0ce195a6f0c721cbaca6c44c493df2b8f947c7"
+    },
+    {
+      "repetition": 5,
+      "path": "checkpoints/fusion/r5_teacher_excluded_local_current/model.pt",
+      "eta": 1.0,
+      "fit_rows": 720,
+      "sha256": "c510a12598f90a94c4032a62f1c892ff45d429dd738996f06c3e9520b5f4ad12"
+    }
+  ],
+  "classes": [
+    "Happy",
+    "Neutral",
+    "Sad",
+    "Disgust",
+    "Anger",
+    "Fear",
+    "Surprise"
+  ],
+  "feature_input_complete": true,
+  "raw_media_feature_extractors_included": false,
+  "upstream_full_system_OOF": false,
+  "novel_method_established": false,
+  "research_automation": "remains paused by user"
+}

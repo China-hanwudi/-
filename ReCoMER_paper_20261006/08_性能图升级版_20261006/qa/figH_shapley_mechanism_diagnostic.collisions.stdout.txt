@@ -1,0 +1,124 @@
+{
+  "pdf": "C:\\Users\\Ф����������ǿ1234\\Desktop\\����\\���Ľṹͼ_v3_�������_20261004\\08_����ͼ������_20261006\\figH_shapley_mechanism_diagnostic.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 19,
+  "text_trace_count": 19,
+  "stroke_path_count": 32,
+  "filled_region_count": 19,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 4,
+    "warn": 0,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "42.96%",
+      "text_bbox": [
+        164.77687072753906,
+        122.1421890258789,
+        191.4539337158203,
+        129.14219665527344
+      ],
+      "other_text": null,
+      "other_bbox": [
+        53.59062576293945,
+        20.043746948242188,
+        255.01499938964844,
+        143.3037567138672
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        16,
+        30
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "44.54%",
+      "text_bbox": [
+        168.7550048828125,
+        92.6541519165039,
+        195.43206787109375,
+        99.6541519165039
+      ],
+      "other_text": null,
+      "other_bbox": [
+        53.59062576293945,
+        20.043746948242188,
+        255.01499938964844,
+        143.3037567138672
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        16,
+        28
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "63.78%",
+      "text_bbox": [
+        217.19757080078125,
+        63.16611862182617,
+        243.8746337890625,
+        70.1661148071289
+      ],
+      "other_text": null,
+      "other_bbox": [
+        53.59062576293945,
+        20.043746948242188,
+        255.01499938964844,
+        143.3037567138672
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        20,
+        26
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "72.06%",
+      "text_bbox": [
+        238.0449981689453,
+        33.67808151245117,
+        264.7220764160156,
+        40.67808151245117
+      ],
+      "other_text": null,
+      "other_bbox": [
+        53.59062576293945,
+        20.043746948242188,
+        255.01499938964844,
+        143.3037567138672
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        22,
+        24
+      ]
+    }
+  ]
+}

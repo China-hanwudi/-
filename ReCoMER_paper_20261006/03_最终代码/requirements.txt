@@ -1,0 +1,4 @@
+# Minimal feature-level inference/training dependencies.
+# Tested GPU environment is recorded with the model results.
+numpy>=1.24
+torch>=2.0

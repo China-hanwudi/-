@@ -1,0 +1,2115 @@
+\n\n===== PAGE 1 =====\nEMOE: Modality-Specific Enhanced Dynamic Emotion Experts
+Yiyang Fang*, Wenke Huang *, Guancheng Wan *, Kehua Su †, Mang Ye †
+National Engineering Research Center for Multimedia Software,
+School of Computer Science, Wuhan University.
+{fangyiyang, wenkehuang, yemang }@whu.edu.cn
+https://github.com/fuyyyyy/EMOE
+Abstract
+Multimodal Emotion Recognition (MER) aims to predict
+human emotions by leveraging multiple modalities, such as
+vision, acoustics, and language. However, due to the het-
+erogeneity of these modalities, MER faces two key chal-
+lenges: modality balance dilemma and modality special-
+ization disappearance. Existing methods often overlook
+the varying importance of modalities across samples in
+tackling the modality balance dilemma. Moreover, main-
+stream decoupling methods, while preserving modality-
+specific information, often neglect the predictive capability
+of unimodal data. To address these, we propose a novel
+model, Modality-Specific Enhanced Dynamic Emotion Ex-
+perts (EMOE), consisting of: (1) Mixture of Modality Ex-
+perts for dynamically adjusting modality importance based
+on sample features, and (2) Unimodal Distillation to re-
+tain single-modality predictive ability within fused features.
+EMOE enables adaptive fusion by learning a unique modal-
+ity weight distribution for each sample, enhancing multi-
+modal predictions with single-modality predictions to bal-
+ance invariant and specific features in emotion recogni-
+tion. Experimental results on benchmark datasets show that
+EMOE achieves superior or comparable performance to
+state-of-the-art methods. Additionally, we extend EMOE to
+Multimodal Intent Recognition (MIR), further demonstrat-
+ing its effectiveness and versatility.
+1. Introduction
+Multimodal Emotion Recognition (MER) is a critical task
+in affective computing that aims to predict human emotions
+by leveraging multiple data modalities, including vision,
+acoustics, and language. Compared to a single modality,
+different modalities provide unique and complementary in-
+*Equal contributions
+†Corresponding Author
+FusionNetwork
+unimodal
+multimodal
+(b) Multimodal Fusion Process
+Importance
+I’m fine
+ModalityModality
+Acoustic
+Language
+Vision
+Acoustic
+………
+…
+Importance
+This movie is absolutely amazing!
+Language
+Vision
+(a) Modality Importance Examples
+Figure 1. Illustration of modality importance examples and multi-
+modal fusion process in MER. (a) illustrates a phenomenon where
+the modality content in different samples affects the varying im-
+portance of each modality during fusion. (In this paper, sample
+refers to the inputs from all modalities for a single instance.) (b)
+shows that during fusion, the model emphasizes multimodal in-
+variant features while disregarding unimodal ability.
+formation [54], which can enhance the prediction of emo-
+tional behaviors. With the development of deep learning
+[1, 19, 20, 59], MER has emerged as a rapidly expanding re-
+search field in affective computing [40], offering numerous
+applications, like intelligent tutoring systems [38], product
+feedback assessment [33], and robotics [31].
+For MER, different modalities within the same video
+segment are often complementary, providing additional
+cues for semantic and emotional disambiguation. How-
+ever, due to differences in how each modality captures and
+expresses information, as well as the varying amounts of
+This CVPR paper is the Open Access version, provided by the Computer Vision Foundation.
+Except for this watermark, it is identical to the accepted version;
+the final published version of the proceedings is available on IEEE Xplore.
+14314
+\n\n===== PAGE 2 =====\nEMOE ：模态特定增强型动态情绪专家
+* * *方一阳 、黄文克 、万冠成 、苏克华†、叶芒†
+国家多媒体软件工程研究中心
+武汉大学计算机科学学院。
+yemang}@whu.edu.cn{ fangyiyang，wenkehuang， https://github.com/fuyyyyy/ EMOE
+摘要
+多模态情感识别（MER）旨在利用视觉、声学及语言
+等多种模态来预测人类情感。然而，由于这些模态的
+异质性，MER 面临两大关键挑战：模态平衡难题与模
+态专业化退化问题。现有方法在应对模态平衡难题
+时，往往忽视了不同样本中各模态的重要性差异。此
+外，主流解耦方法虽保留了模态特定信息，却常忽略
+单模态数据的预测能力。为应对这些问题，我们提出
+了 一 种 新 型 模 型 —— 模 态 特 定 增 强 动 态 情 感 专 家
+（EMOE），该模型包含：(1)基于样本特征动态调整
+模态重要性的模态专家混合机制；(2)单模态蒸馏技
+术，以在融合特征中保留单模态预测能力。 EMOE 通
+过为每个样本学习独特的模态权重分布，实现自适应
+融合，从而将多模态预测与单模态预测相结合，平衡
+情感识别中不变特征与特定特征。在基准数据集上的
+实验结果表明， EMOE 的性能优于或可与当前最先进
+的方法相媲美。此外，我们将 EMOE 扩展至多模态意
+图识别（MIR）任务，进一步证明了其有效性和多功
+能性。
+1. 引言
+多模态情感识别（MER）是情感计算领域的一项关键
+任务，其目标是通过综合利用视觉、声学及语言等多
+种数据模态，来预测人类情感。与单一模态相比，不
+同模态可提供独特且互补的
+*同等贡献 † 通讯作者
+融合网络
+单峰值
+多峰值
+(b) 多模态融合流程
+重要性
+我很好
+模态模态
+声学
+语言
+愿景
+声学
+…
+…
+…
+…
+重要性
+这部电影是
+语言简直太棒了！
+愿景
+(a) 模态重要性示例
+图 1. MER 中模态重要性示例及多模态融合流程示意图。(a)
+展示了不同样本中的模态内容会影响融合过程中各模态的动
+态重要性这一现象。（本文中，样本 指单个实例来自所有模
+态的输入数据。）(b) 表明在融合过程中，模型会侧重提取
+多模态不变特征，同时忽略单模态能力。
+[54]
+[1, 19, 20, 59]
+[40] [38]
+[33] [31
+该方法 可提升情感行为的预测能力。随着深度学习
+技术的发展 ，MER已成为情感计算领域一
+个快速扩展的研究方向 ，并在智能辅导系统 、
+产品反馈评估 及机器人技术 ]等领域展现出广泛
+的应用前景。
+对于 MER 任务而言，同一视频片段中的不同模态
+往往具有互补性，可为语义与情感消歧提供额外线
+索。然而，由于各模态捕获与表达信息的方式存在差
+异，且不同视频片段中各模态所包含的信息量亦不尽
+本 CVPR 论文为开放获取版本，由计算机视觉基金会提供。
+除本水印外，其余内容均与已采纳版本完全一致；会议论文集的最终出版版本可在 IEEE Xplore
+上获取。
+14314\n\n===== PAGE 3 =====\ninformation each modality contains across different video
+segments, there arisesmodality balance dilemma in multi-
+modal learning. Additionally, when different modalities are
+fused, there tends to be a focus on invariant features [30],
+which often leads to the neglect of modality-specific as-
+pects, resulting in modality specialization disappearance.
+Existing relative methods primarily focus on naively in-
+corporating different modality information through popular
+combination techniques [36, 69], such as simple concatena-
+tion [14, 35], tensor fusion [63] and so on. Although pre-
+vious work has attempted to address the modality balance
+dilemma using approaches such as modality imbalance reg-
+ularization [11], multimodal contrastive learning[9], and hi-
+erarchical modality fusion [22, 53], these methods employ a
+unified fusion paradigm to process all samples, which fails
+to account for ❶ the varying importance of different modal-
+ities for distinct samples . In fact, the differences between
+modalities in conveying information are more pronounced
+in emotion recognition compared to other multimodal learn-
+ing tasks. As shown in Fig. 1(a), individuals express emo-
+tions inconsistently across different samples using all three
+modalities. For instance, one person may express emotions
+more through text and tone, while another might use facial
+expressions more predominantly. Consequently, different
+modalities possess varying abilities to predict emotions, and
+the significance of each modality during fusion fluctuates
+based on the specific input. On the other hand, to address
+modality specialization disappearance, related methodolo-
+gies introduce various modality decoupling solutions to pre-
+serve modality-specific information [14, 29, 55], separating
+each modality into invariant and specific spaces before fu-
+sion. However, these methods often ❷ overlook the predic-
+tive capability of unimodal data , as illustrated in Fig. 1(b).
+Although unimodal data may be less comprehensive, its sta-
+bility and reliability can exceed that of multimodal data in
+certain contexts [16–18, 48]. This makes it a valuable addi-
+tion to complex tasks, improving model robustness.
+In this paper, we propose Modality-Specific Enhanced
+Dynamic Emotion Experts (EMOE), which consists of two
+primary components. First, due to ❶, we consider design-
+ing a method that allows the model to autonomously learn
+the modality importance distribution for each sample. In-
+spired by the Mixture of Experts [3, 6], we introduce Mix-
+ture of Modality Experts. Here, a Router Network assesses
+the importance of each modality based on input features,
+treating each modality channel as an expert rather than a
+single network. Additionally, the dominant modalities tend
+to steer the learning process during model training, resulting
+in insufficient training of other modalities [36, 46, 47, 51]
+and an overestimation of the dominant modality’s weight.
+Therefore, we also propose an experts balancing mecha-
+nism based on router entropy loss to optimize the weight
+distribution and address modality dominance. Second, we
+propose Unimodal Distillation with Router Selection to ad-
+dress ❷. In this approach, we incorporate a single-modality
+classification head into the model and calculate the predic-
+tion loss to ensure that the unimodal features possess predic-
+tive capabilities. Subsequently, we implement one-way dis-
+tillation [10, 12, 15, 34] by aligning the multimodal predic-
+tive features with the unimodal features, weighted by their
+importance. This method allows the modality-specific fea-
+tures to guide the learning of multimodal features, ensuring
+that the prediction results consider both modality-invariant
+and modality-specific aspects.
+We conducted relevant experiments to validate this ap-
+proach. Given the similarities between Multimodal Intent
+Recognition (MIR) and MER [43, 57, 58], we applied our
+method to the MIR task. The main contributions of this
+work can be summarized as follows:
+• We tackle the challenge of modality importance varying
+across samples in fusion. Using Mixture of Modality Ex-
+perts, we derive a distinct weight distribution per sample,
+facilitating adaptive multimodal fusion.
+• Recognizing that modality fusion often neglects single
+modality predictive ability, we propose Unimodal Distil-
+lation with Router Selection. This method uses the pre-
+dictive information of each modality to guide the fused
+features, preserving modality-specific characteristics in
+the multimodal fusion.
+• We conduct experiments on various datasets, including
+CMU-MOSI [62], CMU-MOSEI [65], and MIntRec [66],
+and achieve superior or comparable results to state-of-the-
+art methods. We also extend our approach from MER to
+MIR, validating the effectiveness of our method.
+2. Related Works
+2.1. Multimodal Emotion Recognition
+Multimodal emotion recognition (MER) aims to leverage
+multiple data sources—such as visual, acoustic, and text
+modalities—to more accurately identify and classify human
+emotions. Previous work in MER [4, 56, 67, 69] can gen-
+erally be categorized into two main directions: optimizing
+modality fusion and enhancing feature representation.
+The first direction focuses on improving the integration
+of different modalities to ensure effective combination of
+complementary information [69]. Early fusion techniques
+primarily relied on simple operations like feature concate-
+nation [35]. Zadeh et al. [63] later introduced tensor fu-
+sion, which enhanced performance by using trilinear tensor
+decomposition to capture high-order interaction features.
+More recently, the focus has shifted toward neural network-
+based methods, such as MulT [44], which proposes a mul-
+timodal transformer incorporating a cross-modal attention
+mechanism to effectively learn the underlying adaptations
+and correlations between different modalities. However,
+14315
+\n\n===== PAGE 4 =====\n[30]
+[36, 69]
+[14, 35] [63]
+[11] [9] [22, 53]
+1
+[14, 29, 55]
+1
+[16–18, 48]
+现有相对方法主要采用流行组合技术 ，如简
+单拼接 、张量融合 等，来朴素地整合不同
+模态信息。尽管既往研究已尝试通过模态不平衡正则
+化 、多模态对比学习 及分层模态融合 等
+方法应对模态平衡难题，但这些方法均采用统一的融
+合范式处理所有样本，未能考虑❶不同样本中各模态
+的重要性差异 。事实上，相较于其他多模态学习任
+务，在情绪识别任务中，不同模态传递信息的差异更
+为显著。如图 (a)所示，个体在使用全部三种模态时，
+其情绪表达在不同样本间存在不一致性。例如，某个
+体可能更频繁地通过文本与语调表达情绪，而另一个
+体则可能更主要地借助面部表情。因此，不同模态预
+测情感的能力各不相同，且在融合过程中各模态的重
+要性会随具体输入数据而波动。另一方面，为解决模
+态特异性消失问题，相关研究引入了多种模态解耦方
+案，以保留模态特异性信息 ——即在融合
+前将各模态分解为不变空间与特定空间。然而，这些
+方法往往❷ 忽视了单模态数据的预测能力 ，如图 (b)
+所示。尽管单模态数据可能不够全面，但在特定场景
+下，其稳定性与可靠性可超越多模态数据 。
+这使其成为复杂任务的宝贵补充，有助于提升模型的
+鲁棒性。
+❶
+[3, 6]
+[36, 46, 47, 51]
+❷
+[10, 12, 15, 34]
+在本文中，我们提出了模态特异性增强型动态情感
+专家模型（EMOE），该模型包含两个核心组件。首
+先，基于 ，我们考虑设计一种方法，使模型能够自
+主地为每个样本学习模态重要性分布。受混合专家模
+型 的启发，我们引入了模态混合专家模型。在此
+模型中，路由网络根据输入特征评估每个模态的重要
+性，将每个模态通道视为一个“专家”，而非单一网
+络。此外，在模型训练过程中，主导模态往往主导学
+习过程，导致其他模态的训练不足 ，并
+过度高估主导模态的权重。为此，我们还提出了一种
+基于路由熵损失的专家平衡机制，以优化权重分布并
+解决模态主导问题。其次，我们提出了结合路由选择
+的单模态蒸馏方法，以应对 。在本方法中，我们将
+单模态分类头集成至模型中，并计算预测损失，以确
+保单模态特征具备预测能力。随后，我们通过将多模
+态预测特征与单模态特征进行对齐——并根据两者的
+重 要 性 赋 予 相 应 权 重 —— 来 实 施 单 向 蒸 馏
+。该方法使模态特定特征能够引导多模
+态特征的学习，从而确保预测结果同时兼顾模态不变
+性与模态特异性特征。
+[43, 57, 58]
+我们开展了相关实验以验证该方法的有效性。鉴于
+多模态意图识别（MIR）与 MER 之间的相
+似性，我们将本方法应用于 MIR 任务。本研究的主要
+贡献可概括如下：
+• 我们致力于应对融合过程中样本间模态重要性差异这
+一挑战。通过采用“模态专家混合模型”，我们为每
+个样本推导出独特的权重分布，从而实现自适应多模
+态融合。
+• 鉴于模态融合方法往往忽略单一模态的预测能力，我
+们提出了一种基于路由选择的单模态蒸馏方法。该方
+法利用各模态的预测信息来引导融合特征，从而在多
+模态融合过程中保留各模态特有的特性。
+•
+[62] [65] [66]
+我们在多个数据集上进行了实验，包括 CMU- MOSI
+、CMU- MOSEI 以及 MIntRec ，并取得了优
+于或可与当前最先进方法相媲美的结果。我们还将我
+们的方法从 MER 扩展到 MIR，验证了本方法的有效
+性。
+2. 相关作品
+2.1. 多模态情感识别
+[4, 56, 67, 69]
+多模态情绪识别（MER）旨在利用多种数据源——如
+视觉、听觉与文本模态——以更精准地识别并分类人
+类情绪。既往关于 MER 的研究 可大致分
+为两大研究方向：优化模态融合与增强特征表示。
+[69]
+[35]
+第一个研究方向致力于提升不同模态间的融合能
+力，以确保互补信息的有效结合 。早期融合技术主
+要依赖于特征拼接等简单操作 。Zadeh等人 [63]
+[44]
+随
+后引入了张量融合技术，该技术通过采用三线性张量
+分解来捕捉高阶交互特征，从而提升了性能。近年
+来，研究重点已转向基于神经网络的方法，例如 MulT
+，该方法提出了一种多模态Transformer，其中整合
+了跨模态注意力机制，以有效学习不同模态间潜在的
+14315
+相同，因此在多模态学习中会引发模态平衡困境。此
+外，当融合不同模态时，研究往往侧重于提取不变特
+征 ，这常导致忽视模态特异性特征，进而引发模态
+专业化现象的消失。\n\n===== PAGE 5 =====\nthese methods typically apply the same paradigm to all in-
+put samples, neglecting the fact that the importance of each
+modality can vary depending on the specific sample. In a
+different line of research, Hazarika et al. [14] proposed
+decomposing multimodal features into modality-invariant
+and modality-specific components, enabling the learning
+of refined multimodal representations. Subsequent ap-
+proaches addressing modality heterogeneity have primarily
+followed modality decoupling strategies. However, these
+methods often neglect individual modality strengths, while
+adding channels may cause conflicts and redundancies. Our
+method tackles this by dynamically weighting modalities
+and using single modalities to guide fused features, ensur-
+ing a balanced multimodal emotion prediction.
+2.2. Imbalanced multimodal learning
+Recent studies have highlighted the issue of imbalanced
+multimodal learning, where models tend to favor certain
+modalities over others, negatively impacting overall perfor-
+mance [21, 36]. Various strategies have been proposed to
+address this challenge, with the aim of balancing the op-
+timization of individual modalities [8, 27, 49, 50]. Peng
+et al. [36] introduced a gradient modulation strategy that
+dynamically adjusts the contributions of different modali-
+ties during training, thereby reducing the influence of dom-
+inant modalities. However, in this approach, modalities
+with weaker expressive capabilities often hinder the learn-
+ing process of stronger modalities. In response, Wei et al.
+[51] proposed ”Diagnosing and Re-learning,” adaptively re-
+training weaker modalities for better balance. In contrast,
+we tackle the issue from the sample level, recognizing im-
+balances across modalities for specific samples. When a
+dominant modality drives learning, it risks inaccurate pre-
+dictions due to information bias. To solve this, we propose a
+dynamic modality weighting approach to optimize modality
+weights during training, preventing over-reliance on domi-
+nant modalities and preserving the predictive power of each
+modality, thus improving predictions.
+2.3. Mixture-of-Experts
+Mixture-of-Experts (MoE) replicates certain components
+of a network into multiple instances, known as experts
+[5, 23, 24]. Initially proposed to enhance model prediction
+performance, MoE leverages the cooperation and compe-
+tition between multiple expert models. However, activat-
+ing all experts increases computational costs. Sparse MoE
+(SMoE) [26, 28, 42, 70, 71] addresses this by activating
+only some experts, enhancing efficiency. SMoE is used
+in multi-task learning [6] for task-specific expert activation
+and in model compression [28] to cut computational de-
+mands. In multimodal learning, recent efforts replace dense
+layers with MoE structures to lower costs [68] or manage
+missing modalities [61]. Inspired by prior studies, we treat
+networks for different modalities as experts and use a router
+network to learn their importance weights, enhancing data-
+level personalization in multimodal learning.
+3. The Proposed Method
+3.1. Preliminaries
+Following the typical multimodal emotion recognition [14,
+44], our goal is to detect sentiments in videos by leveraging
+multimodal signals. For a given utterance U, the input con-
+tains three sequences of low-level features corresponding to
+language (l), visual (v), and acoustic (a) modalities. These
+sequences are represented as Ul ∈ RTl×dl, Uv ∈ RTv×dv,
+Ua ∈ RTa×da. Here Tm represents the length of the utter-
+ance in modality m (e.g., Tl denotes the number of tokens
+in the language modality), and dm corresponds to the di-
+mensionality of the features for each modality. Given these
+sequences Um, m ∈ {l, v, a}, the primary task is to predict
+the affective orientation of the utterance U. The prediction
+is either from a predefined set of C categories (y ∈ RC) or
+as a continuous intensity variable (y ∈ R).
+3.2. Mixture of Modality Experts
+We consider three modalities: language (L), visual (V), and
+acoustic (A). Initially, three distinct 1D temporal convo-
+lutional layers are used to capture temporal patterns and
+extract raw features for each modality, denoted as Xm ∈
+RTm×dm, where m ∈ {l, v, a}. After this, each modality
+obtains a shallow tensor representation, and a simple en-
+coder fm = Em(Xm) is used to extract the feature infor-
+mation of each modality. Here, fm represents the low-level
+features of the modality, facilitating subsequent learning in
+the router network and modality fusion.
+Router network. In order to obtain importance weights
+for various samples across each modality, we design an ad-
+vanced router network that outputs a refined set of weights
+conditioned on the input. Formally,
+f = [fl, fv, fa],
+W = G(f ; θ) =σ
+
+αi hi(f ) · 1
+t
+
+, (1)
+where [·, ·] denotes feature concatenation, σ means scal-
+ing function (e.g., softmax) and G represents the router
+network, parameterized by θ, composed of multiple linear
+layers interleaved with batch normalization and activation
+functions such. Here, W = {wt, wv, wa} represents the
+weights associated with each modality, dynamically learned
+to capture modality-specific contributions. We introduce
+a temperature value t in the router network to control the
+magnitude of the weights and to allow fine-grained adjust-
+ments for sharper or softer weight distributions. Of par-
+ticular note, in contrast to other MoE models that employ
+single networks as experts, we consider each modality as a
+14316
+\n\n===== PAGE 6 =====\n[14] 本文提出将多模态特征分解为模态
+不变成分与模态特定成分，从而学习到更精细的多模
+态表征。后续针对模态异质性的研究大多采用模态解
+耦策略，但这些方法往往忽视各模态的固有优势，且
+增加通道可能导致冲突与冗余。本方法通过动态加权
+各模态，并利用单一模态引导融合特征，确保多模态
+情感预测的均衡性。
+2.2. 不平衡多模态学习
+[21, 36]
+[8, 27, 49, 50]
+近 期 研 究 强 调 了 多 模 态 学 习 中 存 在 的 不 平 衡 性 问
+题——模型往往倾向于优先使用某些模态而非其他模
+态，从而对整体性能产生负面影响 。为应对这
+一挑战，学界已提出多种策略，旨在平衡对各模态的
+优化 。Peng等人 [36] 提出了一种梯度调
+制策略，可在训练过程中动态调整不同模态的贡献
+度，从而降低主导模态的影响。然而，在该方法中，
+表达能力较弱的模态反而可能阻碍较强模态的学习进
+程。针对这一问题，Wei等人
+[51] 现有研究提出“诊断与再学习”策略，通过自适
+应地重新训练表现较弱的模态来提升模型平衡性。相
+比之下，本研究从样本层面切入，针对特定样本识别
+跨模态的不平衡性。当某一主导模态驱动学习过程
+时，可能因信息偏差导致预测失准。为解决这一问
+题，我们提出一种动态模态加权方法，在训练过程中
+动态优化各模态的权重系数，既避免过度依赖主导模
+态，又保留各模态的预测能力，从而提升整体预测性
+能。
+2.3. 专家混合模型
+[5, 23, 24]
+[26, 28, 42, 70,
+71]
+[6]
+[28]
+[68] [61]
+专家混合网络（MoE）将网络中的特定组件复制为多
+个实例，这些实例被称为“专家” 。MoE最
+初旨在提升模型预测性能，它利用多个专家模型之间
+的协作与竞争机制。然而，激活全部专家会增加计算
+成 本 。 稀 疏 专 家 混 合 网 络 （SMoE）
+通过仅激活部分专家来解决这一问题，从而提升效
+率。SMoE已被应用于多任务学习 中以实现任务特
+定专家激活，以及应用于模型压缩 中以降低计算需
+求。在多模态学习中，近期研究尝试用MoE结构替代
+密集层，以降低计算成本 或处理缺失模态 。受
+既往研究启发，我们将不同模态对应的网络视为“专
+家”，并利用路由网络学习其重要性权重，从而在多
+模态学习中实现数据层面的个性化建模。
+3. 所提出的方法
+3.1. 预备知识
+[14,44]
+Ul dl Uv Ua
+Tm Tl
+dm
+Um
+遵循典型的多模态情感识别 框架，我们的目标
+是通过利用多模态信号来检测视频中的情感倾向。对
+于给定语句U，输入包含三个低层特征序列，分别对
+应语言模态（l）、视觉模态（v）与声学模态（a）。
+这些序列可表示为 ∈ ℝ Tl× 、 ∈ ℝ Tv×dv、 ∈ ℝ
+Ta×da。其中 表示语句在模态m中的长度（例如 代表
+语言模态中的标记数）， 则对应各模态特征的维
+度。给定这些序列 （m∈{l，v，a}），核心任务便
+是预测语句U 的情感倾向。预测结果要么来自预先定
+义的C个类别集合（y ∈ C），要么是一个连续强度变
+量（y ∈）。
+3.2. 多模态专家混合模型
+Xm
+适配性与相关性。然而，这些方法通常对所有输入样
+本采用相同的范式，却忽略了每种模态的重要性可能
+随具体样本而异这一事实。在另一条研究路径中，
+Hazarika等人
+fm = Em
+fm
+我们考虑三种模态：语言(L)、视觉(V)与声学(A)。首
+先，采用三个独立的1D时域卷积层来捕捉各模态的时
+间模式，并提取其原始特征，记为 ∈ ℝ Tm × dm，其
+中m ∈ {l，v，a}。随后，每个模态均获得一个浅层张
+量表示，并采用简单编码器 （Xm）来提取各
+模态的特征信息。此处 表示该模态的低层特征，为
+路由网络及模态融合中的后续学习提供支持。
+路由网络。为了获取每种模态下各样本的重要性权
+重，我们设计了一个先进的路由网络，该网络可根据
+输入生成一组精炼的权重集合。形式化地表述如下：
+f = [fl, fv, fa],
+W = G(f ; θ) = σ
+
+αi hi(f ) · 1
+t
+
+,
+(1)
+[·, ·]
+wt, wv, wa
+其中 表示特征拼接，σ 代表缩放函数（例如 soft-
+max），而G表示路由网络，该网络由θ 参数化，包含
+多个线性层，这些线性层与批量归一化及激活函数交
+替堆叠。此处W={ }表示与每种模态关联的
+权重，这些权重通过动态学习来捕捉模态特有的贡
+献。我们在路由网络中引入温度值t，用以控制权重的
+幅值，并支持对权重分布进行精细调节，从而获得更
+锐利或更柔和的权重分布。特别值得注意的是，与采
+用单一网络作为专家的其他 MoE 模型不同，我们将每
+种模态视为一个
+14316\n\n===== PAGE 7 =====\nThis movie is absolutely amazing!
+Language
+Vision
+Acoustic
+ModalityImportanceRouter Network
+FeatureExtractionFeatureExtraction
+UnimodalFeature
+𝒇𝒍=𝓔𝒍(𝑿𝒍)concat
+𝒇𝒗=𝓔𝒗(𝑿𝒗)
+𝒇𝒂=𝓔𝒂(𝑿𝒂)
+𝑿𝒍
+𝑿𝒂 𝑓$=ℱ(𝑓%,𝑊)
+𝑿𝒗
+W=𝒢𝑓W
+WMultimodalFeature
+Distill
+Positive
+NegativeMultimodalEmbedding
+UnimodalEmbedding
+Fuse
+𝓛!"#
+𝓛$!%&#
+𝓛!'
+logits
+WPC
+𝓛(#$
+PC
+LanguageFeatureVisionFeatureAcousticFeatureFusionFeaturePredictiveCapabilityFeatureFlowWeightDirection
+EXPERTS BALANCE
+𝓛𝐞𝐧𝐭𝐫𝐨𝐩𝐲=𝑁$𝑊(×log	(𝑊()
+Combine
+Eq. (11)
+Eq. (1)
+Eq. (2)
+Figure 2. Architecture illustration of EMOE. ❶ After the encoder, Mixture of Modality Experts passes the features through a router
+network that learns sample-specific weights. These weights guide the fusion of modalities within the multimodal embedding, forming the
+final multimodal feature (Sec. 3.2). ❷ The weights also highlight the significance of each modality, allowing features in the unimodal
+embedding to be prioritized accordingly. Through Unimodal Distillation, critical unimodal feature information is transferred to the multi-
+modal feature, helping retain modality-specific traits (Sec. 3.3).
+distinct expert and compute weights accordingly, enabling
+more specialized and powerful capabilities.
+Dynamic fusion strategy. After obtaining the corre-
+sponding modality weights, fusing the features from differ-
+ent modalities becomes crucial. We design a corresponding
+transformer on the low-level features to extract their high-
+level features f ′
+m, m ∈ {l, v, a}, while also addressing the
+issue of unaligned sequence lengths across different modal-
+ities. Next, we focus the modality fusion methods, illus-
+trated in Fig. 3. As we introduce the importance weights,
+weighted summation is the most intuitive form of fusion:
+fc = F (f ′, W)
+= wl × f ′
+l + wv × f ′
+v + wa × f ′
+a, (2)
+where fc means fused feature. Meanwhile, as many exist-
+ing models rely on concatenation for modality fusion, we
+additionally design an alternative fusion method based on
+feature concatenation to ensure compatibility and enhance
+the generality of our approach:
+fc = F (f ′, W)
+= [wl × f ′
+l , wv × f ′
+v, wa × f ′
+a]. (3)
+This paper adopts summation as the default fusion method
+due to its superior overall performance; further details will
+be discussed in Sec. 4.2. Based on the fused features ob-
+tained in Eq. (2) and Eq. (3), we further use the fused modal-
+ity prediction head to obtain the prediction resultˆy and com-
+pute the loss function using the true result y:
+Lmulti = 1
+n
+nX
+i=1
+|yi − ˆyi|. (4)
+Experts balancing mechanism. Although Mixture of
+Modality Experts learns the basic modal importance capa-
+bilities, there still remains some bias in the learned modal
+weights during specific tests due to the highly individual-
+ized nature of the importance distribution across samples.
+Therefore, we add a single-modality prediction head, to
+calculate the importance of each modality for each sample
+based on the prediction results, which can be formulated as:
+cm = (yi − ˜yi,m)2,
+I = sof tmax( 1
+cm + ϵ ),
+(5)
+where ˜y represents the predicted value for the correspond-
+ing single modality, ϵ denotes a very small positive num-
+ber and I refers to the importance coefficients for the three
+modalities. Since varying modality weights W is designed
+to best fit the importance of different modalities, we com-
+pare it here with the similarity in modality importance:
+Lsim =
+X
+m∈{l,v,a}
+S(wm, Im), (6)
+where S means similarity function. The computed Weight-
+Important Similarity assists in learning the classification ca-
+pabilities of individual modalities, thereby supplementing
+the modality importance information.
+Furthermore, the dynamically weighted fusion approach
+introduces a new problem. In multimodal learning, there is
+often a dominant modality that is more effective at convey-
+ing information and typically performs better in the early
+stages of training. However, due to the weighted fusion, the
+14317
+\n\n===== PAGE 8 =====\n这部电影简直太
+棒了！
+语言
+愿景
+声学
+模态
+重要性
+路由器网络
+特征抽取特征抽取
+单峰特征
+𝒇𝒍 = 𝓔𝒍(𝑿𝒍) 拼接
+𝒇𝒗 = 𝓔𝒗(𝑿𝒗)
+𝒇𝒂 = 𝓔𝒂(𝑿𝒂)
+𝑿𝒍
+𝑿𝒂
+𝑓$ = ℱ(𝑓%, 𝑊)
+𝑿𝒗
+W = 𝒢
+ 𝑓
+W
+W
+多模态特征
+蒸馏
+阳性
+否定
+多模态嵌入
+单模态嵌入
+保险丝
+𝓛!"#
+L 多
+𝓛!'
+logits
+W
+PC
+𝓛(#$
+PC
+语言特性
+视 觉 功
+能
+声学特征
+融 合 功
+能
+预测能力
+流程特性
+重量方向
+专家观点
+𝓛𝐞𝐧𝐭𝐫𝐨𝐩𝐲 = 𝑁 $ 𝑊(× log(wm)
+合并
+Eq. (11)
+Eq. (1)
+Eq. (2)
+3.2
+3.3
+图 2.EMOE 的架构示意图。❶ 在编码器之后，多模态专家混合器将特征通过一个路由网络传递，该网络学习样本特定的权
+重。这些权重引导多模态嵌入中的模态融合，最终形成多模态特征（见第 节）。❷ 这些权重还突出了每个模态的重要性，
+使得单模态嵌入中的特征能够根据重要性进行优先处理。通过单模态蒸馏，关键的单模态特征信息被转移至多模态特征中，有
+助于保留模态特有的属性（见第 节）。
+分别分配专业权重并进行相应计算，从而实现更专业
+化、更强大的功能能力。
+f ′
+m
+3
+动态融合策略。在获得相应模态权重后，融合来自不
+同模态的特征变得至关重要。我们在低层特征上设计
+了一个对应的Transformer网络，以提取其高层特征
+，m ∈ {l，v，a}，同时解决不同模态间序列长度不
+匹配的问题。接下来，我们聚焦于模态融合方法，如
+图 所示。由于引入了重要性权重，加权求和成为最直
+观的融合方式：
+fc = F (f ′, W )
+= wl × f ′
+l + wv × f ′
+v + wa × f ′
+a, (2)
+fc其中 表示融合特征。与此同时，鉴于许多现有模型
+均采用特征拼接来实现模态融合，我们额外设计了一
+种基于特征拼接的替代融合方法，以确保与现有模型
+的兼容性，并增强本方法的普适性：
+fc = F (f ′, W )
+= [wl × f ′
+l , wv × f ′
+v, wa × f ′
+a]. (3)
+4.2 2
+3
+本文采用求和作为默认的融合方法，因其整体性能优
+异；更多细节将在第 节中讨论。基于等式（ ）与
+等式（ ）中获得的融合特征，我们进一步利用融合模
+态预测头获取预测结果y ˆ，并采用真实结果y计算损失
+函数：
+Lmulti = 1
+n
+nX
+i=1
+|yi − ˆyi|. (4)
+多模态专家平衡机制。尽管多模态专家混合模型已习
+得了基础模态重要性表征能力，但由于不同样本间重
+要性分布具有高度个体化特性，在特定测试中，所习
+得的模态权重仍可能存在一定偏差。为此，我们引入
+一个单模态预测头，基于预测结果计算每个样本中各
+模态的重要性，其数学表达式可表述为：
+cm = (yi
+2− y ˜ i，m) ，
+I = sof tmax( 1
+cm + ϵ ),
+(5)
+其中y ˜表示对应单模态的预测值，ϵ代表一个极小的正
+数，而I则指代三种模态的重要性系数。由于调整模态
+权重W 旨在最佳拟合不同模态的重要性，我们在此将
+其与模态重要性的相似性进行比较：
+Lsim =
+X
+m∈{l,v,a}
+S(wm, Im), (6)
+其中S 表示相似性函数。计算得出的 WeightImportant
+Similarity 有助于学习各模态的分类能力，从而补充模
+态重要性信息。
+此外，动态加权融合方法引入了一个新问题。在多
+模态学习中，通常存在一个主导模态——该模态在传
+递信息方面更具优势，且在训练初期往往表现更优。
+然而，由于加权融合机制的作用，模型易过度聚焦于
+14317\n\n===== PAGE 9 =====\nsummation
+fusionw
+w
+features
+ concatenation
+fusionw
+w
+features
+Figure 3. Fusion Methods Comparison (Sec. 3.2). left depicts
+the process of summing multimodal features with varying weights;
+right illustrates concatenating features with distinct weights.
+model tends to focus excessively on this dominant modal-
+ity, neglecting the learning of other modalities, which re-
+sults in an overestimation of its importance. To address
+this issue, we implement a router entropy loss to discour-
+age the model from over-relying on the dominant modal-
+ity, thereby preserving its ability to autonomously activate
+modality-specific experts, as shown below:
+Lentropy = N
+X
+m∈{l,v,a}
+wm × log(wm + ϵ), (7)
+where N represents the number of modality experts, and
+Wm denotes the weight of the corresponding modality ex-
+pert. Finally, we combine it with the similarity between
+modality importance and the weights mentioned to derive
+the MoME balance loss:
+Lbalance = Lentropy + αLsim, (8)
+where α is the scaling factor.
+3.3. Unimodal Distillation with Router Selection
+Owing to the fact that the aforementioned modality fusion
+primarily focuses on the homogeneity of the modalities, the
+modality-specific components may also contain valuable in-
+formation. Therefore, we leverage the predictive capabil-
+ities of single modalities to guide the learning of multi-
+modal features, ensuring that they retain a level of shared
+commonality while simultaneously capturing the predictive
+strengths of modality-specific characteristics.
+As mentioned in Sec 3.2, we introduce a single-modality
+prediction head into the model. Since the multimodal ap-
+proach still relies on the information from each modality,
+we compute the loss function for single modalities to en-
+sure that they also have predictive capabilities:
+Lm = 1
+n
+nX
+i=1
+|yi − ˜yi,m|, m ∈ {l, v, a},
+Luni = (Ll + Lv + La) / 3,
+(9)
+where Lm means the prediction loss for each modality, ˜y
+and y represent the unimodal prediction and the truth value.
+To learn the specific information in each single modal-
+ity, we propose a unidirectional knowledge distillation [15]
+from the multimodal to the unimodal. However, this ap-
+proach may introduce noise from less significant modal-
+ities in certain samples, potentially misguiding the multi-
+modal feature learning. To mitigate this issue, we leverage
+the modality importance weights W learned by the router
+network mentioned in Sec 3.2 to weight different unimodal
+information, emphasizing the modality information that is
+more relevant to the current sample.
+zuni = C(zl, zv, za, W) (10)
+where zuni serves as a combining logit, zm represents uni-
+modal logits, and C refers to combine function. The specific
+form of combination (either summation or concatenation) is
+determined by the preceding multimodal fusion method. In
+this way, the strengthened modality effectively takes a lead-
+ing role in the knowledge distillation:
+Lud = D(zmulti → zuni), (11)
+zmulti means multimodal logits, D represents one-way dis-
+tillation, → is distillation direction. Thus, the multimodal
+prediction results effectively incorporate modality-specific
+information, drawing on the abilities of unimodal.
+3.4. Objective optimization
+We integrate the above losses to reach the full objective:
+Ltotal = Ltask + λ1Lbalance + λ2Lud, (12)
+where Ltask = Lmulti + Luni means the primary task loss, λ1
+control the magnitude of the router network, andλ2 regulate
+the importance of modality-specific components.
+4. Experiments
+Datasets. Considering the generality of our approach for
+both MER and MIR tasks, we evaluate EMOE on the fol-
+lowing three datasets: CMU-MOSI [62], CMU-MOSEI
+[65] and MIntRec [66]. CMU-MOSI consists of 2,199
+monologue video samples, with 1,284 for training, 229 for
+validation, and 686 for testing. Acoustic and visual features
+are sampled at 12.5 Hz and 15 Hz, respectively. CMU-
+MOSEI includes 22,856 YouTube movie review clips, with
+16,326 for training, 1,871 for validation, and 4,659 for test-
+ing. Acoustic and visual features are sampled at 20 Hz and
+15 Hz. Both datasets have sentiment labels ranging from -3
+(highly negative) to 3 ( highly positive). MIntRec contains
+2,224 samples, including 1,334 for training, 445 for valida-
+tion, and 445 for testing. It comprises 11 intent types related
+to emotions or attitudes and 9 related to goal achievement.
+Evaluation Metric. For CMU-MOSI and CMU-MOSEI,
+we follow the previous works [14, 29] to evaluate EMOE
+14318
+\n\n===== PAGE 10 =====\n总和
+融合
+w
+w
+特征
+ 一系列互相关联的事物
+融合
+w
+w
+特征
+3.2图 3.融合方法对比（第 节）。左图 展示了以不同权重对多模态
+特征进行求和的过程；右图 则展示了以不同权重对特征进行拼接
+的过程。
+Lentropy = N
+X
+m∈{l,v,a}
+wm × log(wm + ϵ), (7)
+Wm其中，N 表示模态专家的数量， 表示相应模态专家
+的权重。最后，我们将该值与模态重要性及上述权重
+之间的相似度相结合，从而推导出 MoME 平衡损失函
+数：
+Lbalance = Lentropy + αLsim, (8)
+其中α 为缩放因子。
+3.3. 基于路由器选择的单模蒸馏
+鉴于前述模态融合方法主要聚焦于各模态间的同质
+性，各模态特定组件仍可能包含有价值的信息。为
+此，我们利用单一模态的预测能力来引导多模态特征
+的学习，从而确保这些特征在保留一定程度的共享共
+性特征的同时，仍能捕捉到各模态特定特性的预测优
+势。
+3.2如第 节所述，我们在模型中引入了一个单模态预
+测头。由于多模态方法仍依赖于各模态提供的信息，
+我们仍为单模态计算损失函数，以确保这些单模态同
+样具备预测能力：
+Luni = (Ll + Lv + La) / 3,
+Lm = 1
+n
+nX
+i=1
+|yi − ˜yi,m|, m ∈ {l, v, a},
+(9)
+Lm其中 表示每种模态的预测损失，y ˜ 与y分别代表单
+模态预测结果与真实值。
+[15]
+3.2
+为提取各单一模态中的特定信息，我们提出一种从
+多模态到单模态的单向知识蒸馏 方法。然而，该策
+略可能在某些样本中引入来自相关性较低模态的噪
+声，进而对多模态特征学习产生误导。为缓解此问
+题，我们利用第 节所述路由网络学习到的模态重要
+性权重W ，对不同单模态信息进行加权处理，从而突
+出与当前样本更具相关性的模态信息。
+zuni = C(zl, zv, za，W) (10)
+zuni zm其中 作为组合logit， 表示单模态logit，C则指代
+组合函数。具体的组合方式（求和或拼接）由前述多
+模态融合方法决定。通过这种方式，增强后的模态在
+知识蒸馏过程中有效发挥主导作用：
+Lud = D(zmulti → zuni) ， (11)
+zmulti表示多模态 logits，D代表单向蒸馏，→表示蒸馏
+方向。因此，多模态预测结果能有效整合各模态特定
+信息，并借鉴单模态模型的能力。
+3.4. 目标优化
+我们将上述损失项进行整合，以实现完整目标函数：
+Ltotal = Ltask + λ1Lbalance + λ2Lud, (12)
+Ltask = Lmulti + Luni λ1
+λ2
+其中， 表示主任务损失， 用于控制
+路由网络的规模，而 则用于调节模态特定组件的重要
+性。
+4. 实验
+[62] [65] [66]
+14318
+数据集。鉴于本方法在MER与MIR任务中的普适性，
+我们在以下三个数据集上评估 EMOE ：CMU- MOSI
+、CMU- MOSEI 及 MIntRec 。CMU- MOSI
+包含2,199个独白视频样本，其中1,284个用于训练，
+229个用于验证，686个用于测试。声学特征与视觉特
+征分别以12.5 Hz和15 Hz的频率采样。cmumosei包含
+22,856个YouTube影评片段，其中16,326个用于训练，
+1,871个用于验证，4,659个用于测试。声学特征与视觉
+特征均以20 Hz和15 Hz的频率采样。这两个数据集的
+情 感 标 签 范 围 均 为 -3（ 高 度 负 面 ） 至 3（ 高 度 正
+面 ）。MIntRec包含2,224个样本，其中1,334个用于训
+练，445个用于验证，445个用于测试。该数据集包含
+11种与情感或态度相关的意图类型，以及9种与目标达
+成相关的意图类型。评估指标。对于CMU- MOSI 与
+这一主导模态，而忽视其他模态的学习，从而导致对
+该模态重要性的高估。为解决此问题，我们引入了路
+由器熵损失函数，以抑制模型对主导模态的过度依
+赖，从而保留其自主激活模态特定专家的能力，如下
+所示：\n\n===== PAGE 11 =====\nMethods Setting ACC7 ↑ ACC2 ↑ F1↑ MAE↓
+EF-LSTM [52]
+Aligned
+33.7 75.3 75.2 1.386
+LF-DNN [52] 31.5 78.4 78.3 0.972
+TFN [63] 31.9 78.8 78.9 0.953
+LMF [32] 36.9 78.7 78.7 0.931
+MFN [64] 35.6 78.4 78.4 0.964
+Graph-MFN [65] 31.5 78.1 78.1 0.970
+MCTN [39] 33.1 79.3 80.0 0.963
+MulT [44] 35.1 80.0 80.1 0.936
+MISA [14]∗ 41.8 84.2 84.2 0.754
+Self-MM [60]∗ 45.3 84.9 84.9 0.738
+MMIM [13]∗ 45.8 84.6 84.5 0.717
+DMD [29]∗ 46.2 83.2 83.2 0.721
+EMOE (Ours)∗ 47.7 85.4 85.4 0.710
+EF-LSTM [52]
+Unaligned
+31.0 73.6 74.5 1.420
+LF-DNN [52] 32.5 78.2 78.3 0.987
+TFN [63] 35.3 76.5 76.6 0.995
+LMF [32] 31.1 79.1 79.1 0.963
+MFN [64] 34.7 80.0 80.1 0.971
+Graph-MFN [65] 34.4 79.4 79.2 0.930
+MCTN [39] 31.9 77.1 77.3 1.033
+MulT [44] 33.2 80.3 80.3 0.933
+MISA [14]∗ 43.6 83.8 83.9 0.742
+Self-MM [60]∗ 45.7 83.4 83.6 0.724
+MMIM [13]∗ 45.9 83.4 83.4 0.777
+DMD [29]∗ 46.7 84.0 84.0 0.721
+EMOE (Ours)∗ 47.8 85.4 85.3 0.697
+Table 1. Comparison on CMU-MOSI dataset. Bold is the best.
+ACC7, ACC2 and F1 values are shown as percentages. * indicates
+BERT-based language features. See details in Sec. 4.1.
+by using the metrics: 7-class Accuracy (ACC-7), Binary
+Accuracy (ACC-2), F1-score (F1), and Mean-absolute Er-
+ror (MAE). For MIntRec, we follow the standard protocol
+from the previous work [43, 66], evaluating the results via
+the following metrics: Accuracy (ACC), F1-score (F1), Pre-
+cision (P), and Recall (R) for the intent recognition.
+Implementation details. For CMU-MOSI and CMU-
+MOSEI, we utilize 300-dimensional GloVe language fea-
+tures [37] and 768-dimensional BERT-base-uncased hidden
+states [25]. Facet [2] provides 35 facial action unit visual
+features, and COV AREP [7] offers 74-dimensional acous-
+tic features. On MIntRec, dimensions for text, visual, and
+acoustic features are 768, 256, and 768, respectively. The
+experimental results are obtained by selecting the peak val-
+ues under the same conditions. Optimal values for α, λ1,
+and λ2 are set to 0.1, with a fixed temperature of 0.1 based
+on validation performance. Experiments are conducted on
+a PyTorch framework using an RTX 4090 GPU with 24GB
+memory, with a batch size of 16 and training for 50 epochs.
+4.1. Comparison with the state-of-the-art
+Results on the MER dataset. We compare EMOE with
+the current state-of-the-art MER methods under the same
+dataset settings (unaligned or aligned). Tab. 1 and Tab. 2 il-
+lustrate the comparison on CMU-MOSI and CMU-MOSEI
+datasets, respectively. Obviously, our proposed EMOE
+Methods Setting ACC7 ↑ ACC2 ↑ F1↑ MAE↓
+EF-LSTM [52]
+Aligned
+47.4 78.2 77.9 0.620
+LF-DNN [52] 51.7 83.5 83.1 0.568
+TFN [63] 50.9 80.4 80.7 0.574
+LMF [32] 52.3 84.7 84.5 0.564
+MFN [64] 50.8 84.0 84.0 0.574
+Graph-MFN [65] 51.6 84.6 84.5 0.553
+MFM [45] 49.4 83.5 83.4 0.590
+MulT [44] 52.3 82.7 82.8 0.572
+MISA [14]∗ 52.3 85.3 85.1 0.543
+Self-MM [60]∗ 53.2 84.5 84.3 0.540
+MMIN [13]∗ 50.1 83.6 83.5 0.580
+DMD [29]∗ 52.4 84.8 84.7 0.546
+EMOE (Ours)∗ 54.1 85.3 85.3 0.536
+EF-LSTM [52]
+Unaligned
+46.3 76.1 75.9 0.594
+LF-DNN [52] 52.3 83.7 83.2 0.561
+TFN [63] 50.2 84.2 84.0 0.573
+LMF [32] 51.9 83.8 83.9 0.565
+MFN [64] 51.3 83.2 83.3 0.567
+Graph-MFN [65] 51.8 84.2 84.2 0.568
+MFM [45] 52.0 82.3 82.5 0.572
+MulT [44] 53.2 84.0 84.0 0.556
+MISA [14]∗ 51.0 84.8 84.8 0.557
+Self-MM [60]∗ 52.9 85.3 84.8 0.535
+MMIN [13]∗ 52.6 81.5 81.3 0.578
+DMD [29]∗ 53.1 84.7 84.7 0.536
+EMOE (Ours)∗ 53.9 85.5 85.5 0.530
+Table 2. Comparison on CMU-MOSEI dataset. Bold is the best.
+ACC7, ACC2 and F1 values are shown as percentages. * indicates
+BERT-based language features. See details in Sec. 4.1.
+Methods ACC↑ F1↑ P ↑ R ↑
+MAG-BERT [41] 70.34 68.19 68.31 69.36
+MulT [44] 72.58 69.36 70.73 69.47
+MISA [14] 72.36 70.57 71.24 70.41
+EMOE (Ours) 72.58 70.73 72.08 70.86
+Table 3. Comparison on MIntRec dataset. Bold is the best. ACC,
+F1, P and R values are shown as percentages. Refer to Sec. 4.1.
+achieves better accuracy than other MER methods under
+both unaligned and aligned settings. It is worth high-
+lighting that EMOE exhibits significant improvements in
+ACC7, achieving 1.5% increase over DMD [29] (47.7% vs.
+46.2%) in the aligned setting and a 1.1% increase (47.8%
+vs. 46.7%) in the unaligned setting on the CMU-MOSI
+dataset. Likewise, other metrics also demonstrate varying
+degrees of improvement. For example, the F1 score in-
+creased by 0.5% (85.4% vs. 84.9%) compared to Self-MM
+[60]. Such improvements are also observed on the CMU-
+MOSEI dataset. Compare with these state-of-the-art meth-
+ods that adopt a unified fusion paradigm (such as tensor
+fusion, graph convolutional networks, and gating mecha-
+nisms), the proposed EMOE efficiently learns the impor-
+tance of different modalities for each sample and performs
+dynamic modality fusion accordingly. Further, we also re-
+tain the predictive capability of unimodal models by lever-
+aging unimodal guidance for multimodal feature learning,
+which ensures that multimodal learning accounts for both
+the homogeneity and heterogeneity of the modalities.
+14319
+\n\n===== PAGE 12 =====\n方法 设置 ACC7 ↑ ACC2 ↑ F1 ↑ MAE ↓
+EF-LSTM [52]
+已对齐
+33.7 75.3 75.2 1.386
+LF-DNN [52] 31.5 78.4 78.3 0.972
+TFN [63] 31.9 78.8 78.9 0.953
+LMF [32] 36.9 78.7 78.7 0.931
+MFN [64] 35.6 78.4 78.4 0.964
+Graph-MFN [65] 31.5 78.1 78.1 0.970
+MCTN [39] 33.1 79.3 80.0 0.963
+MulT [44] 35.1 80.0 80.1 0.936
+MISA [14] ∗ 41.8 84.2 84.2 0.754
+[60]自 MM ∗ 45.3 84.9 84.9 0.738
+MMIM [13] ∗ 45.8 84.6 84.5 0.717
+DMD [29] ∗ 46.2 83.2 83.2 0.721
+EMOE (我们的)∗ 47.7 85.4 85.4 0.710
+EF-LSTM [52]
+未对齐
+31.0 73.6 74.5 1.420
+LF-DNN [52] 32.5 78.2 78.3 0.987
+TFN [63] 35.3 76.5 76.6 0.995
+LMF [32] 31.1 79.1 79.1 0.963
+MFN [64] 34.7 80.0 80.1 0.971
+Graph-MFN [65] 34.4 79.4 79.2 0.930
+MCTN [39] 31.9 77.1 77.3 1.033
+MulT [44] 33.2 80.3 80.3 0.933
+MISA [14] ∗ 43.6 83.8 83.9 0.742
+[60]自 MM ∗ 45.7 83.4 83.6 0.724
+MMIM [13] ∗ 45.9 83.4 83.4 0.777
+DMD [29] ∗ 46.7 84.0 84.0 0.721
+[14, 29]
+EMOE (我们的)∗ 47.8 85.4 85.3 0.697
+ACC7,
+ACC2
+4.1
+表1. CMU- MOSI 数据集上的对比结果。加粗表示最佳结果。
+及F1值均以百分比形式呈现。*表示基于BERT的语言特征。详
+见第 节。
+[43, 66]
+[37]
+[25] [2]
+[7]
+λ1 λ2
+CMU- MOSEI ，我们沿用既往研究 的方法，采
+用以下指标评估 EMOE ：7类准确率（ACC-7）、二元
+准确率（ACC-2）、F1值。核心指标（F1）及平均绝
+对误差（MAE）。对于 MIntRec，我们遵循先前研究
+中的标准流程，通过以下指标评估意图识别结
+果：准确率（ACC）、F1值（F1）、精确率(P)和召回
+率(R)。实现细节。对于 CMU- MOSI 和 cmumosei，我
+们采用 300 维 GloVe 语言特征 以及 768 维 BERT-
+base-uncased 隐藏状态 。Facet 提供 35 个面部动
+作单元视觉特征，covarep 则提供 74 维声学特征。
+在 MIntRec 上，文本、视觉及声学特征的维度分别为
+768、256 和 768。实验结果均在相同条件下选取峰值
+获得。α 、 及 的最优值均设为 0.1，且基于验证性
+能固定温度为 0.1。实验均在 PyTorch 框架上完成，使
+用 配 备 24GB 内 存 的 RTX 4090 GPU， 批 量 大 小 为
+16，训练轮数为 50。
+4.1. 与当前最先进技术的对比
+1 2
+方法 设置 ACC7 ↑ ACC2 ↑ F1 ↑ MAE ↓
+EF-LSTM [52]
+已对齐
+47.4 78.2 77.9 0.620
+LF-DNN [52] 51.7 83.5 83.1 0.568
+TFN [63] 50.9 80.4 80.7 0.574
+LMF [32] 52.3 84.7 84.5 0.564
+MFN [64] 50.8 84.0 84.0 0.574
+Graph-MFN [65] 51.6 84.6 84.5 0.553
+MFM [45] 49.4 83.5 83.4 0.590
+MulT [44] 52.3 82.7 82.8 0.572
+MISA [14] ∗ 52.3 85.3 85.1 0.543
+[60]自 MM ∗ 53.2 84.5 84.3 0.540
+MMIN [13] ∗ 50.1 83.6 83.5 0.580
+DMD [29] ∗ 52.4 84.8 84.7 0.546
+EMOE (我们的)∗ 54.1 85.3 85.3 0.536
+EF-LSTM [52]
+未对齐
+46.3 76.1 75.9 0.594
+LF-DNN [52] 52.3 83.7 83.2 0.561
+TFN [63] 50.2 84.2 84.0 0.573
+LMF [32] 51.9 83.8 83.9 0.565
+MFN [64] 51.3 83.2 83.3 0.567
+Graph-MFN [65] 51.8 84.2 84.2 0.568
+MFM [45] 52.0 82.3 82.5 0.572
+MulT [44] 53.2 84.0 84.0 0.556
+MISA [14] ∗ 51.0 84.8 84.8 0.557
+[60]自 MM ∗ 52.9 85.3 84.8 0.535
+MMIN [13] ∗ 52.6 81.5 81.3 0.578
+DMD [29] ∗ 53.1 84.7 84.7 0.536
+EMOE (我们的)∗ 53.9 85.5 85.5 0.530
+ACC
+7, ACC2
+4.1
+表 2. CMU- MOSEI 数据集上的对比结果。加粗表示最佳结果。
+及 F1 值均以百分比形式呈现。* 表示基于 BERT 的语言特
+征。详见第 节。
+方法 ACC ↑ F1 ↑ P ↑ R ↑
+MAG-BERT [41] 70.34 68.19 68.31 69.36
+MulT [44] 72.58 69.36 70.73 69.47
+MISA [14] 72.36 70.57 71.24 70.41
+EMOE (我们的) 72.58 70.73 72.08 70.86
+4.1
+表 3. MIntRec 数据集上的对比结果。加粗部分表示最佳性能。
+ACC、F1、P 及 R 值均以百分比形式呈现。详见第 节。
+ACC7
+[29]
+[60]
+在MER数据集上的实验结果。我们在相同的数据集设
+置下（未对齐或已对齐），将 EMOE 与当前最先进的
+MER方法进行了比较。表 和表 分别展示了在CMU-
+MOSI 和CMU- MOSEI 数据集上的对比结果。显然，
+在我们提出的 EMOE 方法中，无论是在未对齐还是已
+对齐的设置下，其准确率均优于其他MER方法。值得
+注意的是， EMOE 在 指标上取得了显著提升，
+在已对齐设置下，相较于DMD 提升了1.5%（47.7%
+vs. 46.2%）；在CMU- MOSI 数据集上，未对齐设置下
+则提升了1.1%（47.8% vs. 46.7%）。同样，其他指标
+也显示出不同程度的改进。例如，F1分数较Self-MM
+提 升 了 0.5%（85.4% vs. 84.9%）。 这 些 改 进 在
+cmumosei数据集上同样得以体现。与采用统一融合范
+式（如张量融合、图卷积网络和门控机制）的现有最
+先进方法相比，提出的 EMOE 模型能够高效地学习每
+个样本中不同模态的重要性，并据此进行动态模态融
+合。此外，我们通过利用单模态引导进行多模态特征
+学习，保留了单模态模型的预测能力，从而确保多模
+态学习既考虑了模态的同质性，也考虑了模态的异质
+性。
+14319\n\n===== PAGE 13 =====\n0.50.550.60.650.72535455565
+0.010.050.10.51
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬𝐀𝐂𝐂𝟕𝐌𝐀𝐄 0.50.550.60.650.72535455565
+0.010.050.10.51
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬𝐀𝐂𝐂𝟕𝐌𝐀𝐄 0.50.550.60.650.72535455565
+0.010.050.10.51
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬𝐀𝐂𝐂𝟕𝐌𝐀𝐄 0.50.550.60.650.72535455565
+0.050.10.51
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬𝐀𝐂𝐂𝟕𝐌𝐀𝐄
+𝜶 𝝀𝟏 𝒕𝝀𝟐
+Figure 4. Sensitivity analysis on MER datasets. The results are obtained by varying the value of the corresponding hyperparameter, while
+fixing the other hyper-parameters to the values adopted in the experiments. Refer to Sec. 4.2.
+MoME UD ACC7 ACC2 F1 MAE
+43.0 84.3 84.4 0.751
+✓ 46.2 85.2 85.1 0.716
+✓ 45.0 84.8 84.7 0.748
+✓ ✓ 47.7 85.4 85.4 0.710
+Table 4. Ablation study of the key components in EMOE on MOSI
+dataset. Please see Sec. 4.2 for details.
+Methods ACC7 ACC2 F1
+Ours (w/o RE) 45.3 85.1 85.1
+Ours (w/o WIS) 46.8 85.3 85.3
+Ours 47.8 85.4 85.4
+Table 5. Ablation study of the balancing mechanism in EMOE
+on MOSI dataset. RE is router entropy loss, and WIS is weight-
+importance similarity loss. Please see Sec. 4.2 for details.
+Methods Setting ACC7 ACC2 F1
+Sum Aligned 47.7 85.4 85.4
+Concat 45.9 85.5 85.5
+Sum Unaligned 47.8 85.4 85.3
+Concat 47.4 85.4 85.4
+Table 6. Fusion methods comparison on MOSI dataset. Sum is
+summation and concat is concatenation. See Sec. 4.2 for details.
+Results on the MIR dataset. To further validate the per-
+formance of EMOE, we evaluate the effectiveness on the
+MIntRec dataset and report the results in Tab. 3. Com-
+pare with MISA [14], EMOE demonstrates superior perfor-
+mance, particularly with Precision improving from 71.24%
+to 72.08%. Other metrics also show varying degrees of im-
+provement. Actually, similar to MER, MIR involves the
+classification of human intentions. The complexity of the
+human mental world results in varying sample-level im-
+portance across different modalities (language, visual, and
+acoustic) when expressing intentions. Therefore, the pro-
+posed EMOE also achieves outstanding performance when
+applied to the MIR task, outperforming other methods.
+4.2. Ablation study
+Quantitative analysis. We evaluate the effects of EMOE’s
+key components on MOSI dataset, including Mixture of
+Modality Expert (MoME), Unimodal Distillation (UD). The
+results are shown in Tab. 4. Our observations are as follows.
+Firstly, MoME significantly improves the performance
+of MER, indicating that dynamically fusing features from
+different modalities based on their importance at the sam-
+ple level enables the model to better utilize useful infor-
+mation from each modality for multimodal information fu-
+sion. We also conduct ablation experiments on the expert
+balance mechanism in MoME. As illustrated in Tab. 5, the
+weight and contribution similarity loss, along with the rout-
+ing entropy loss, significantly improve the model’s perfor-
+mance. Secondly, we observe that incorporating UD into
+the model yields notable improvements, particularly in the
+ACC7 (47.7% vs. 46.2%) for coarse-grained classification.
+This suggests that during modal fusion, there is often a
+focus on the homogeneity between modalities, which can
+lead to the neglect of valuable coarse-grained classification
+information provided by individual modalities. UD effec-
+tively supplements this modality-specific information, fill-
+ing in the gaps left by fusion alone. Thirdly, to further
+demonstrate the generality of MoME, we conduct compar-
+ative experiments with different fusion strategies (summa-
+tion and concatenation), as shown in Tab. 6. The results of
+different fusion strategies are fairly close, suggesting that
+weighted concatenation can still capture the importance of
+different modalities, achieving dynamic fusion. Therefore,
+our approach can serve, to some extent, as a paradigm for
+solving such problems, with broad applicability.
+Sensitivity analysis. To demonstrate the EMOE’s ro-
+bustness, we conduct the sensitivity analysis for hyper-
+parameters. Since the focus is on the model’s overall per-
+formance, we test multiple settings of the loss parametersα,
+λ1, and λ2, as well as the temperature value t of the routing
+network, under both aligned and unaligned configurations
+on the MOSI and MOSEI datasets. In particular, the sensi-
+tivity analysis is conducted by varying the value of the cor-
+responding hyper-parameter, while fixing the other hyper-
+parameters to the values adopted in the experiments. Fig. 4
+presents the averaged results of different parameters across
+various datasets, illustrating that the overall metrics remain
+relatively stable. Notably, when the temperature value t is
+too low, it causes a catastrophic disproportion in the initial
+weights of the router network, so we excluded those ex-
+treme outliers from the analysis. Overall, it is evident that
+the performance of the proposed approach is not sensitive
+14320
+\n\n===== PAGE 14 =====\n0.5
+0.55
+0.6
+0.65
+0.725
+35
+45
+55
+65
+0.01 0.05 0.1 0.5 1
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬
+𝐀𝐂𝐂𝟕
+𝐌𝐀𝐄
+0.5
+0.55
+0.6
+0.65
+0.725
+35
+45
+55
+65
+0.01 0.05 0.1 0.5 1
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬
+𝐀𝐂𝐂𝟕
+𝐌𝐀𝐄
+0.5
+0.55
+0.6
+0.65
+0.725
+35
+45
+55
+65
+0.01 0.05 0.1 0.5 1
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬
+𝐀𝐂𝐂𝟕
+𝐌𝐀𝐄
+0.5
+0.55
+0.6
+0.65
+0.725
+35
+45
+55
+65
+0.05 0.1 0.5 1
+𝑨𝑪𝑪𝟕 𝑴𝑨𝑬
+𝐀𝐂𝐂𝟕
+𝐌𝐀𝐄
+𝜶 𝝀𝟏 𝒕𝝀𝟐
+4.2图 4. MER 数据集的敏感性分析。结果是通过改变相应超参数的取值而获得，同时将其他超参数固定为实验中采用的取值。详见第 节。
+MoME UD ACC7 ACC2 F1 MAE
+43.0 84.3 84.4 0.751
+✓ 46.2 85.2 85.1 0.716
+✓ 45.0 84.8 84.7 0.748
+✓ ✓ 47.7 85.4 85.4 0.710
+4.2表 4. 在 MOSI 数据集上对 EMOE 关键组件的消融研究。详情请参阅第
+节。
+方法 ACC7 ACC2 F1
+我们的（不含 RE） 45.3 85.1 85.1
+我们的（不含 WIS） 46.8 85.3 85.3
+我们的 47.8 85.4 85.4
+4.2
+表 5. 在 MOSI 数据集上对 EMOE 中平衡机制的消融研究。RE 表示路
+由器熵损失，WIS 表示权重重要性相似性损失。详情请参阅第 节。
+方法 设置 ACC7 ACC2 F1
+总数
+已对齐 47.7 85.4 85.4
+拼接 45.9 85.5 85.5
+总数
+未对齐 47.8 85.4 85.3
+拼接 47.4 85.4 85.4
+4.2
+表 6. 在 MOSI 数据集上对融合方法的比较。Sum 表示求和，concat 表示
+拼接。详见第 节。
+3 [14]
+在MIR数据集上的实验结果。为进一步验证 EMOE 的
+性能，我们在MIntRec数据集上评估了其有效性，并将
+结果列于表 中。与 MISA 相比， EMOE 展现出更
+优的性能，尤其是精确率从71.24%提升至72.08%。其
+他指标也显示出不同程度的提升。实际上，与MER类
+似，MIR同样涉及对人类意图的分类。人类心理世界
+的复杂性导致在表达意图时，不同模态（语言、视觉
+和声学）下的样本级重要性存在差异。因此，所提出
+的 EMOE 在应用于MIR任务时同样取得了卓越性能，
+优于其他方法。
+4.2. 消融研究
+4
+5
+ACC7
+6
+定量分析。我们评估了 EMOE 的关键组件对 MOSI 数
+据集的影响，包括多模态专家混合（MoME）和单模
+态蒸馏（UD）。实验结果如表 所示。我们的观察结
+果如下：首先，MoME显著提升了MER的性能，这表
+明基于样本层面各模态的重要性动态融合特征，可使
+模型更好地利用各模态中的有用信息，从而实现多模
+态信息融合。我们还对MoME中的专家平衡机制进行
+了消融实验。如表 所示，权重与贡献相似性损失以及
+路由熵损失均显著提升了模型性能。其次，我们发现
+将UD引入模型后性能显著提升，尤其在 粗粒度
+分类任务中表现突出（47.7% vs. 46.2%）。这表明在
+模态融合过程中，人们往往过度关注不同模态间的同
+质性，这可能导致忽视单个模态所提供的宝贵粗粒度
+分类信息。UD方法能有效补充这类模态特异性信息，
+弥补仅采用融合策略时留下的空白。第三，为进一步
+验证MoME方法的普适性，我们采用不同融合策略
+（求和与拼接）进行了对比实验，结果如表 所示。不
+同融合策略的实验结果较为接近，表明加权拼接法仍
+能捕捉各模态的重要性，从而实现动态融合。因此，
+本方法可在一定程度上为解决此类问题提供范式参
+考，并具有广泛的适用前景。
+λ1 λ2
+4
+敏感性分析。为验证 EMOE 的鲁棒性，我们对超参数
+进行了敏感性分析。由于研究重点在于模型的整体性
+能，我们在 MOSI 和 MOSEI 数据集上，分别针对对齐
+与非对齐配置，测试了损失参数α 、 与 的多种取
+值，以及路由网络的温度值t。具体而言，敏感性分析
+是通过改变相应超参数的取值，同时将其他超参数固
+定于实验中所采用的值来完成的。图 展示了不同参数
+在各数据集上的平均结果，表明整体指标保持相对稳
+定。值得注意的是，当温度值t过低时，会导致路由网
+络初始权重出现灾难性失衡，因此我们将这些极端异
+常值排除在分析之外。总体而言，所提方法的性能对
+超参数取值并不敏感。
+14320\n\n===== PAGE 15 =====\nNegative Positive
+(a) EMOE (w/o MoME., UD.) (b) EMOE (w/o UD.) (c) EMOE
+Figure 5. T-SNE visualization of feature distribution on MOSI. The lighter the color, the more positive the emotion. EMOE demonstrates
+promising performance in the emotion category. Please refer to Sec. 4.2.
+modality importancemodality weights
+LVA
+LVA samples
+Figure 6. Visualization of modality importance and modality
+weight on MOSI. The ones with frames represent the maximum
+values in each column. Please refer to Sec. 4.2.
+to the values of the hyper-parameters.
+Visualization of feature distribution. To prove the ef-
+fectiveness of the method, we visualize the feature distri-
+butions of EMOE, EMOE (w/o MoME., UD.), and EMOE
+(w/o UD.) in Fig. 5 for a quantitative comparison. Here,
+EMOE (w/o MoME., UD.) refers to the baseline without
+MoME and UD, while EMOE (w/o UD.) represents EMOE
+with only MoME included. To visualize the feature distri-
+bution, we use the test set of the CMU-MOSI dataset as our
+sample. t-SNE projects selected sample features into 2D
+space. Under EMOE (w/o MoME., UD.), the distribution
+is irregular. EMOE (w/o UD.) improves it slightly, while
+EMOE results show a more compact and consistent distri-
+bution aligned with emotional intensity. It is important to
+note that since this is a regression task, the ideal outcome
+is a gradient-like distribution, not clustering. Therefore, our
+results indicate that EMOE enhances feature distinctiveness
+and better predicts emotions.
+Visualization of the modality weight. To demonstrate
+the effectiveness of MoME, we visualize modality impor-
+tance and the modality weights across different samples,
+as shown in Fig. 6. We select some samples from the
+MOSI dataset and measured each modality’s importance
+during fusion based on its single-modality prediction capa-
+bility. We then compare these contributions to the modal-
+ity weights obtained through training. Darker color blocks
+indicate a higher proportion. The results indicate that the
+predictive efficiency of different weights vary across sam-
+ples, underscoring the importance of MoME. Additionally,
+we observe a strong correlation between the learned modal-
+ity weights and their respective predictive efficiency. This
+alignment suggests that the model effectively captures and
+utilizes the relevance of each modality, further demonstrat-
+ing the efficiency and versatility of our proposed method.
+5. Conclusion
+In this paper, we explore the issue of inconsistent modal-
+ity importance across different input samples in the mul-
+timodal emotion recognition task. Our work introduces
+a simple yet effective method for dynamic modality fu-
+sion, namely Modality-Specific Enhanced Dynamic Emo-
+tion Experts (EMOE). We utilize the Mixture of Modality
+Experts to calculate the importance weights of each modal-
+ity, achieving sample-level dynamic fusion. Additionally,
+we guide multimodal learning through single-modal feature
+distillation, endowing the prediction results with modality-
+specific information. The effectiveness of EMOE has been
+thoroughly validated against numerous popular counter-
+parts across various MER and MIR tasks. We hope this
+work will serve as a multimodal fusion paradigm, paving
+the way for future research on related problems.
+Acknowledgement. This research is supported by the Na-
+tional Key Research and Development Project of China
+(2024YFC3308400), the National Natural Science Founda-
+tion of China (Grants 62272354, 62361166629, 62176188,
+623B2080), the Major Project of Science and Technol-
+ogy Innovation of Hubei Province (2024BCA003) and
+the Wuhan University Undergraduate Innovation Research
+Fund Project. The supercomputing system at the Supercom-
+puting Center of Wuhan University supports the numerical
+calculations in this paper.
+14321
+\n\n===== PAGE 16 =====\n否定 阳性
+(a) EMOE (w/o MoME., UD.) (b) EMOE (w/o UD.) (c) EMOE
+4.2图 5. MOSI 上特征分布的 T-SNE 可视化结果。颜色越浅，情感越积极。 EMOE 在情感分类任务中展现出良好的性能。请参阅第 节。
+模态重要性模态权重
+L
+V
+A
+L
+V
+A
+样品
+4.2
+图 6. MOSI 上模态重要性与模态权重的可视化。带有帧数的
+列表示每列中的最大值。请参阅第 节。
+5特征分布可视化。为验证该方法的有效性，我们在图
+中展示了 EMOE 、 EMOE（不含 MoME，UD）以及
+EMOE（不含 UD）的特征分布，以进行定量比较。此
+处， EMOE（不含 MoME，UD）指的是不含 MoME
+和 UD 的基线模型，而 EMOE（不含 UD）则表示仅包
+含 MoME 的 EMOE 模型。为了可视化特征分布，我
+们使用 CMU- MOSI 数据集的测试集作为样本。t-SNE
+将选定的样本特征投影到二维空间中。在 EMOE（不
+含 MoME，UD）下，分布呈现不规则形态； EMOE
+（不含 UD）稍作改善；而 EMOE 的结果则显示出与
+情绪强度更为紧密且一致的紧凑分布。需要注意的
+是，由于这是一个回归任务，理想的输出应为梯度状
+分 布 ， 而 非 聚 类 分 布 。 因 此 ， 我 们 的 结 果 表 明 ，
+EMOE 增强了特征区分度，从而更好地预测情绪。
+6
+模态权重的可视化。为验证 MoME 的有效性，我们展
+示了不同样本中模态重要性及模态权重的可视化结
+果，如图 所示。我们从 MOSI 数据集中选取若干样
+本，并根据各模态的单一模态预测能力，测量其在融
+合过程中的重要性。随后，我们将这些贡献值与通过
+训练获得的模态权重进行对比。颜色较深的色块表示
+占比更高。实验结果表明，不同权重样本间的预测效
+率存在差异，这进一步印证了 MoME 的重要性。此
+外，我们还观察到学习得到的模态权重与其各自预测
+效率之间存在强相关性。这种一致性表明，模型有效
+捕捉并利用了各模态的相关性，从而进一步证明了所
+提方法的高效性与通用性。
+5. 结论
+本文探讨了多模态情感识别任务中不同输入样本间模
+态重要性不一致的问题。我们提出了一种简单而有效
+动态模态融合方法——模态特定增强动态情感专家
+（EMOE）。我们采用模态专家混合模型来计算每个
+模态的重要性权重，从而实现样本级别的动态融合。
+此外，我们通过单模态特征蒸馏引导多模态学习，赋
+予预测结果以模态特定信息。 EMOE 的有效性已在多
+种 MER 和 MIR 任务中与众多主流方法进行了全面验
+证。我们希望这项工作能成为多模态融合的一个范
+式，为相关领域的未来研究开辟道路。
+致谢。本研究获以下项目资助：国家自然科学基金重
+点项目（2024YFC3308400）、国家自然科学基金项目
+（ 项 目 编 号 ：62272354、62361166629、62176188、
+623B2080）、 湖 北 省 科 技 创 新 重 大 专 项 （2024BCA
+003）以及武汉大学本科生创新研究基金项目。本文中
+的数值计算由武汉大学超级计算中心的超级计算系统
+提供支持。
+14321\n\n===== PAGE 17 =====\nReferences
+[1] Yang Bai, Yucheng Ji, Min Cao, Jinqiao Wang, and Mang
+Ye. Chat-based person retrieval via dialogue-refined cross-
+modal alignment. In CVPR, 2025. 1
+[2] Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe
+Morency. Openface: an open source facial behavior anal-
+ysis toolkit. In WACV, pages 1–10. IEEE, 2016. 6
+[3] Weilin Cai, Juyong Jiang, Fan Wang, Jing Tang, Sunghun
+Kim, and Jiayi Huang. A survey on mixture of experts.arXiv
+preprint arXiv:2407.06204, 2024. 2
+[4] Feiyu Chen, Jie Shao, Shuyuan Zhu, and Heng Tao Shen.
+Multivariate, multi-frequency and multimodal: Rethinking
+graph neural networks for emotion recognition in conversa-
+tion. In CVPR, pages 10761–10770, 2023. 2
+[5] Ke Chen, Lei Xu, and Huisheng Chi. Improved learning
+algorithms for mixture of experts in multiclass classification.
+Neural networks, 12(9):1229–1252, 1999. 3
+[6] Tianlong Chen, Xuxi Chen, Xianzhi Du, Abdullah Rashwan,
+Fan Yang, Huizhong Chen, Zhangyang Wang, and Yeqing
+Li. Adamv-moe: Adaptive multi-task vision mixture-of-
+experts. In ICCV, pages 17346–17357, 2023. 2, 3
+[7] Gilles Degottex, John Kane, Thomas Drugman, Tuomo
+Raitio, and Stefan Scherer. Covarep—a collaborative voice
+analysis repository for speech technologies. In ICASSP,
+pages 960–964. IEEE, 2014. 6
+[8] Yunfeng Fan, Wenchao Xu, Haozhao Wang, Junxiao Wang,
+and Song Guo. Pmr: Prototypical modal rebalance for mul-
+timodal learning. In CVPR, pages 20029–20038, 2023. 3
+[9] Yunfeng Fan, Wenchao Xu, Haozhao Wang, Junhong Liu,
+and Song Guo. Detached and interactive multimodal learn-
+ing. In ACM MM, pages 5470–5478, 2024. 2
+[10] Tommaso Furlanello, Zachary Lipton, Michael Tschannen,
+Laurent Itti, and Anima Anandkumar. Born again neural net-
+works. In ICML, pages 1607–1616, 2018. 2
+[11] Itai Gat, Idan Schwartz, Alexander Schwing, and Tamir
+Hazan. Removing bias in multi-modal classifiers: Regular-
+ization by maximizing functional entropies. NeurIPS, 33:
+3197–3208, 2020. 2
+[12] Qiushan Guo, Xinjiang Wang, Yichao Wu, Zhipeng Yu, Ding
+Liang, Xiaolin Hu, and Ping Luo. Online knowledge distil-
+lation via collaborative learning. In CVPR, pages 11020–
+11029, 2020. 2
+[13] Wei Han, Hui Chen, and Soujanya Poria. Improving mul-
+timodal fusion with hierarchical mutual information maxi-
+mization for multimodal sentiment analysis. arXiv preprint
+arXiv:2109.00412, 2021. 6
+[14] Devamanyu Hazarika, Roger Zimmermann, and Soujanya
+Poria. Misa: Modality-invariant and-specific representa-
+tions for multimodal sentiment analysis. In ACM MM, pages
+1122–1131, 2020. 2, 3, 5, 6, 7
+[15] Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. Distilling the
+knowledge in a neural network. InNeurIPS Workshop, 2015.
+2, 5
+[16] Ming Hu, Zeke Xia, Dengke Yan, Zhihao Yue, Jun Xia,
+Yihao Huang, Yang Liu, and Mingsong Chen. Gitfl:
+Uncertainty-aware real-time asynchronous federated learn-
+ing using version control. In RTSS, pages 145–157. IEEE,
+2023. 2
+[17] Wenke Huang, Mang Ye, and Bo Du. Learn from others and
+be yourself in heterogeneous federated learning. In CVPR,
+2022.
+[18] Wenke Huang, Mang Ye, Zekun Shi, and Bo Du. Generaliz-
+able heterogeneous federated cross-correlation and instance
+similarity learning. IEEE PAMI, 2023. 2
+[19] Wenke Huang, Mang Ye, Zekun Shi, He Li, and Bo Du. Re-
+thinking federated learning with domain shift: A prototype
+view. In CVPR, 2023. 1
+[20] Wenke Huang, Mang Ye, Zekun Shi, Guancheng Wan, He
+Li, Bo Du, and Qiang Yang. A federated learning for gen-
+eralization, robustness, fairness: A survey and benchmark.
+IEEE PAMI, 2024. 1
+[21] Yu Huang, Junyang Lin, Chang Zhou, Hongxia Yang,
+and Longbo Huang. Modality competition: What makes
+joint training of multi-modal network fail in deep learn-
+ing?(provably). In ICML, pages 9226–9259. PMLR, 2022.
+3
+[22] Zhijian Huang, Sihao Lin, Guiyu Liu, Mukun Luo, Chao-
+qiang Ye, Hang Xu, Xiaojun Chang, and Xiaodan Liang.
+Fuller: Unified multi-modality multi-task 3d perception via
+multi-level gradient calibration. In ICCV, pages 3502–3511,
+2023. 2
+[23] Robert A Jacobs, Michael I Jordan, Steven J Nowlan, and
+Geoffrey E Hinton. Adaptive mixtures of local experts.Neu-
+ral computation, 3(1):79–87, 1991. 3
+[24] Michael I Jordan and Robert A Jacobs. Hierarchical mixtures
+of experts and the em algorithm. Neural computation, 6(2):
+181–214, 1994. 3
+[25] Jacob Devlin Ming-Wei Chang Kenton and Lee Kristina
+Toutanova. Bert: Pre-training of deep bidirectional trans-
+formers for language understanding. InNAACL, pages 4171–
+4186, 2019. 6
+[26] Dmitry Lepikhin, HyoukJoong Lee, Yuanzhong Xu, Dehao
+Chen, Orhan Firat, Yanping Huang, Maxim Krikun, Noam
+Shazeer, and Zhifeng Chen. Gshard: Scaling giant models
+with conditional computation and automatic sharding. arXiv
+preprint arXiv:2006.16668, 2020. 3
+[27] Hong Li, Xingyu Li, Pengbo Hu, Yinuo Lei, Chunxiao Li,
+and Yi Zhou. Boosting multi-modal model performance with
+adaptive gradient modulation. InICCV, pages 22214–22224,
+2023. 3
+[28] Pingzhi Li, Zhenyu Zhang, Prateek Yadav, Yi-Lin Sung, Yu
+Cheng, Mohit Bansal, and Tianlong Chen. Merge, then com-
+press: Demystify efficient smoe with hints from its routing
+policy. arXiv preprint arXiv:2310.01334, 2023. 3
+[29] Yong Li, Yuanzhi Wang, and Zhen Cui. Decoupled multi-
+modal distilling for emotion recognition. In CVPR, pages
+6631–6640, 2023. 2, 5, 6
+[30] Paul Pu Liang, Yiwei Lyu, Xiang Fan, Jeffrey Tsaw,
+Yudong Liu, Shentong Mo, Dani Yogatama, Louis-Philippe
+Morency, and Ruslan Salakhutdinov. High-modality multi-
+modal transformer: Quantifying modality & interaction het-
+erogeneity for high-modality representation learning. arXiv
+preprint arXiv:2203.01311, 2022. 2
+14322
+\n\n===== PAGE 18 =====\n参考文献
+[1] 杨白、纪宇城、曹敏、王金乔、叶芒。基于对话优化的跨
+模态对齐的对话式人物检索。发表于CVPR，2025年。1
+[2] Tadas Baltrusaitis、Peter Robinson 与 Louis-Philippe
+Morency。《Openface：一个开源面部行为分析工具包》。
+载于WACV ，第 1–10 页。IEEE，2016。6
+[3] 蔡伟林、蒋聚勇、王凡、唐静、金松勋、黄佳怡。《专家
+混 合 模 型 综 述 》。arXiv 预 印 本 arXiv:2407.06204，2024
+年。2
+[4] 陈飞宇、邵杰、朱素媛、沈恒涛。多变量、多频及多模
+态：重新审视图神经网络在对话情感识别中的应用。发表
+于CVPR，第 10761–10770 页，2023 年。2
+[5] Ke Chen，Lei Xu，及 Huisheng Chi. 多类分类中专家混合
+模型改进学习算法。神经网络 ，12(9):1229–1252,1999.3
+[6]
+2
+陈天龙、陈旭西、杜先志、Abdullah Rashwan、杨凡、陈
+辉忠、王章阳及李易青。Adamv-moe：自适应多任务视觉
+专家混合模型。发表于ICCV ，页码17346–17357,2023年。
+，3
+[7] Gilles Degottex、John Kane、Thomas Drugman、Tuomo
+Raitio 及 Stefan Scherer。《Covarep——语音技术协作语音
+分 析 存 储 库 》。 载 于 ICASSP， 第 960–964 页 。IEEE，
+2014。6
+[8] 范云峰、徐文超、王浩昭、王俊晓及郭松。《Pmr：多模
+态学习的典型模态再平衡方法》。发表于CVPR，页码
+20029–20038,2023年。3
+[9] 范云峰、徐文超、王浩昭、刘俊宏与郭松。《分离式与交
+互式多模态学习》。载于 ACM MM，第 5470–5478 页，
+2024 年。2
+[10] Tommaso Furlanello、Zachary Lipton、Michael Tschannen、
+Laurent Itti 及 Anima Anandkumar。《重生神经网络》。载
+于ICML，第 1607–1616 页，2018 年。2
+[11] Itai Gat、Idan Schwartz、Alexander Schwing 与 Tamir
+Hazan。《消除多模态分类器的偏差：通过最大化函数熵
+进行正则化》。NeurIPS，33：3197–3208,2020。2
+[12] 郭秋山、王鑫、吴一超、余志鹏、梁定、胡晓林与罗平。
+基于协作学习的在线知识蒸馏。发表于CVPR，第11020–
+11029页，2020年。2
+[13] Wei Han、Hui Chen 与 Soujanya Poria。通过分层互信息最
+大化提升多模态情感分析中的多模态融合性能。arXiv 预
+印本 arXiv:2109.00412，2021年。6
+[14]
+2 3 5 6
+Devamanyu Hazarika、Roger Zimmermann 与 Soujanya
+Poria。《Misa：用于多模态情感分析的模态不变及模态特
+定表征》。载于 ACM MM，第 1122–1131 页，2020 年。
+、 、 、 、7
+[15]
+2
+Geoffrey Hinton、Oriol Vinyals 与 Jeff Dean。《从神经网
+络中提取知识》。载于 NeurIPS研讨会 ，2015年。 ，5
+[16] Ming Hu、Zeke Xia、Dengke Yan、Zhihao Yue、Jun Xia、
+Yihao Huang、Yang Liu 及 Mingsong Chen。《Gitfl：基于
+版本控制的不确定性感知实时异步联邦学习》。载于RT-
+SS，第 145–157 页。IEEE，2023。2
+[17] 黄文克、叶芒、杜波。《在异构联邦学习中借鉴他人经验
+并保持自我特色》。发表于CVPR，2022。
+[18] 黄文克、叶芒、石泽坤、杜波。可泛化的异构联邦交叉相
+关与实例相似性学习。IEEE PAMI，2023。2
+[19] 黄文克、叶芒、石泽坤、李赫、杜波。重新审视存在域偏
+移的联邦学习：一个初步探索。发表于CVPR，2023年。1
+[20] 黄文克、叶芒、石泽坤、万冠成、李赫、杜波、杨强。
+《用于泛化性、鲁棒性与公平性的联邦学习：综述与基
+准》。IEEE PAMI，2024。1
+[21] 黄宇、林俊阳、周昌、杨红霞、黄龙波。《模态竞争：
+深度学习中文本多模态网络联合训练失败的原因是什么？
+（ 可 证 明 的 ）》。 载 于 ICML， 第 9226–9259 页 。
+PMLR ，2022。3
+[22] 黄志健、林思浩、刘桂玉、罗慕坤、叶超强、徐航、常晓
+军、梁晓丹。Fuller：通过多级梯度校准实现统一多模态
+多 任 务 3D 感 知 。 发 表 于 ICCV ， 第 3502–3511 页 ，2023
+年。2
+[23] Robert A Jacobs、Michael I Jordan、Steven J Nowlan 及
+Geoffrey E Hinton。《 局 部 专 家 的 自 适 应 混 合 模 型 》。
+《神经计算》，第 3 卷第 1 期：79–87 页，1991 年。3
+[24] Michael I. Jordan 与 Robert A. Jacobs。专家层次混合模型
+与 EM 算法。《神经计算》，第 6 卷第 2 期：第 181–214
+页，1994 年。3
+[25] Jacob Devlin、Ming-Wei Chang、Kenton 与 Lee Kristina
+Toutanova。《Bert：用于语言理解的深度双向Transform-
+er 预 训 练 》。 发 表 于 NAACL， 第 4171–4186 页 ，2019
+年。6
+[26] Dmitry Lepikhin、HyoukJoong Lee、Yuanzhong Xu、
+Dehao Chen、Orhan Firat、Yanping Huang、Maxim Krik-
+un、Noam Shazeer 及 Zhifeng Chen。Gshard：利用条件计
+算 与 自 动 分 片 扩 展 巨 型 模 型 。arXiv 预 印 本 arXiv:
+2006.16668，2020年。3
+[27] Hong Li、Xingyu Li、Pengbo Hu、Yinuo Lei、Chunxiao
+Li 与 Yi Zhou。通过自适应梯度调制提升多模态模型性
+能。发表于ICCV ，页码 22214–22224,2023年。3
+[28] 李平志、张振宇、Prateek Yadav、Sung Yi-Lin、程宇、
+Mohit Bansal 与陈天龙。合并再压缩：从路由策略中获取
+启示，揭秘高效 smoe 的实现原理。arXiv 预印本 arXiv:
+2310.01334，2023年。3
+[29]
+2 5
+Yong Li、Yuanzhi Wang 与 Zhen Cui。面向情感识别的解
+耦多模态蒸馏方法。发表于CVPR，页码 6631–6640,2023
+年。 、 、6
+[30] Paul Pu Liang、Yiwei Lyu、Xiang Fan、Jeffrey Tsaw、
+Yudong Liu、Shentong Mo、Dani Yogatama、Louis-
+Philippe Morency 及 Ruslan Salakhutdinov。《高模态多模
+态Transformer：针对高模态表征学习的模态与交互异质性
+量化》。arXiv 预印本 arXiv:2203.01311，2022年。2
+14322\n\n===== PAGE 19 =====\n[31] Zhentao Liu, Min Wu, Weihua Cao, Luefeng Chen, Jianping
+Xu, Ri Zhang, Mengtian Zhou, and Junwei Mao. A facial
+expression emotion recognition based human-robot interac-
+tion system. IEEE/CAA Journal of Automatica Sinica, 4(4):
+668–676, 2017. 1
+[32] Zhun Liu, Ying Shen, Varun Bharadhwaj Lakshmi-
+narasimhan, Paul Pu Liang, Amir Zadeh, and Louis-
+Philippe Morency. Efficient low-rank multimodal fusion
+with modality-specific factors. In ACL, 2018. 6
+[33] Prem Melville, Wojciech Gryc, and Richard D Lawrence.
+Sentiment analysis of blogs by combining lexical knowledge
+with text classification. In KDD, pages 1275–1284, 2009. 1
+[34] Seyed Iman Mirzadeh, Mehrdad Farajtabar, Ang Li, Nir
+Levine, Akihiro Matsukawa, and Hassan Ghasemzadeh. Im-
+proved knowledge distillation via teacher assistant. In AAAI,
+pages 5191–5198, 2020. 2
+[35] Louis-Philippe Morency, Rada Mihalcea, and Payal Doshi.
+Towards multimodal sentiment analysis: Harvesting opin-
+ions from the web. In ICMI, pages 169–176, 2011. 2
+[36] Xiaokang Peng, Yake Wei, Andong Deng, Dong Wang, and
+Di Hu. Balanced multimodal learning via on-the-fly gradient
+modulation. In CVPR, pages 8238–8247, 2022. 2, 3
+[37] Jeffrey Pennington, Richard Socher, and Christopher D Man-
+ning. Glove: Global vectors for word representation. In
+EMNLP, pages 1532–1543, 2014. 6
+[38] Sintija Petrovica, Alla Anohina-Naumeca, and Hazim Kemal
+Ekenel. Emotion recognition in affective tutoring systems:
+Collection of ground-truth data.Procedia Computer Science,
+104:437–444, 2017. 1
+[39] Hai Pham, Paul Pu Liang, Thomas Manzini, Louis-Philippe
+Morency, and Barnab´as P´oczos. Found in translation: Learn-
+ing robust joint representations by cyclic translations be-
+tween modalities. In AAAI, pages 6892–6899, 2019. 6
+[40] Soujanya Poria, Devamanyu Hazarika, Navonil Majumder,
+and Rada Mihalcea. Beneath the tip of the iceberg: Current
+challenges and new directions in sentiment analysis research.
+pages 108–132. IEEE, 2020. 1
+[41] Wasifur Rahman, Md Kamrul Hasan, Sangwu Lee, Amir
+Zadeh, Chengfeng Mao, Louis-Philippe Morency, and Ehsan
+Hoque. Integrating multimodal information in large pre-
+trained transformers. In ACL, page 2359. NIH Public Access,
+2020. 6
+[42] Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy
+Davis, Quoc Le, Geoffrey Hinton, and Jeff Dean. Outra-
+geously large neural networks: The sparsely-gated mixture-
+of-experts layer. arXiv preprint arXiv:1701.06538, 2017. 3
+[43] Kaili Sun, Zhiwen Xie, Mang Ye, and Huyin Zhang. Contex-
+tual augmented global contrast for multimodal intent recog-
+nition. In CVPR, pages 26963–26973, 2024. 2, 6
+[44] Yao-Hung Hubert Tsai, Shaojie Bai, Paul Pu Liang, J Zico
+Kolter, Louis-Philippe Morency, and Ruslan Salakhutdinov.
+Multimodal transformer for unaligned multimodal language
+sequences. In ACL, 2019. 2, 3, 6
+[45] Yao-Hung Hubert Tsai, Paul Pu Liang, Amir Zadeh, Louis-
+Philippe Morency, and Ruslan Salakhutdinov. Learning fac-
+torized multimodal representations. In ICLR, 2019. 6
+[46] An Wang, Xingwu Sun, Ruobing Xie, Shuaipeng Li, Jiaqi
+Zhu, Zhen Yang, Pinxue Zhao, JN Han, Zhanhui Kang, Di
+Wang, et al. Hmoe: Heterogeneous mixture of experts for
+language modeling. arXiv preprint arXiv:2408.10681, 2024.
+2
+[47] Lean Wang, Huazuo Gao, Chenggang Zhao, Xu Sun, and
+Damai Dai. Auxiliary-loss-free load balancing strategy for
+mixture-of-experts. arXiv preprint arXiv:2408.15664, 2024.
+2
+[48] Weiyao Wang, Du Tran, and Matt Feiszli. What makes train-
+ing multi-modal classification networks hard? In CVPR,
+pages 12695–12705, 2020. 2
+[49] Yake Wei and Di Hu. Mmpareto: Boosting multimodal
+learning with innocent unimodal assistance. arXiv preprint
+arXiv:2405.17730, 2024. 3
+[50] Yake Wei, Ruoxuan Feng, Zihe Wang, and Di Hu. Enhancing
+multimodal cooperation via sample-level modality valuation.
+In CVPR, pages 27338–27347, 2024. 3
+[51] Yake Wei, Siwei Li, Ruoxuan Feng, and Di Hu. Diagnosing
+and re-learning for balanced multimodal learning. In ECCV,
+pages 71–86. Springer, 2025. 2, 3
+[52] Jennifer Williams, Steven Kleinegesse, Ramona Comanescu,
+and Oana Radu. Recognizing emotions in video using multi-
+modal dnn feature fusion. In Challenge-HML, pages 11–19,
+2018. 6
+[53] Xinyu Xie, Yawen Cui, Tao Tan, Xubin Zheng, and Zitong
+Yu. Fusionmamba: Dynamic feature enhancement for mul-
+timodal image fusion with mamba. Visual Intelligence, 2(1):
+37, 2024. 2
+[54] Yingjia Xu, Mengxia Wu, Zixin Guo, Min Cao, Mang Ye,
+and Jorma Laaksonen. Efficient text-to-video retrieval via
+multi-modal multi-tagger derived pre-screening. Visual In-
+telligence, 3(1):1–13, 2025. 1
+[55] Dingkang Yang, Shuai Huang, Haopeng Kuang, Yangtao Du,
+and Lihua Zhang. Disentangled representation learning for
+multimodal emotion recognition. In ACM MM, pages 1642–
+1651, 2022. 2
+[56] Dingkang Yang, Zhaoyu Chen, Yuzheng Wang, Shunli
+Wang, Mingcheng Li, Siao Liu, Xiao Zhao, Shuai Huang,
+Zhiyan Dong, Peng Zhai, et al. Context de-confounded emo-
+tion recognition. In CVPR, pages 19005–19015, 2023. 2
+[57] Qu Yang, Mang Ye, and Dacheng Tao. Synergy of sight
+and semantics: visual intention understanding with clip. In
+ECCV, pages 144–160. Springer, 2024. 2
+[58] Qu Yang, Qinghongya Shi, Tongxin Wang, and Mang Ye.
+Uncertain multimodal intention and emotion understanding
+in the wild. In CVPR, 2025. 2
+[59] Mang Ye, Jianbing Shen, Gaojie Lin, Tao Xiang, Ling
+Shao, and Steven CH Hoi. Deep learning for person re-
+identification: A survey and outlook. IEEE transactions on
+pattern analysis and machine intelligence, 44(6):2872–2893,
+2021. 1
+[60] Wenmeng Yu, Hua Xu, Ziqi Yuan, and Jiele Wu. Learning
+modality-specific representations with self-supervised multi-
+task learning for multimodal sentiment analysis. In AAAI,
+pages 10790–10797, 2021. 6
+14323
+\n\n===== PAGE 20 =====\n[31] 刘振涛、吴敏、曹卫华、陈乐峰、徐建平、张瑞、周梦天、
+毛俊伟。基于面部表情情绪识别的人机交互系统。IEEE/CAA
+Journal of Automatica Sinica，4(4): 668–676,2017.1
+[32] Zhun Liu，Ying Shen，Varun Bharadhwaj Lakshminarasimh-
+an，Paul Pu Liang，Amir Zadeh，及 LouisPhilippe Morency。
+基于模态特定因子的高效低秩多模态融合。发表于ACL，
+2018。6
+[33] Prem Melville、Wojciech Gryc 与 Richard D. Lawrence。通过
+将词汇知识与文本分类相结合，对博客进行情感分析。载于
+KDD，第 1275–1284 页，2009 年。1
+[34] Seyed Iman Mirzadeh、Mehrdad Farajtabar、Ang Li、Nir
+Levine、Akihiro Matsukawa 及 Hassan Ghasemzadeh。《基于
+教师助手的知识蒸馏方法改进》。发表于AAAI，第 5191–
+5198 页，2020 年。2
+[35] Louis-Philippe Morency、Rada Mihalcea 与 Payal Doshi。《迈
+向多模态情感分析：从网络中提取观点》，载于ICMI，第
+169–176 页，2011 年。2
+[36]
+2
+彭小康、魏亚克、邓安东、王东、胡迪。基于实时梯度调制
+的平衡多模态学习。发表于CVPR，第 8238–8247 页，2022
+年。 ，3
+[37] Jeffrey Pennington、Richard Socher 与 Christopher D.
+Manning。《Glove：词表示的全球向量》。载于EMNLP，第
+1532–1543 页，2014 年。6
+[38] Sintija Petrovica、Alla Anohina-Naumeca 及 Hazim Kemal
+Ekenel。情感化辅导系统中的情感识别：真实标注数据集。
+Proceedia Computer Science，104:437–444,2017.1
+[39] Hai Pham、Paul Pu Liang、Thomas Manzini、Louis-Philippe
+Morency 及 Barnab‘as P’oczos。译本见：《通过模态间循
+环平移学习鲁棒联合表示》，载于AAAI，第 6892–6899 页，
+2019 年。6
+[40] Soujanya Poria、Devamanyu Hazarika、Navonil Majumder 及
+Rada Mihalcea。《冰山之下：情感分析研究的当前挑战与新
+方向》。第 108–132 页。IEEE，2020。1
+[41] Wasifur Rahman、Md Kamrul Hasan、Sangwu Lee、Amir
+Zadeh、Chengfeng Mao、Louis-Philippe Morency 及 Ehsan
+Hoque。《在大型预训练Transformer中整合多模态信息》。
+InACL，第2359页。NIH Public Access，2020。6
+[42] Noam Shazeer、Azalia Mirhoseini、Krzysztof Maziarz、Andy
+Davis、Quoc Le、Geoffrey Hinton 与 Jeff Dean。《异常庞大
+的神经网络：稀疏门控专家混合层》。arXiv 预印本 arXiv:
+1701.06538，2017年。3
+[43]
+2
+Sun Kaili、Xie Zhiwen、Ye Mang 与 Zhang Huyin。面向多模
+态意图识别的上下文增强全局对比度方法。发表于CVPR，
+第26963–26973页，2024年。 ，6
+[44]
+2 3
+Yao-Hung Hubert Tsai、Shaojie Bai、Paul Pu Liang、J Zico
+Kolter、Louis-Philippe Morency 及 Ruslan Salakhutdinov。 面
+向 非 对 齐 多 模 态 语 言 序 列 的 多 模 态 Transformer。 发 表 于
+ACL，2019。 、 、6
+[45] Yao-Hung Hubert Tsai、Paul Pu Liang、Amir Zadeh、
+LouisPhilippe Morency 及 Ruslan Salakhutdinov。《学习分解
+式多模态表示》。载于ICLR，2019。6
+[46] An Wang, Xingwu Sun, Ruobing Xie, Shuaipeng Li, Jiaqi Zhu,
+Zhen Yang, Pinxue Zhao, JN Han, Zhanhui Kang, Di Wang,等.
+Hmoe:用于语言建模的异构专家混合模型.arXiv 预印本 ar-
+Xiv:2408.10681,2024年.2
+[47] Lean Wang、Huazuo Gao、Chenggang Zhao、Xu Sun 与
+Damai Dai。面向混合专家模型的无辅助损失负载均衡策
+略。arXiv 预印本 arXiv:2408.15664，2024年。2
+[48] 王伟瑶、Du Tran 与 Matt Feiszli。《多模态分类网络训练的
+难点是什么？》发表于CVPR，第 12695–12705 页，2020
+年。2
+[49] Yake Wei 与 Di Hu。《Mmpareto：利用无害单模态辅助提
+升 多 模 态 学 习 性 能 》。arXiv 预 印 本 arXiv:2405.17730，
+2024年。3
+[50] 魏亚克、冯若轩、王子禾、胡迪。通过样本级模态评估增
+强多模态协作。发表于CVPR，页码 27338–27347,2024年。
+3
+[51]
+2
+魏岳、李思伟、冯若萱、胡迪。《平衡多模态学习的诊断
+与重学习》。载于ECCV ，第 71–86 页。Springer，2025。
+，3
+[52] Jennifer Williams、Steven Kleinegesse、Ramona Comanescu
+与 Oana Radu。利用多模态深度神经网络特征融合从视频中
+识别情感。载于Challenge- HML，第 11–19 页，2018 年。6
+[53] 谢新宇、崔亚文、谭涛、郑旭斌及余子彤。Fusionmamba：
+基于Mamba的多模态图像融合动态特征增强方法。Visual
+Intelligence，2(1): 37,2024。2
+[54] 徐英佳、吴梦霞、郭子欣、曹敏、叶芒及 Jorma Laakson-
+en。基于多模态多标签衍生预筛选的高效文本至视频检
+索。Visual Intelligence，3(1):1–13,2025.1
+[55] 杨丁康、黄帅、匡浩鹏、杜阳涛、张立华。面向多模态情
+感识别的解耦表示学习。载于 ACM MM，第 1642–1651
+页，2022 年。2
+[56] Dingkang Yang, Zhaoyu Chen, Yuzheng Wang, Shunli Wang,
+Mingcheng Li, Siao Liu, Xiao Zhao, Shuai Huang, Zhiyan
+Dong, Peng Zhai, 等.《 上 下 文 去 混 淆 情 绪 识 别 》. 发 表 于
+CVPR,第 19005–19015 页,2023 年.2
+[57] Qu Yang，Mang Ye，及 Tao Dacheng. 视觉与语义的协同作
+用：基于视频片段的目标理解。载于ECCV ，第 144–160
+页。Springer，2024。2
+[58] Qu Yang，Qinghongya Shi，Tongxin Wang， 及 Mang Ye.
+真实场景下不确定多模态意图与情感理解研究。发表于
+CVPR，2025年。2
+[59] Mang Ye、Jianbing Shen、Gaojie Lin、Tao Xiang、Ling
+Shao 及 Steven CH Hoi。《基于深度学习的人体重识别：综
+述 与 展 望 》。IEEE Transactions on Pattern Analysis and
+Machine Intelligence，44(6):2872–2893,2021。1
+[60] Yu Wenmeng，Xu Hua，Yuan Ziqi，Wu Jiele. 基于自监督
+多任务学习的多模态情感分析中模态特定表征学习。发表
+于AAAI，第 10790–10797 页，2021 年。6
+14323\n\n===== PAGE 21 =====\n[61] Sukwon Yun, Inyoung Choi, Jie Peng, Yangfan Wu, Jingx-
+uan Bao, Qiyiwen Zhang, Jiayi Xin, Qi Long, and Tian-
+long Chen. Flex-moe: Modeling arbitrary modality com-
+bination via the flexible mixture-of-experts. arXiv preprint
+arXiv:2410.08245, 2024. 3
+[62] Amir Zadeh, Rowan Zellers, Eli Pincus, and Louis-Philippe
+Morency. Multimodal sentiment intensity analysis in videos:
+Facial gestures and verbal messages. IEEE Intelligent Sys-
+tems, 31(6):82–88, 2016. 2, 5
+[63] Amir Zadeh, Minghai Chen, Soujanya Poria, Erik Cambria,
+and Louis-Philippe Morency. Tensor fusion network for mul-
+timodal sentiment analysis. In EMNLP, 2017. 2, 6
+[64] Amir Zadeh, Paul Pu Liang, Navonil Mazumder, Soujanya
+Poria, Erik Cambria, and Louis-Philippe Morency. Memory
+fusion network for multi-view sequential learning. In AAAI,
+2018. 6
+[65] AmirAli Bagher Zadeh, Paul Pu Liang, Soujanya Poria, Erik
+Cambria, and Louis-Philippe Morency. Multimodal lan-
+guage analysis in the wild: Cmu-mosei dataset and inter-
+pretable dynamic fusion graph. In ACL, pages 2236–2246,
+2018. 2, 5, 6
+[66] Hanlei Zhang, Hua Xu, Xin Wang, Qianrui Zhou, Shaojie
+Zhao, and Jiayan Teng. Mintrec: A new dataset for multi-
+modal intent recognition. In ACM MM, pages 1688–1697,
+2022. 2, 5, 6
+[67] Sitao Zhang, Yimu Pan, and James Z Wang. Learning emo-
+tion representations from verbal and nonverbal communica-
+tion. In CVPR, pages 18993–19004, 2023. 2
+[68] Xueliang Zhao, Mingyang Wang, Yingchun Tan, and Xianjie
+Wang. Tgmoe: A text guided mixture-of-experts model for
+multimodal sentiment analysis. IJACSA, 15(8), 2024. 3
+[69] Linan Zhu, Zhechao Zhu, Chenwei Zhang, Yifei Xu, and Xi-
+angjie Kong. Multimodal sentiment analysis based on fusion
+methods: A survey. Information Fusion, 95:306–325, 2023.
+2
+[70] Xingkui Zhu, Yiran Guan, Dingkang Liang, Yuchao Chen,
+Yuliang Liu, and Xiang Bai. Moe jetpack: From dense
+checkpoints to adaptive mixture of experts for vision tasks.
+arXiv preprint arXiv:2406.04801, 2024. 3
+[71] Yun Zhu, Nevan Wichers, Chu-Cheng Lin, Xinyi Wang,
+Tianlong Chen, Lei Shu, Han Lu, Canoee Liu, Liangchen
+Luo, Jindong Chen, et al. Sira: Sparse mixture of low rank
+adaptation. arXiv preprint arXiv:2311.09179, 2023. 3
+14324
+\n\n===== PAGE 22 =====\n[61] 尹思宽、崔仁英、彭杰、吴阳凡、包静轩、张启雯、辛佳
+怡、龙琪、陈天龙。Flex-moe：通过柔性专家混合模型实
+现 任 意 模 态 组 合 建 模 。arXiv 预 印 本 arXiv:2410.08245，
+2024年。3
+[62]
+2
+Amir Zadeh、Rowan Zellers、Eli Pincus 与 Louis-Philippe
+Morency。视频中的多模态情感强度分析：面部表情与言
+语信息。IEEE Intelligent Systems，31(6):82–88,2016。 ，5
+[63]
+2
+Amir Zadeh、Minghai Chen、Soujanya Poria、Erik Cambria
+及 Louis-Philippe Morency。用于多模态情感分析的张量融
+合网络。发表于EMNLP，2017年。 ，6
+[64] Amir Zadeh、Paul Pu Liang、Navonil Mazumder、Soujanya
+Poria、Erik Cambria 及 Louis-Philippe Morency。面向多视
+图序列学习的记忆融合网络。发表于AAAI，2018年。6
+[65]
+2 5
+AmirAli Bagher Zadeh、Paul Pu Liang、Soujanya Poria、
+Erik Cambria 与 Louis-Philippe Morency。《真实场景下的
+多模态语言分析：Cmu-mosei 数据集与可解释动态融合
+图》。载于ACL，第 2236–2246 页，2018 年。 、 、6
+[66]
+2 5
+张汉雷、徐华、王鑫、周倩瑞、赵绍杰、滕佳延。Mintr-
+ec： 一 个 用 于 多 模 态 意 图 识 别 的 新 数 据 集 。 载 于 ACM
+MM，第1688–1697页，2022年。 、 、6
+[67] 张思涛、潘亦木、James Z Wang。从言语与非言语交流中
+学习情绪表征。发表于CVPR，第 18993–19004 页，2023
+年。2
+[68] 赵雪亮、王明阳、谭英春、王贤杰。Tgmoe：一种用于多
+模 态 情 感 分 析 的 文 本 引 导 专 家 混 合 模 型 。IJACSA，15
+(8)，2024。3
+[69] 朱林安、朱哲超、张晨伟、徐一飞、孔向杰。基于融合方
+法的多模态情感分析：综述。Information Fusion，95:306–
+325,2023。2
+[70] Xingkui Zhu、Yiran Guan、Dingkang Liang、Yuchao
+Chen、Yuliang Liu 及 Xiang Bai。《Moe jetpack：从密集
+检查点到视觉任务的自适应专家混合》。arXiv 预印本
+arXiv:2406.04801，2024年。3
+[71] Yun Zhu, Nevan Wichers, Chu-Cheng Lin, Xinyi Wang,
+Tianlong Chen, Lei Shu, Han Lu, Canoee Liu, Liangchen Luo,
+Jindong Chen,等.Sira:低秩自适应的稀疏混合模型.arXiv 预
+印本 arXiv:2311.09179,2023年.3
+14324

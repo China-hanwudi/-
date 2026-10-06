@@ -1,0 +1,21 @@
+{
+  "created_local_date": "2026-10-02",
+  "request": "Evaluate the modified Innovation 2 on all main datasets and additional available datasets; inspect strong representations and same-task SOTA comparability",
+  "main_confirmations": ["MOSEI", "MELD", "M3ED"],
+  "seeds": [7, 13, 17, 23, 29, 37, 43, 53, 71, 101],
+  "pilot_seeds": [17, 29, 43],
+  "variants": ["uniform", "constant_task", "mlp_task", "evidence_task"],
+  "formula_constraints": "Original exact-Shapley measurement and centered bounded weights unchanged; bounded_lambda=0.3 for all gate variants",
+  "training": "Frozen uniform base; 20 epochs AdamW lr=0.001, batch=256; gate task objective + 0.3 Shapley MSE + 0.1 pairwise ranking; valid SWA(3) selection",
+  "planned_additional_screens": ["CMU-MOSI", "CH-SIMS_v2"],
+  "strong_feature_candidates": ["MOSEI_full/packed", "MOSEI_textQwen_wavlm/packed", "MELD_robertaFT/packed", "M3ED_textRobertaFT/packed"],
+  "strong_feature_admission": "Require same train/valid sample IDs and labels versus corresponding reference pack, compatible masks/history, and documented feature provenance; no test tensor reads",
+  "screen_seeds": [17, 29, 43],
+  "new_uniform_base_budget": "30 epochs maximum; original trainer defaults and valid-only early stopping; no feature-specific hyperparameter search",
+  "primary_cls_metric": "weighted_f1",
+  "primary_reg_metric": "mae",
+  "uncertainty_scope": "Seed variation on a fixed valid split, not sample/population generalization; report pilot and nonpilot separately",
+  "test_read": false,
+  "sota_claim_policy": "Never compare validation scores to published test scores as a SOTA win; distinguish pooled/history versus sequence features and published from reproduced results",
+  "resource_policy": "Use only currently free GPU0; do not interfere with GPUs1-7"
+}

@@ -1,0 +1,46 @@
+{
+  "source_note": "All values are transcribed from the frozen ReCoMER test and module-isolation records. Positive module effect means higher WF1 or lower MAE.",
+  "main_m3ed_test": [
+    {"model": "MHnoU", "wf1": 45.43, "sd": 1.62},
+    {"model": "AV", "wf1": 48.71, "sd": 0.0},
+    {"model": "TAV", "wf1": 57.03, "sd": 0.0},
+    {"model": "Equal-weight", "wf1": 57.39, "sd": 0.37},
+    {"model": "ReCoMER", "wf1": 58.00, "sd": 0.34},
+    {"model": "cRBEF", "wf1": 58.60, "sd": 0.0}
+  ],
+  "module_effects_pp": [
+    {"module": "History feedback", "dataset": "M3ED", "metric": "WF1", "effect_pp": 0.4774},
+    {"module": "History feedback", "dataset": "MELD", "metric": "WF1", "effect_pp": -0.1534},
+    {"module": "History feedback", "dataset": "MOSEI", "metric": "MAE", "effect_pp": 0.3361},
+    {"module": "EvidenceRouter", "dataset": "M3ED", "metric": "WF1", "effect_pp": -0.3298},
+    {"module": "EvidenceRouter", "dataset": "MELD", "metric": "WF1", "effect_pp": 0.3426},
+    {"module": "EvidenceRouter", "dataset": "MOSEI", "metric": "MAE", "effect_pp": 0.6741},
+    {"module": "History abstention", "dataset": "M3ED", "metric": "WF1", "effect_pp": -0.2784},
+    {"module": "History abstention", "dataset": "MELD", "metric": "WF1", "effect_pp": 0.0300},
+    {"module": "History abstention", "dataset": "IEMOCAP", "metric": "WF1", "effect_pp": 0.6063},
+    {"module": "History abstention", "dataset": "MOSEI", "metric": "MAE", "effect_pp": 0.1315}
+  ],
+  "integrated_deltas_pp": [
+    {"control": "Equal-weight", "delta_pp": 0.6069, "ci_low": 0.2497, "ci_high": 1.0051},
+    {"control": "No relative contribution", "delta_pp": 0.0135, "ci_low": -0.0433, "ci_high": 0.0689},
+    {"control": "No Shapley supervision", "delta_pp": -0.0504, "ci_low": -0.2806, "ci_high": 0.1579},
+    {"control": "Unbounded weights", "delta_pp": -0.0357, "ci_low": -0.2719, "ci_high": 0.1723},
+    {"control": "No history abstention", "delta_pp": -0.4873, "ci_low": -0.9109, "ci_high": -0.0910},
+    {"control": "No contribution-token feedback", "delta_pp": -0.0149, "ci_low": -0.2896, "ci_high": 0.2482},
+    {"control": "No history-residual feedback", "delta_pp": -0.0559, "ci_low": -0.1599, "ci_high": 0.0465}
+  ],
+  "exact_feature_m3ed": [
+    {"arm": "uniform_nohist (B0)", "wf1": 53.5269, "sd": 0.5824},
+    {"arm": "uniform_history", "wf1": 53.4562, "sd": 0.4858},
+    {"arm": "evidence_closed", "wf1": 53.7279, "sd": 0.4118},
+    {"arm": "evidence_mpath", "wf1": 53.9917, "sd": 0.6380},
+    {"arm": "uniform_abstain", "wf1": 53.3945, "sd": 0.4854}
+  ],
+  "exact_feature_crbef": [
+    {"arm": "T-only", "wf1": 42.1594, "sd": 0.2423},
+    {"arm": "AV-only", "wf1": 53.1980, "sd": 0.1816},
+    {"arm": "Ungated TAV", "wf1": 52.8735, "sd": 0.5345},
+    {"arm": "Log-evidence", "wf1": 52.6567, "sd": 0.5946},
+    {"arm": "Gated cRBEF", "wf1": 54.8599, "sd": 0.4454}
+  ]
+}

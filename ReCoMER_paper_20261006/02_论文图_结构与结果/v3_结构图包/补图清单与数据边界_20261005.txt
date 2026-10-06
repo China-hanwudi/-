@@ -1,0 +1,9 @@
+已存在并保留：
+01 方法总览；02 创新点1闭环；03 创新点2贡献路由；04 创新点3历史接纳；05 cRBEF专家结构；06 外层融合；07 主结果/模块增益/集成消融；08 exact-feature补充复现。
+
+本轮补齐：
+09 门控公式敏感性：来自 CR_GATE_FORMULA_SENSITIVITY.json，属于冻结公式干预，不写成连续超参数扫描。
+10 模态表示空间：来自 CR17_TEST_FEATURES.npz，使用 PCA projection，不冒充 t-SNE；三面板分别为文本、音频、视觉特征。
+11 混淆矩阵：来自三组正式 M3ED test PREDICTIONS.npz，展示 MHnoU、cRBEF、ReCoMER 的平均行归一化混淆结构。
+
+当前仍没有足够真实记录支撑的图：连续 alpha/lambda/tau 超参数曲线、严格同协议的跨数据集 ReCoMER 表示空间对比、按历史转折/延续分组的完整外部模型 t-SNE。没有用示意数据补这些图。

@@ -1,0 +1,252 @@
+{
+  "pdf": "C:\\Users\\肖田泽宇宙最强1234\\Desktop\\论文\\论文结构图_v3_具体表达_20261004\\08_性能图升级版_20261006\\figJ_mhnou_branch_classification.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 15,
+  "text_trace_count": 15,
+  "stroke_path_count": 50,
+  "filled_region_count": 33,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 5,
+    "warn": 4,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "MHnoU history",
+      "text_bbox": [
+        68.7874984741211,
+        26.080135345458984,
+        120.23526000976562,
+        33.080135345458984
+      ],
+      "other_text": null,
+      "other_bbox": [
+        42.88750076293945,
+        20.043746948242188,
+        313.8074951171875,
+        176.90374755859375
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        8,
+        28
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 6 stroked path(s)",
+      "text": "No-history reference",
+      "text_bbox": [
+        68.7874984741211,
+        36.580135345458984,
+        140.67477416992188,
+        43.580135345458984
+      ],
+      "other_text": null,
+      "other_bbox": [
+        68.8249740600586,
+        20.043746948242188,
+        117.69377136230469,
+        325.9207458496094
+      ],
+      "object_count": 6,
+      "object_indexes": [
+        5,
+        8,
+        30,
+        36,
+        39,
+        45
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "IEMOCAP",
+      "text_bbox": [
+        69.34634399414062,
+        183.62130737304688,
+        103.55667114257812,
+        191.12130737304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        55.20204544067383,
+        41.80427551269531,
+        117.69377136230469,
+        325.9207458496094
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        2,
+        5
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "MELD",
+      "text_bbox": [
+        167.76937866210938,
+        183.62130737304688,
+        188.9213409423828,
+        191.12130737304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        147.1016387939453,
+        70.78897094726562,
+        209.59336853027344,
+        325.9207458496094
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        3,
+        6
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "M3ED",
+      "text_bbox": [
+        259.3721008300781,
+        183.62130737304688,
+        281.1170654296875,
+        191.12130737304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        239.00123596191406,
+        148.8511505126953,
+        301.4929504394531,
+        325.9207458496094
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        4,
+        7
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "No-history reference",
+      "text_bbox": [
+        68.7874984741211,
+        36.580135345458984,
+        140.67477416992188,
+        43.580135345458984
+      ],
+      "other_text": null,
+      "other_bbox": [
+        86.44790649414062,
+        41.80427551269531,
+        117.69377136230469,
+        325.9207458496094
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        5000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "IEMOCAP",
+      "text_bbox": [
+        69.34634399414062,
+        183.62130737304688,
+        103.55667114257812,
+        191.12130737304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        55.20204544067383,
+        41.80427551269531,
+        117.69377136230469,
+        325.9207458496094
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        2000,
+        5000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "MELD",
+      "text_bbox": [
+        167.76937866210938,
+        183.62130737304688,
+        188.9213409423828,
+        191.12130737304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        147.1016387939453,
+        70.78897094726562,
+        209.59336853027344,
+        325.9207458496094
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        3000,
+        6000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 2 filled region(s)",
+      "text": "M3ED",
+      "text_bbox": [
+        259.3721008300781,
+        183.62130737304688,
+        281.1170654296875,
+        191.12130737304688
+      ],
+      "other_text": null,
+      "other_bbox": [
+        239.00123596191406,
+        148.8511505126953,
+        301.4929504394531,
+        325.9207458496094
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        4000,
+        7000
+      ]
+    }
+  ]
+}

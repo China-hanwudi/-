@@ -1,0 +1,194 @@
+{
+  "pdf": "C:\\Users\\肖田泽宇宙最强1234\\Desktop\\论文\\论文结构图_v3_具体表达_20261004\\08_性能图升级版_20261006\\figC_mosei_metric_profile.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 54,
+  "text_trace_count": 54,
+  "stroke_path_count": 134,
+  "filled_region_count": 83,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 7,
+    "warn": 0,
+    "contained_fill_overlays": 12,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "0.525",
+      "text_bbox": [
+        40.39756774902344,
+        78.64134979248047,
+        59.00056838989258,
+        85.14134979248047
+      ],
+      "other_text": null,
+      "other_bbox": [
+        40.37200164794922,
+        80.21394348144531,
+        83.62200164794922,
+        84.47392272949219
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        8,
+        11
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.525",
+      "text_bbox": [
+        64.971435546875,
+        81.1658706665039,
+        83.5744400024414,
+        87.6658706665039
+      ],
+      "other_text": null,
+      "other_bbox": [
+        49.71006774902344,
+        81.90899658203125,
+        74.283935546875,
+        84.47392272949219
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        11
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.687",
+      "text_bbox": [
+        122.86756896972656,
+        78.64134979248047,
+        141.4705810546875,
+        85.14134979248047
+      ],
+      "other_text": null,
+      "other_bbox": [
+        122.84200286865234,
+        81.99230194091797,
+        166.0919952392578,
+        81.99230194091797
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        35
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.797",
+      "text_bbox": [
+        287.80755615234375,
+        88.28636932373047,
+        306.4105529785156,
+        94.78636932373047
+      ],
+      "other_text": null,
+      "other_bbox": [
+        297.12005615234375,
+        85.56120300292969,
+        321.6939392089844,
+        96.32923889160156
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        88
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 2 stroked path(s)",
+      "text": "0.617",
+      "text_bbox": [
+        370.2775573730469,
+        83.78948211669922,
+        388.88055419921875,
+        90.28948211669922
+      ],
+      "other_text": null,
+      "other_bbox": [
+        370.25201416015625,
+        83.23175048828125,
+        413.50201416015625,
+        89.73875427246094
+      ],
+      "object_count": 2,
+      "object_indexes": [
+        106,
+        110
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.618",
+      "text_bbox": [
+        394.8514404296875,
+        78.64134979248047,
+        413.4544372558594,
+        85.14134979248047
+      ],
+      "other_text": null,
+      "other_bbox": [
+        379.5900573730469,
+        83.23175048828125,
+        404.1639404296875,
+        87.86151885986328
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        110
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "75.8",
+      "text_bbox": [
+        479.3917541503906,
+        78.64134979248047,
+        493.8607482910156,
+        85.14134979248047
+      ],
+      "other_text": null,
+      "other_bbox": [
+        452.72198486328125,
+        83.80775451660156,
+        495.97198486328125,
+        83.80775451660156
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        131
+      ]
+    }
+  ]
+}

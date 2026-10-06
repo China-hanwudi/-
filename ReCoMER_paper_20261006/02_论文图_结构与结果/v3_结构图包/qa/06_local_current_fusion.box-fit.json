@@ -1,0 +1,42 @@
+[
+  {
+    "text": "q = \u00bd [p(cRBEF) + p(MHnoU)]",
+    "fits": true
+  },
+  {
+    "text": "6  Base",
+    "fits": true
+  },
+  {
+    "text": "4  Confidence",
+    "fits": true
+  },
+  {
+    "text": "2  Top-class flags",
+    "fits": true
+  },
+  {
+    "text": "8  References",
+    "fits": true
+  },
+  {
+    "text": "3  Modality evidence",
+    "fits": true
+  },
+  {
+    "text": "\u03b4 = 1.5\ntanh(raw)",
+    "fits": true
+  },
+  {
+    "text": "Candidate set S\nTop-2(a) \u222a Top-2(b) \u222a Argmax(q)",
+    "fits": true
+  },
+  {
+    "text": "Inside S:\nReallocate mass\nusing q exp(\u03b4)\n\nOutside S:\nretain q",
+    "fits": true
+  },
+  {
+    "text": "Bounded blend\nq \u2192 p(final)",
+    "fits": true
+  }
+]

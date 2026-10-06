@@ -1,0 +1,435 @@
+{
+  "created": 1791086129.1487906,
+  "seeds": [
+    43,
+    47,
+    59
+  ],
+  "production_model": "original CR17 + latest MHnoU + local_current",
+  "cRBEF_seed_fixed": 17,
+  "main_default_seed": 43,
+  "ablations": {
+    "no_shapley_supervision": "Set lambda_u=0; retain architecture and measured teacher for matched compute.",
+    "unbounded_softmax_weights": "Replace bounded mapping with the existing softmax/floor mapping; same evidence router.",
+    "no_history_abstention": "Set history_abstain_variant=none; retain history pooling and feedback.",
+    "no_contribution_token_feedback": "Omit token-weight scaling in joint forward and Shapley measurement; retain history feedback.",
+    "no_history_residual_feedback": "HistoryAttnPool.apply returns current embedding unchanged; retain contribution token scaling."
+  },
+  "mh_lr": 0.0002,
+  "mh_epochs": 20,
+  "mh_folds": [
+    "inner0",
+    "inner1",
+    "inner2",
+    "inner3",
+    "final"
+  ],
+  "ablation_mh_fits": 75,
+  "fusion_epochs": 40,
+  "eta_candidates": [
+    0.0,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "bootstrap_resamples": 1000,
+  "baseline_selection": [
+    {
+      "dataset": "M3ED_textQwen",
+      "task": "cls",
+      "arm": "mhnou_final",
+      "selected": {
+        "lr": 0.0002,
+        "mean": 0.5924207341720006,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s43__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s47__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s59__lr0.0002"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.587455450953933,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.5924207341720006,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s59__lr0.0002"
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "M3ED_textQwen",
+      "task": "cls",
+      "arm": "no_history_reference",
+      "selected": {
+        "lr": 0.0002,
+        "mean": 0.5893851690920152,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s43__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s47__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s59__lr0.0002"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.5881410328834119,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.5893851690920152,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s59__lr0.0002"
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "MELD",
+      "task": "cls",
+      "arm": "mhnou_final",
+      "selected": {
+        "lr": 0.0002,
+        "mean": 0.6357231385674892,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s43__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s47__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s59__lr0.0002"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.6350824986361757,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.6357231385674892,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s59__lr0.0002"
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "MELD",
+      "task": "cls",
+      "arm": "no_history_reference",
+      "selected": {
+        "lr": 0.0001,
+        "mean": 0.6335525761211713,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s43__lr0.0001",
+          "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s47__lr0.0001",
+          "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s59__lr0.0001"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.6335525761211713,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.6315700972272303,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s59__lr0.0002"
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "IEMOCAP",
+      "task": "cls",
+      "arm": "mhnou_final",
+      "selected": {
+        "lr": 0.0002,
+        "mean": 0.6867918952269435,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s43__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s47__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s59__lr0.0002"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.6841083368419093,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.6867918952269435,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s59__lr0.0002"
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "IEMOCAP",
+      "task": "cls",
+      "arm": "no_history_reference",
+      "selected": {
+        "lr": 0.0002,
+        "mean": 0.683207718664741,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s43__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s47__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s59__lr0.0002"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.6805208938874644,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.683207718664741,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s59__lr0.0002"
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "MOSEI_full",
+      "task": "reg",
+      "arm": "mhnou_final",
+      "selected": {
+        "lr": 0.0002,
+        "mean": 0.5030345671305639,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s43__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s47__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s59__lr0.0002"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.5077163943967441,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.5030345671305639,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s59__lr0.0002"
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "MOSEI_full",
+      "task": "reg",
+      "arm": "no_history_reference",
+      "selected": {
+        "lr": 0.0002,
+        "mean": 0.5071564213496047,
+        "runs": [
+          "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s43__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s47__lr0.0002",
+          "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s59__lr0.0002"
+        ]
+      },
+      "choices": [
+        {
+          "lr": 0.0001,
+          "mean": 0.5084792070373502,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s43__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s47__lr0.0001",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s59__lr0.0001"
+          ]
+        },
+        {
+          "lr": 0.0002,
+          "mean": 0.5071564213496047,
+          "runs": [
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s43__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s47__lr0.0002",
+            "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s59__lr0.0002"
+          ]
+        }
+      ]
+    }
+  ],
+  "asset_sha256": {
+    "/root/recomer_complete_20261004_side/recomer/43/recomer.pt": "fb33f35f8554ad2de39c96d6d8a28ca28eba9aef0c324b801377fb53690b01ea",
+    "/root/recomer_complete_20261004_side/recomer/47/recomer.pt": "e40f430473326ea07e61c9fd5f1ce350a1114f26ebbcc25728b6914fc12fb88a",
+    "/root/recomer_complete_20261004_side/recomer/59/recomer.pt": "b411422e3152fba34938017993bcf9dbb758244c2bf0ecf10b60facb06430b89",
+    "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s43__lr0.0002/best.pt": "62f88be3252e46d5fa2c9501f202d3d20a37996cc05076e14515cf92032bc299",
+    "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s47__lr0.0002/best.pt": "64c5e158e890fd04bab73a263f0cebc105071465c351f302dcd2621807a25297",
+    "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__mhnou_final__s59__lr0.0002/best.pt": "fec3925613e13a73c91a2c592bbf2af4f855a4b8bc284a727700d982eb25ca7a",
+    "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s43__lr0.0002/best.pt": "0195dbaadb1a6e0f2de601c8aac8a84aee0b57393e5678324a85a626dc2a00a3",
+    "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s47__lr0.0002/best.pt": "3241fc85152fbab1d58a0ec16221ad3f1a2e907a6f373e2c5449fb1ed09da7e8",
+    "/root/recomer_validation_20261004_side/runs/M3ED_textQwen__no_history_reference__s59__lr0.0002/best.pt": "286028432f8cd229ac69e7eb5be4e744521c1be0f1041aeb9f22e6de8a3c8b74",
+    "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s43__lr0.0002/best.pt": "d83bb4b4e45d024b9e22b02f03c74985ae011c8e9a77b531e2b90dad026ca33b",
+    "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s47__lr0.0002/best.pt": "67af6bf9db9cca8540f1cbc1cd6b6cf1a3cbf05f2546438c52051c7eb3d541cd",
+    "/root/recomer_validation_20261004_side/runs/MELD__mhnou_final__s59__lr0.0002/best.pt": "b32a2e91944973d82ad825a30357fbb201272025e91db3de9919111bd35c4fbb",
+    "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s43__lr0.0001/best.pt": "5680abe92f62ce3bf6cafbdc5192732000b350379a3a9afba429e8636d1d47f4",
+    "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s47__lr0.0001/best.pt": "72dd3640a3d1272c30f8c0070f8f8873a56652ec3e2d122a2cb0047f8367516c",
+    "/root/recomer_validation_20261004_side/runs/MELD__no_history_reference__s59__lr0.0001/best.pt": "647372d4767901a49b0acb2e30cf6d8ddda11cd6ab08b9696b5b51bfbd87f200",
+    "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s43__lr0.0002/best.pt": "a76d6c0c0fe374fe6ac472b5c209566a2d0637a2ec164dbcf6d04cec7c914b00",
+    "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s47__lr0.0002/best.pt": "ff972368f9cbe859d294aa7cdd7bc2dadf1ba4241d37e2f9c3cd12f3f3125388",
+    "/root/recomer_validation_20261004_side/runs/IEMOCAP__mhnou_final__s59__lr0.0002/best.pt": "bba0ee12063b809c78bec43563581884e3b2cad015bb9ef24764d18d0cb78755",
+    "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s43__lr0.0002/best.pt": "0da928e1b32ad4425af151190a384e85a13b686218507a88e4566de691992dbf",
+    "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s47__lr0.0002/best.pt": "16ec2238934dd8be3d3376f9db1ff25fefb7fae98b140066aab86471ed871d9f",
+    "/root/recomer_validation_20261004_side/runs/IEMOCAP__no_history_reference__s59__lr0.0002/best.pt": "69c98ff435b899784fb631e423f397c3d990dd0761ae5e0f08f1e2f05f3a7340",
+    "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s43__lr0.0002/best.pt": "8fa5ed356074e0f4f3c1e0e3acf57e704fa5221a4598d82d5e1a8039809eed25",
+    "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s47__lr0.0002/best.pt": "82d29bc9934fe6302d15782ca60abbcb960edbbdaae4a3f1de18c68cdc852831",
+    "/root/recomer_validation_20261004_side/runs/MOSEI_full__mhnou_final__s59__lr0.0002/best.pt": "63a6a0daa9f247a9dc5d5911365a7f18ba46555f23099817d412691386cbae75",
+    "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s43__lr0.0002/best.pt": "30f17eab56bd3f01bf33b01cdcff185de568311213863fcc1e99d2311084f506",
+    "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s47__lr0.0002/best.pt": "a03097342887b349a474d8bd740f445d1f916a4bcfa10f264852580277e6489d",
+    "/root/recomer_validation_20261004_side/runs/MOSEI_full__no_history_reference__s59__lr0.0002/best.pt": "b93ef59a14f08dd981104207ebe8c70efbd5efbba047213d8df601e0bd59ae63",
+    "/root/autodl-tmp/crbef_full_package/weights/text_adapter_m3ed_s43/adapter_model.safetensors": "1083a370739241db9095e4cc5510362b23bb39bcf4947676494566b890ca8764",
+    "/root/autodl-tmp/crbef_full_package/weights/text_adapter_m3ed_s43/adapter_config.json": "3738c00633362d6426ae0464f1e09d1480c39d614d788a9670f65906d9895452",
+    "/root/autodl-tmp/fusion_research_automation_20261003/side_official_test_20261004/inputs/test_tokens.npz": "f45839bef3bf158f80c32f45f636e293871e07b0f75b9f2ae1228815e9c841e1",
+    "/root/autodl-tmp/fusion_research_automation_20261003/side_official_test_20261004/inputs/AUDIT.json": "fb2e3ae9e841e1f84119b8d97c81b3338f1dddec160a5642db0361c654746625",
+    "/root/autodl-tmp/fusion_research_automation_20261003/round032_same_cr_valid/full_v2/features.npz": "60e5b9e13061e14fef3cb55f042166b158ed774e454cfa42e1b7c28b527d84ea",
+    "/root/autodl-tmp/classmate_temporaln3_newbench_20260913/m3ed/packed/test.pt": "21317ad656ec59bcfd102d70ff53554fa97e8c8b43479d2a3dd9319dc572fb84",
+    "/root/autodl-tmp/multimodal_newbench_20260912/runs/m3ed_e2v_plus_audio_test/test_features.pt": "768f1565dcb30f1f4ce4a151b77e6f7edf6e454f21182f1646fcd60ed7c8a5fc",
+    "/root/autodl-tmp/fusion_research_automation_20261003/round017_repair1/CONTRACTS.json": "dfffbca0fa77fb80d38cf0361a3f63a7f2e8da4ba2492b81e83659d268832801",
+    "/root/recomer_complete_20261004_side/inputs/43/FIT.npz": "eacf4b5235a30165c5c199de2f0a7aa33c344e7ff8abc12fb0c748351bb52c04",
+    "/root/recomer_complete_20261004_side/inputs/43/final_fusion_cal.npz": "2ba3a616870f9939580ace6c1b2e383e815022e40abcb1636aaea58f438d38c3",
+    "/root/recomer_complete_20261004_side/inputs/47/FIT.npz": "0d2b515cf66af8e62625a3af1fbcc0edd9b308f34cf6c639d98bee6c5f9401e8",
+    "/root/recomer_complete_20261004_side/inputs/47/final_fusion_cal.npz": "8b71af5c7dae8b05c09bb87ef9cd774bf153c6ef52b1f732e92fe9f51af7e112",
+    "/root/recomer_complete_20261004_side/inputs/59/FIT.npz": "eb1f8076d0cd1dc01f1a575acd9cdf28e15e342d2489a0f2d9caf401d8da4523",
+    "/root/recomer_complete_20261004_side/inputs/59/final_fusion_cal.npz": "860ac0b1db1c625de75500a6856b02e2fd54c06633c0765dc811e23cf281994c"
+  },
+  "code_sha256": {
+    "correlate_teacher.py": "79c62203b764a80f7d95df3d8c6249d01a3b64b4747682b7ac707019a852475d",
+    "diagnose_revised.py": "f99813109146efd86387811c9810e1f71598162c6500a977f8f13de82a2e22c4",
+    "smoke_revised.py": "b6facf686979e317bfb895ca30c504b292de02b1a45e53446d006ad2fba71621",
+    "summary_runs.py": "75176bc2b16a92d6144f830e72badd43183199c6af86292e3864b6efe9e220bf",
+    "n6/__init__.py": "a2ba3c467bf72331a402a1fb89a4795f413ae8a1be4d7b46e4585a28e9a0aa9f",
+    "n6/config.py": "8001ca40bc170d2dd858b991d4b44255f28c19ea8c7d43134c2a799da0f52ffa",
+    "n6/crbef_expert.py": "3c6462ea765556db9eae53cea7a4f21e85e0a33eae9eb498342134b64082a272",
+    "n6/crbef_fusion.py": "5290a1daf9248e67cf23d28c6cc32427aec3752d1eda7863d40aac95969f896c",
+    "n6/data.py": "76e2a7b52469ea104aedf6590b00d634a35777dd66750b0a378d48ce676e6349",
+    "n6/datasetspec.py": "51fe2c8509aaa69464d0f67f3b4c6729c0c8869b176e7021138dff7309c569bd",
+    "n6/evaluate.py": "eaee3d100db894fe0e55af69979801e8cdeb273f6e474f82b040bf083b33f666",
+    "n6/losses.py": "9cf4fb93a4df6490b0b5cf4f26256b81e4ac017df9ad7df631384f5b3f7ce03f",
+    "n6/metrics.py": "cf4d99aed3060ca1cf621f9be5549ffa6b91cfba1e589dc6e48b520e1a36a052",
+    "n6/model.py": "982b9424a50d1e0728c5f229f2260729e8d89e73c36421a08300ff14c6cfd3bd",
+    "n6/recomer.py": "a1a96119bb86569fe316d282dda0ed77a1cb0ba68e81e2274eeb6ad667b9d25b",
+    "n6/seed_ensemble.py": "d5026c40648aca7bdf966020f3c6d6f0474f20f105e233f4f5d7ceda2d2744ce",
+    "n6/train.py": "2abc27d6b478ad865f10eb280682f4736a1ea1fa4a0c89d25683b370df039208",
+    "n6/train_gate.py": "83ea2de57a047cf73767473499e233078be5cc59b0dea74c27591dc03727ca4f",
+    "n6_visual/__init__.py": "2b6ecc8d4da59a8bbfce4b6a843f78ebffc832a41ae5d61e2b49ea99263e41d4",
+    "n6_visual/action_space.py": "089ca36b0877d149e9ff3d069a11368953d5adc90ba8deb51dc4dc958c8b651e",
+    "n6_visual/anchored_model.py": "f6ac4e530259d1e74c24adcab7e5404a48318f52058e4821fdb77ff25a5a9b59",
+    "n6_visual/build_oof_cache.py": "dfd2fb4295f64e2bdeed3150ce3c90e6c6600680d2b585d72363ff44cdd05d5a",
+    "n6_visual/evaluate_valid.py": "5f15a4eb7d218a6b127ed0a7d578b224c7154584902432b9115ce5935fd98ab0",
+    "n6_visual/temporal_adapter.py": "81741654a20282c38248571c811dc518e6af33313827dd2cf60b10cdca818396",
+    "n6_visual/train_corrector.py": "2267f039fbfaebea32abef2013ac4ed1b1c37e2b8c8309523c0e50d5fa5cd238",
+    "n6_visual/train_selector.py": "90615f0a45a47bd9633cee00b27d52fbca123c81432069f4f89a7fdfec7e468d",
+    "n6_visual/train_visual.py": "8d58598c6a3eabe029cdcb45547fd8b1dc38ae4b03b559109614a1bcd5f377c0",
+    "n6_visual/utility_selector.py": "f9c7386983c3147491610150179ea9924007112f1e29bf6c5b3d95ac3d5afdec",
+    "n6_visual/utility_targets.py": "1d7fad95c019c0db80459c5370e4d6d803b9ccef3d2e5e005aeb2a6c4cd0c550",
+    "n6_visual/visual_data.py": "258ee111614128064156304bce27a63e50fa71e2b6ca242b4f121e911042140c",
+    "n7_visual/avf_encoder.py": "df6fa0861af65983a19a2c8b6bab64c450c4e9ad9c98e352e202e9e481419168",
+    "n7_visual/extract_avf_pilot.py": "44e5d5ef2d4b22e1e24ea0ed892084da6e852076b1212d2b49f96b5af6c08843",
+    "n7_visual/extract_target_faces.py": "de7e718506d2dfd962ce9fe9032abcf563cacfaddf97db745e03899546eab23c",
+    "n7_visual/face_identity.py": "2bf83746347fc5c808fb4cf85ef60e6987cf51647b519fd19ae4444b7b95d06c",
+    "n7_visual/merge_avf_pilot.py": "5995313af58ac3e91c94cac889f9f23db0a68bc4973629d0da37c19b3a1c4c95",
+    "n7_visual/merge_face_pack.py": "2bf9f530b6a04491e3407384c6c5f22597a63751e26fcd2f33670938254828a6",
+    "n7_visual/stamp_run_inputs.py": "2cdabf58c76c10383824ed61e221f16aba01d0ecb02c5e74a328b8cbbeda43c6",
+    "n7_visual/train_video_evidence.py": "6d2125027c0c4cca3f2a216f88f17fabf92ee2b64a30a764cd6f23a3a7aa72b1",
+    "n7_visual/train_video_evidence_tm.py": "78994c919d2ad87ea2fdd2839189090c841f228a24a02745313e13859ae499e6",
+    "n7_visual/train_video_evidence_v2.py": "7948b6703357938d1b4d0d3305d5495bc5edd938675b97eae9aa8a250953ff34",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/test_audit_fixes.py": "646a959cc70daae9a679b0c3d4e91b91089a803fa8b2624b7f309e7685800f5a",
+    "tests/test_crbef_fusion.py": "2e896432dbc229b007e6ddbf72f33136569a6aa0675114d21e1d894c5a6d0929",
+    "tests/test_history_gate.py": "0398253639ffd014df65c203fd04384faacfa5a3922cfd46b195653639deff41",
+    "tests/test_integrated_model.py": "5d669a0e20814cce93937d6fb95852afd8d004616baea16d7d6678b4ac843324",
+    "tests/test_recomer.py": "16eea70f622ccc91e2eb6aab7b3ce57601ccf6bf676506aeaa7674af33abc200",
+    "tools/build_history_utility_cache.py": "b07d2e8ebcc65bdf3d4dbb677ce6b43c94f3c58df9c4292c38506701f164aa73",
+    "tools/fuse_crbef.py": "ba749a3b44e452d6f1a01a9582179f5bc5b9e2b1d421f29c1535178050be779c",
+    "tools/make_dialogue_manifest.py": "ca4e0518aa727fd70d81a16c9bbbb07717b5464f275fbf6cb124d34c7628f367",
+    "tools/make_teacher_fold_manifests.py": "d72c192659c4d6558dae76c52cf2aa1f379a66b1e79311604f1818fde9c7b979",
+    "tools/recomer_predict.py": "b1eca43814dd5806008e52398672535ca1dc3fa1c811a82e8021042e73b4c697",
+    "tools/train_recomer_fusion.py": "51d9631b7e68783433aeedbd0a868a6276f1f5d1d6e3c00e3519791e220fc397",
+    "n6/crbef_source/__init__.py": "c15181d92d35bb453a57561b26f2ee853011f1bf66a6a22e3d95eb003d0b6285",
+    "n6/crbef_source/head.py": "613eb79b316dc22eb08e05a277942b43870f91d820ac434f5fe7cc63d5bfc75c",
+    "n6/crbef_source/rich.py": "32eb2244c31dc83d213897f726083b0b7882c435c3cefc5646d466b550172863"
+  },
+  "harness_sha256": "7c21b722efd108fe504c0798f8639f7ff125b8e0ec310556831db249867677f4",
+  "teacher_base_sha256": {
+    "/root/autodl-tmp/models/Qwen3-8B-AWQ/model-00002-of-00002.safetensors": "20c2d6366ab85c90786ccdd829cd2b9e7d30ef3b2ebbb998280e7e4014b542ff",
+    "/root/autodl-tmp/models/Qwen3-8B-AWQ/model-00001-of-00002.safetensors": "6e112429856bc65e3837a9f38d6f6b71ffdda832cb46299a12f4fa8f6352516e"
+  },
+  "full_system_OOF": false,
+  "prior_benchmark_test_exposure": true,
+  "no_test_selection": true,
+  "masks": [
+    "T",
+    "A",
+    "V",
+    "TA",
+    "TV",
+    "AV"
+  ],
+  "robustness_scope": "feature-level zero/mask stress, no encoder retraining; not a missing-raw-modality benchmark",
+  "limitations": [
+    "fixed CR17 teacher exposure remains; not fully OOF",
+    "CR weights available only for M3ED; other datasets evaluate MHnoU only",
+    "three seeds vary MHnoU and fuser; original cRBEF is fixed",
+    "runtime ablations require this harness to reproduce",
+    "no contribution feedback and no history feedback are separate FCCR subcomponent controls",
+    "external literature baselines are not reproduced by this queue"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "pdf": "C:\\Users\\Ф����������ǿ1234\\Desktop\\MHnoU_��Ŀ������_20261001\\�ṹͼ\\���Ľṹͼ_v3_�������_20261004\\04_M3_history_admission.pdf",
+  "auditable": true,
+  "minimum_required_pt": 5.0,
+  "minimum_found_pt": 6.4,
+  "text_run_count": 53,
+  "below_minimum_count": 0,
+  "below_minimum": [],
+  "warnings": []
+}

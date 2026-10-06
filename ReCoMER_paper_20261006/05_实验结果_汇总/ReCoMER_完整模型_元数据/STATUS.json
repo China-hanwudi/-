@@ -1,0 +1,9 @@
+{
+  "phase": "COMPLETE",
+  "pid": 244397,
+  "seconds": 705,
+  "old_paused_workflow_resumed": false,
+  "official_test_evaluated": false,
+  "complete_recomer_bundles": 3,
+  "four_way_comparisons": true
+}

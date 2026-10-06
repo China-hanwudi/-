@@ -1,0 +1,62 @@
+[
+  {
+    "figure": "figA_main_multimetric",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figA_main_multimetric.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 6.4, \"text_run_count\": 91, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figB_router_forest_holm",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figB_router_forest_holm.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 6.9, \"text_run_count\": 41, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figC_mosei_metric_profile",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figC_mosei_metric_profile.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 6.5, \"text_run_count\": 54, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figD_fusion_behavior",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figD_fusion_behavior.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 6.6, \"text_run_count\": 34, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figE_efficiency_overhead",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figE_efficiency_overhead.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 7.0, \"text_run_count\": 17, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figF_calibration_brier",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figF_calibration_brier.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 6.5, \"text_run_count\": 15, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figF_calibration_ece",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figF_calibration_ece.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 6.5, \"text_run_count\": 15, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figG_missing_modality_robustness",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figG_missing_modality_robustness.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 6.5, \"text_run_count\": 27, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figH_shapley_mechanism_diagnostic",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figH_shapley_mechanism_diagnostic.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 7.0, \"text_run_count\": 19, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figI_weight_stability",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figI_weight_stability.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 7.0, \"text_run_count\": 16, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figJ_mhnou_branch_classification",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figJ_mhnou_branch_classification.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 7.0, \"text_run_count\": 15, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  },
+  {
+    "figure": "figJ_mhnou_branch_mosei",
+    "pdf_text": "{ \"pdf\": \"C:\\\\Users\\\\Ф����������ǿ1234\\\\Desktop\\\\����\\\\���Ľṹͼ_v3_�������_20261004\\\\08_����ͼ������_20261006\\\\figJ_mhnou_branch_mosei.pdf\", \"auditable\": true, \"minimum_required_pt\": 5.0, \"minimum_found_pt\": 7.0, \"text_run_count\": 12, \"below_minimum_count\": 0, \"below_minimum\": [], \"warnings\": [] }",
+    "collisions": ""
+  }
+]

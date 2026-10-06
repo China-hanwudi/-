@@ -1,0 +1,72 @@
+{
+  "pdf": "C:\\Users\\Ф����������ǿ1234\\Desktop\\����\\���Ľṹͼ_v3_�������_20261004\\08_����ͼ������_20261006\\figJ_mhnou_branch_mosei.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 12,
+  "text_trace_count": 12,
+  "stroke_path_count": 26,
+  "filled_region_count": 16,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 2,
+    "warn": 0,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.525",
+      "text_bbox": [
+        76.739990234375,
+        19.04763412475586,
+        96.76779174804688,
+        26.04763412475586
+      ],
+      "other_text": null,
+      "other_bbox": [
+        86.755615234375,
+        20.043746948242188,
+        86.755615234375,
+        155.2419891357422
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        4
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.522",
+      "text_bbox": [
+        175.9925079345703,
+        19.486644744873047,
+        196.0203094482422,
+        26.486644744873047
+      ],
+      "other_text": null,
+      "other_bbox": [
+        186.0081329345703,
+        20.043746948242188,
+        186.0081329345703,
+        155.2419891357422
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        6
+      ]
+    }
+  ]
+}

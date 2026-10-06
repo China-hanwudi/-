@@ -1,0 +1,88 @@
+Related Work｜第三版英中文正文
+2026-10-04
+
+一、English
+
+2. Related Work
+
+2.1. Multimodal Emotion Recognition in Conversations
+
+Research on multimodal emotion recognition in conversations has sought to integrate dialogue dependencies with interactions among textual, acoustic, and visual cues. Recurrent approaches, exemplified by DialogueRNN [1], track conversational and speaker states to represent emotional dynamics. Graph-based approaches make utterance and modality relations explicit: MMGCN [2] connects contextual and cross-modal information within a multimodal graph, while M³Net [3] extends relational modeling to higher-order dependencies and multiple frequency components. These approaches differ in how they organize and propagate information, with recurrent models tracking conversational states and graph models explicitly representing relations among utterances and modalities.
+
+Context selection further determines which information participates in these representations. Attention and gating provide one approach, as in ECERC [4], which models evidence–cause interactions and gates the resulting features. Relevance filtering and sparse graph routing provide another, as in HiRoC [5], which restricts historical interactions before aggregating them. These methods establish selective context integration as part of conversational modeling. DF-ERC [6] further regulates contextual integration using consistency among modality representations. Within this line of work, MHnoU uses selective history feedback and learns an empty-history candidate that can abstain from the additional update on a per-sample basis.
+
+2.2. Modality Imbalance and Contribution Estimation
+
+Multimodal learning can be imbalanced when modalities learn at different rates or one modality dominates joint optimization. Optimization-based approaches address this problem by regulating how individual modalities are trained. Gradient modulation [7] adjusts modality-specific updates using prediction scores that reflect the relative predictive strength of the modalities, while prototype-based rebalancing [8] provides direct learning signals for slower-learning modalities. PaSE [9] combines prototype alignment with Shapley-based gradient modulation. These methods act on learning dynamics, with modality assessments guiding optimization. Their role differs from determining how much each learned representation should contribute to the prediction of a particular sample.
+
+Adaptive fusion addresses the latter problem by learning sample-dependent modality weights. A key distinction is the target used to supervise those weights. DF-ERC [6] uses unimodal true-class probabilities, while EMOE [10] derives importance targets from unimodal prediction errors and regularizes its router to limit modality dominance. Both assess how well a modality predicts on its own. Contribution estimates based on modality subsets instead assess changes in predictive utility when modalities are combined. DREAM [11] uses Shapley-based prediction-shift and prediction-accuracy contribution estimates, and distills the latter into fusion weights, connecting contribution assessment directly to adaptive fusion. Building on contribution-based weighting, MHnoU estimates modality contributions after history feedback and uses them to make bounded weight adjustments. This ordering differs from DF-ERC's modality weighting before context refusion [6].
+
+2.3. Reliability-Aware Multimodal Fusion
+
+Reliability-aware fusion regulates the influence of uncertain or conflicting information at different stages. At the representation level, EAU [12] models unimodal aleatoric uncertainty with probability distributions and uses estimated variances to weight features during fusion. This approach characterizes uncertainty within learned representations. At the prediction level, reliability controls the combination of already formed outputs. In bioacoustic classification, FINCH [13] combines acoustic predictions with spatiotemporal priors in log-probability space, using prediction statistics and contextual metadata to determine the supplementary weight. For conversational emotion recognition, HiRoC [5] uses disagreement between textual and nonverbal predictions to gate separate acoustic and visual residual logits. These methods illustrate that reliability can depend on both individual prediction statistics and relationships among predictions.
+
+Our cRBEF belongs to this prediction-level line of work. It uses the posterior of a separately trained audio-visual predictor as supplementary evidence for its TAV prediction. The supplementary term is the log ratio of this posterior to the class prior, and its influence is controlled using confidence statistics, evidence strength, and predicted-class agreement. This differs from learning corrective residual logits within the conversational model: the correction is derived from a separately trained nonverbal posterior with an explicit prior reference. MHnoU and cRBEF each produce a complete class distribution. ReCoMER uses their average as the baseline and applies a bounded local_current correction using the TAV and no-history reference distributions together with modality evidence.
+
+二、中文
+
+2. 相关工作
+
+2.1. 多模态对话情感识别
+
+多模态对话情感识别研究致力于联合建模对话依赖，以及文本、语音和视觉线索之间的交互。以DialogueRNN [1]为代表的循环网络通过跟踪对话状态和说话人状态刻画情绪变化；图方法则显式表示话语与模态之间的关系。MMGCN [2]在多模态图中连接上下文信息与跨模态信息，M³Net [3]进一步引入高阶依赖和多频分量。这些方法采用不同的信息组织与传播方式：循环模型跟踪对话状态，图模型则显式表示话语及模态之间的关系。
+
+上下文选择进一步决定哪些信息参与表示构建。一类方法通过注意力与门控进行选择性整合，例如ECERC [4]建模证据与原因之间的交互，并对生成的候选特征施加门控；另一类方法通过相关性过滤与稀疏图路由限制历史交互，例如HiRoC [5]在聚合前筛选历史信息。这些工作已将上下文的选择性整合纳入对话建模。DF-ERC [6]进一步利用模态表示之间的一致性调节上下文整合。沿着这一研究方向，MHnoU采用选择性历史反馈，并学习空历史候选，使模型能够按样本弃权新增历史更新。
+
+2.2. 模态失衡与贡献估计
+
+当各模态的学习速度不同，或某一模态主导联合优化时，多模态学习可能出现失衡。优化层面的方法通过调节各模态的训练过程处理这一问题。梯度调制[7]利用反映各模态相对预测能力的评分，调整各模态的参数更新；原型再平衡[8]则为学习较慢的模态提供直接的学习信号。PaSE [9]进一步结合原型对齐与基于Shapley值的梯度调制。这类方法利用模态评估结果指导优化，作用于模态的学习过程；它们与确定各模态表示在某个具体样本的预测中应占多大权重，承担不同的作用。
+
+自适应融合通过学习随样本变化的模态权重处理后一问题，其关键区别在于采用何种监督目标。DF-ERC [6]使用单模态预测的真实类别概率，EMOE [10]则根据单模态预测误差构造重要性目标，并通过路由正则约束模态支配。二者衡量的都是模态独立预测时的表现。基于模态子集的贡献估计则考察组合模态时预测效用的变化。DREAM [11]通过Shapley值计算预测变化贡献与预测准确性贡献，并将后者蒸馏到融合权重中，将贡献评估直接用于自适应融合。在基于贡献的加权思路下，MHnoU于历史反馈之后估计模态贡献，并据此进行有界的权重调整。这一处理顺序与DF-ERC在上下文再融合之前估计模态权重的方式不同[6]。
+
+2.3. 可靠性感知的多模态融合
+
+可靠性感知融合在不同阶段调节不确定信息或冲突信息的影响。在表示层面，EAU [12]以概率分布建模单模态偶然不确定性，并利用估计方差对参与融合的特征加权，从而在学习得到的表示中刻画不确定性。在预测层面，可靠性用于控制已经形成的输出之间的组合。面向生物声学分类，FINCH [13]在对数概率空间中组合声学预测与时空先验，并依据预测统计量和上下文元数据确定补充权重。面向对话情感识别，HiRoC [5]利用文本预测与非语言预测之间的分歧，分别控制声学和视觉残差logits。这些方法表明，可靠性的建模既可依据各路预测自身的统计信息，也可考虑预测之间的关系。
+
+cRBEF属于上述预测层融合路线。它使用单独训练的音视频预测器所输出的后验概率，为其TAV预测提供补充证据。补充项为该后验概率与类别先验概率之比的对数，其影响由置信度统计、证据强度及预测类别一致性共同控制。与在对话模型内部学习修正残差logits的方式相比，该修正来自单独训练的非语言后验预测，并具有明确的先验参照。MHnoU与cRBEF各自产生完整的类别分布。ReCoMER以二者的等权平均为基线，再结合TAV参考分布、无历史参考分布及模态证据，通过local_current进行有界的类别级校正。
+
+三、参考文献
+
+[1] Navonil Majumder, Soujanya Poria, Devamanyu Hazarika, Rada Mihalcea, Alexander Gelbukh, and Erik Cambria. DialogueRNN: An Attentive RNN for Emotion Detection in Conversations. AAAI, 2019, 33(01), pp. 6818–6825.
+https://ojs.aaai.org/index.php/AAAI/article/view/4657
+
+[2] Jingwen Hu, Yuchen Liu, Jinming Zhao, and Qin Jin. MMGCN: Multimodal Fusion via Deep Graph Convolution Network for Emotion Recognition in Conversation. ACL-IJCNLP, 2021, pp. 5666–5675.
+https://aclanthology.org/2021.acl-long.440/
+
+[3] Feiyu Chen, Jie Shao, Shuyuan Zhu, and Heng Tao Shen. Multivariate, Multi-Frequency and Multimodal: Rethinking Graph Neural Networks for Emotion Recognition in Conversation. CVPR, 2023, pp. 10761–10770.
+https://openaccess.thecvf.com/content/CVPR2023/html/Chen_Multivariate_Multi-Frequency_and_Multimodal_Rethinking_Graph_Neural_Networks_for_Emotion_CVPR_2023_paper.html
+
+[4] Tao Zhang and Zhenhua Tan. ECERC: Evidence-Cause Attention Network for Multi-Modal Emotion Recognition in Conversation. ACL, 2025, pp. 2064–2077.
+https://aclanthology.org/2025.acl-long.102/
+
+[5] Gong Li, Huiqiang Guo, Mengdi Liu, Ziyin Wei, Bowen Gu, Tiquan Gu, and Dan Ma. HiRoC: selective history routing and disagreement-aware calibration for multimodal conversational emotion recognition. Journal of King Saud University Computer and Information Sciences, 38, article 770, 2026.
+https://doi.org/10.1007/s44443-026-01163-x
+
+[6] Bobo Li, Hao Fei, Lizi Liao, Yu Zhao, Chong Teng, Tat-Seng Chua, Donghong Ji, and Fei Li. Revisiting Disentanglement and Fusion on Modality and Context in Conversational Multimodal Emotion Recognition. ACM Multimedia, 2023.
+https://doi.org/10.1145/3581783.3612053
+作者全文：https://arxiv.org/html/2308.04502v2
+
+[7] Xiaokang Peng, Yake Wei, Andong Deng, Dong Wang, and Di Hu. Balanced Multimodal Learning via On-the-Fly Gradient Modulation. CVPR, 2022, pp. 8238–8247.
+https://openaccess.thecvf.com/content/CVPR2022/html/Peng_Balanced_Multimodal_Learning_via_On-the-Fly_Gradient_Modulation_CVPR_2022_paper.html
+
+[8] Yunfeng Fan, Wenchao Xu, Haozhao Wang, Junxiao Wang, and Song Guo. PMR: Prototypical Modal Rebalance for Multimodal Learning. CVPR, 2023, pp. 20029–20038.
+https://openaccess.thecvf.com/content/CVPR2023/html/Fan_PMR_Prototypical_Modal_Rebalance_for_Multimodal_Learning_CVPR_2023_paper.html
+
+[9] Kang He, Boyu Chen, Yuzhe Ding, Fei Li, Chong Teng, and Donghong Ji. PaSE: Prototype-aligned Calibration and Shapley-based Equilibrium for Multimodal Sentiment Analysis. AAAI, 2026, 40(37), pp. 30960–30968.
+https://ojs.aaai.org/index.php/AAAI/article/view/40355
+
+[10] Yiyang Fang, Wenke Huang, Guancheng Wan, Kehua Su, and Mang Ye. EMOE: Modality-Specific Enhanced Dynamic Emotion Experts. CVPR, 2025, pp. 14314–14324.
+https://openaccess.thecvf.com/content/CVPR2025/html/Fang_EMOE_Modality-Specific_Enhanced_Dynamic_Emotion_Experts_CVPR_2025_paper.html
+
+[11] Lanxin Bi, Yunqi Zhang, Luyi Wang, Yake Niu, and Hui Zhao. Two Challenges, One Solution: Robust Multimodal Learning through Dynamic Modality Recognition and Enhancement. Findings of EMNLP, 2025, pp. 12855–12867.
+https://aclanthology.org/2025.findings-emnlp.689/
+
+[12] Zixian Gao, Xun Jiang, Xing Xu, Fumin Shen, Yujie Li, and Heng Tao Shen. Embracing Unimodal Aleatoric Uncertainty for Robust Multimodal Fusion. CVPR, 2024, pp. 26876–26885.
+https://openaccess.thecvf.com/content/CVPR2024/html/Gao_Embracing_Unimodal_Aleatoric_Uncertainty_for_Robust_Multimodal_Fusion_CVPR_2024_paper.html
+
+[13] Oscar Ovanger, Levi Harris, and Timothy H. Keitt. Adaptive Evidence Weighting for Audio-Spatiotemporal Fusion. arXiv:2602.03817, 2026. 预印本。
+https://arxiv.org/abs/2602.03817

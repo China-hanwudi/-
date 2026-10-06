@@ -1,0 +1,30 @@
+[
+  {
+    "text": "I'm fine.",
+    "fits": true
+  },
+  {
+    "text": "Frozen text\nanchor",
+    "fits": true
+  },
+  {
+    "text": "Frozen AV-only\nbranch",
+    "fits": true
+  },
+  {
+    "text": "Class prior \u03c0",
+    "fits": true
+  },
+  {
+    "text": "AV log evidence\ne = log p(AV)\n\u2212 log \u03c0",
+    "fits": true
+  },
+  {
+    "text": "6 confidence\nstatistics\nSigmoid gate g",
+    "fits": true
+  },
+  {
+    "text": "Softmax\np(cRBEF)",
+    "fits": true
+  }
+]

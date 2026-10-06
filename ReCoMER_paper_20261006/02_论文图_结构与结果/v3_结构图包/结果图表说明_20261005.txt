@@ -1,0 +1,21 @@
+本轮结果图表按飞书“论文画图指南”的结果图思路制作：
+
+1. 07_ReCoMER_results_overview_image2_style：
+   (a) M3ED 正式 test 主结果，直接标注 WF1，并突出 ReCoMER 与 cRBEF；
+   (b) 三个创新点在不同数据集上的条件性增益，正值表示 WF1 上升或 MAE 下降；
+   (c) 完整模型相对各消融对照的配对差值，带对话 bootstrap 95% 区间。
+
+2. 08_ReCoMER_exact_feature_checks_image2_style：
+   exact-feature M3ED 控制组和 exact-feature cRBEF 复现实验，作为补充可复现性图。
+
+3. 09_ReCoMER_gate_sensitivity_image2_style：
+   冻结测试协议下的 cRBEF 门控公式干预结果，分别展示 WF1 和 NLL；这是离散公式鲁棒性检查，不应表述为连续 alpha/lambda/tau 超参数扫描。
+
+4. 10_ReCoMER_modality_pca_image2_style：
+   exact M3ED test 特征的文本、音频和视觉三种表示空间 PCA 投影，按真实标签着色；用于补充表示空间可视化，不冒充 t-SNE 或跨模型同协议比较。
+
+5. 11_ReCoMER_confusion_matrices_image2_style：
+   三组正式 M3ED test seed（43、47、59）上 MHnoU、cRBEF 和 ReCoMER 的平均行归一化混淆矩阵，用于解释各类别识别结构。
+
+数据来源：实验结果汇总文件和模块隔离记录；数值没有使用 Image 2 自动生成内容。
+Image 2 生成的图片只用于确定配色、直接标注和多面板布局方向，未作为定量图交付。

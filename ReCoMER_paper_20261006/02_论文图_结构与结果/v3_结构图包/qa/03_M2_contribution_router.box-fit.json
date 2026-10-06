@@ -1,0 +1,90 @@
+[
+  {
+    "text": "$h'_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Joint-head utility\nU(S) = log p(y | S)",
+    "fits": true
+  },
+  {
+    "text": "$\\varphi_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$\\varphi_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$\\varphi_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Standardize \u03c6\nMSE(\u03bc, \u03c6)",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "Projection",
+    "fits": true
+  },
+  {
+    "text": "$e_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "Projection",
+    "fits": true
+  },
+  {
+    "text": "$e_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$h'_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Projection",
+    "fits": true
+  },
+  {
+    "text": "$e_{\\mathrm{V}}$",
+    "fits": true
+  },
+  {
+    "text": "Mean context\n+ difference\n+ solo statistics",
+    "fits": true
+  },
+  {
+    "text": "Shared\nscorer\n\u03bc(T/A/V)",
+    "fits": true
+  },
+  {
+    "text": "$w_{\\mathrm{T}}$",
+    "fits": true
+  },
+  {
+    "text": "$w_{\\mathrm{A}}$",
+    "fits": true
+  },
+  {
+    "text": "$w_{\\mathrm{V}}$",
+    "fits": true
+  }
+]

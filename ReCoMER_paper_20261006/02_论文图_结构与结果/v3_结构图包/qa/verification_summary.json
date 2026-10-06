@@ -1,0 +1,62 @@
+[
+  {
+    "figure": "01_ReCoMER_overview",
+    "check": "audit_pdf_text.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "01_ReCoMER_overview",
+    "check": "audit_figure_collisions.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "02_M1_closed_loop",
+    "check": "audit_pdf_text.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "02_M1_closed_loop",
+    "check": "audit_figure_collisions.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "03_M2_contribution_router",
+    "check": "audit_pdf_text.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "03_M2_contribution_router",
+    "check": "audit_figure_collisions.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "04_M3_history_admission",
+    "check": "audit_pdf_text.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "04_M3_history_admission",
+    "check": "audit_figure_collisions.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "05_cRBEF_reference_structure",
+    "check": "audit_pdf_text.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "05_cRBEF_reference_structure",
+    "check": "audit_figure_collisions.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "06_local_current_fusion",
+    "check": "audit_pdf_text.py",
+    "exit_code": 0
+  },
+  {
+    "figure": "06_local_current_fusion",
+    "check": "audit_figure_collisions.py",
+    "exit_code": 0
+  }
+]

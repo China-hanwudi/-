@@ -1,0 +1,11 @@
+Final visual review — 2026-10-04
+
+Reviewed the contact sheet and each of the six rendered figures. Revisited 01, 05 and 06 after the final routing/label edits.
+Confirmed legible input icons, distinguishable dialogue candidates and latent variables, explicit modality sets, emotion-likelihood labels, and clear admission/rejection contrast.
+01 now displays weighted current features and a final prediction. 05 separates both multiplication inputs from its output, avoiding a visually ambiguous junction. 06 locates standardization under the feature bank, before the shared MLP.
+Inputs and probability entries remain illustrative/symbolic. No empirical values or predictions have been added.
+05 carries its reference-method reconstruction label. Its status must not be upgraded to verified v2 internals without the missing expert-training implementation.
+
+Final automated results: six PDF typography audits passed; six text/stroke collision audits passed; zero module text-fit failures; all three multipanel alignments passed. Source validation has 21 passes, no warnings or failures.
+Lowest PDF glyph size: 5.88 pt. Raster exports: PNG 350 dpi; TIFF 600 dpi. Vector figure width: 183 mm.
+Use full-width paper layout. Contact-sheet thumbnails are for navigation, not final-size readability review.

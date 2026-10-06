@@ -1,0 +1,77 @@
+Round017: expand source coverage with a fixed-representation task-head prediction bank.
+Frozen before training,2026-10-03. Infrastructure/validation experiment, not a new
+fusion algorithm and not a test of the failed round016 loss. No new literature-based
+novelty claim is made; previous round016 nearest-method comparisons remain applicable.
+
+Problem: fuser training covered only2sources historically and4sources per outerfold
+in recent6-source B analyses. Source-dependent correctness shifts dominate refit
+effects in round010/015. Generate task-head-excluded predictions over22fit sources
+using existing source-only membership from round011 outer0, plus separate4sources
+for fusion calibration and8outer sources. No repartition from labels/performance.
+
+Scope and prior exposure: all17427official train rows/38sources have prior research
+reuse. Frozen CR h4096teacher previously fit30A sources and selected on2C sources;
+6B excluded upstreamteacher but fusion-reused. Native T768 supervised provenance
+unknown. Excluding sources from new heads/normalizers/calibration does not exclude
+them from the archived upstream. Thus this is ONLY task-head OOF, exposure-conditional
+development. Neither blind data, full-system OOF nor independent full-model seeds.
+No valid or sealedtest file is read. No GPU allocated. The planned75teacher fits and
+actualGPU/8B qualifications remain unexecuted; do not substitute this bank for them.
+
+Five source-model pairs,seed17 only, sequential CPU2threads/nice10:
+inner0:16fit sources6965rows ->6held sources2776rows;
+inner1:16fit sources7199rows ->6held sources2542rows;
+inner2:17fit sources7552rows ->5held sources2189rows;
+inner3:17fit sources7507rows ->5held sources2234rows;
+final:22fit sources9741rows ->4fusioncal1981rows and8outer3931rows.
+Every pair uses the same4model-selection sources1774rows, excluded from fit.
+Selection sources can be reused across pairs because they are disjoint from ALL
+fusionfit/fusioncal/outer sources. Innerheld sets partition the22fusionfit sources.
+All normalization, classweights and classpriors fit only own task-head training rows.
+History must be in the same source/dialogue and earlier than the current utterance.
+No normalization moments over target rows. Prediction inputs contain no target label.
+
+Source recipe frozen to previously audited round007 afit recipe:
+CRBEF full architecture path TAV + rich AV + calibrated reliability gate. TAV/richAV
+3epochs,batch16,AdamWlr.001wd.01,CE+.01logit-square; nocheckpoint selection for them.
+Native uniform_h original192dim resolvedconfig,solo_weighted,presence renormalization,
+historyenabled,legacyinertnull preserved.30maximumepochs,batch64,AdamW1e-4wd.01,
+2epochwarmup,10epochcosinefloor1e-6,gradientclip1,3snapshotSWA,patience6,Wf1improvement
+>.001,selection tieMF1thenACC. Selectionlabels from model_selection only.
+CR prior from task-headfit with+1smoothing; gate6->1,100Adamstepslr.01 on1774selection
+rows only. x6 identical to round007: TAVmax,margin,AVmax,max(logAV-logprior),agreement,
+TAVentropy. This is the prior research-head calibration recipe, NOT an exact replay
+of the deployed fulltraining recipe; it does not cure the original model-version
+mismatch. Do not silently switch it to normalized AV-evidence maximum.
+T/A/V featurestandardization fit only own task-headfit observed rows; CR shares the
+same transformedV, while CR h/audio remain unchanged, exactly as round007 afit.
+
+Save selected TAV,AV,uniform,gate checkpoints plus all uniform per-epoch snapshots
+needed to independently reconstruct selected3checkpointSWA. Save fit/cal roles,
+normalizers, priors,classweights,losses,selectionmetrics,seeds,sourcehashes,elapsedtime.
+Freeze EACH pair before any target forward. Save P=[CR,uniform,TAV,nohistory], raw
+uniform current/history solo logits and C,D,E,M. Produce22source FUSION_FIT bank by
+joining four held predictions once each. Separate FUSION_CAL and OUTER inputs use
+the final22source pair. Target files omit labels; labels retained separately with
+explicit role. No outer metrics or fusion fitting in this round, so no candidate
+can be selected from outerlabels. Future fusion code/controls must freeze before scoring.
+
+Success of THIS preparation step: all5pairs trained; authoritative fit total9741
+and deterministic IDlists; independently reloaded
+predictions agree; IDs/labels/classorder/history/fit-only moments/SWA/gatepriors and
+all task-head source exclusion checks pass; 22source fusionfit coverage exact once;
+4cal and8outer sources disjoint. Any mismatch fails closed with receipt, no fakePASS.
+This success alone is NOT improved fusion performance or a novel-method completion.
+
+Next performance experiment must keep equal-information mean, linear/MLP/output,
+classbias,nointernal,local/global controls and assess sensitivity to source coverage
+without conflating samplecount/source-model training size. Do not compare scores on
+this new outerset to old64.8954officialvalid/64.9667B as matched improvement. Source,
+dialogue/class groups and WF1,MF1,ACC,fix/harm,pairedintervals,cost are required then.
+
+Repair1 before any optimizer update: initialround017 stopped because an ID-suffix
+ordering assertion was invalid. All45366historylinks pass timestamp end-before-start
+checks;3links have reversedIDsuffixes inlamazhengzhuan. Checkactualtrainmanifest
+timestamps instead, preserve historyindices/features/labels/roles/recipe unchanged.
+Initialcode,freeze,logs/failure andtimestampaudit remain under../round017.
+This repair introduces no parameter tuning or result-based selection.

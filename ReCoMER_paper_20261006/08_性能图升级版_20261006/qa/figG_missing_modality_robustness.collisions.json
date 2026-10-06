@@ -1,0 +1,422 @@
+{
+  "pdf": "C:\\Users\\肖田泽宇宙最强1234\\Desktop\\论文\\论文结构图_v3_具体表达_20261004\\08_性能图升级版_20261006\\figG_missing_modality_robustness.pdf",
+  "auditable": true,
+  "verdict": "FIX BEFORE DELIVERY",
+  "page_count": 1,
+  "visible_text_box_count": 27,
+  "text_trace_count": 27,
+  "stroke_path_count": 23,
+  "filled_region_count": 16,
+  "image_region_count": 2,
+  "summary": {
+    "fail": 17,
+    "warn": 0,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "±0.012",
+      "text_bbox": [
+        64.53963470458984,
+        78.99060821533203,
+        90.42757415771484,
+        85.99060821533203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        77.48494720458984,
+        20.043746948242188,
+        77.48494720458984,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        2
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.397",
+      "text_bbox": [
+        67.46932220458984,
+        70.58924102783203,
+        87.49712371826172,
+        77.58924102783203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        77.48494720458984,
+        20.043746948242188,
+        77.48494720458984,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        2
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "±0.002",
+      "text_bbox": [
+        97.1720199584961,
+        78.99060821533203,
+        123.0599594116211,
+        85.99060821533203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        110.1173324584961,
+        20.043746948242188,
+        110.1173324584961,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        4
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.563",
+      "text_bbox": [
+        100.1017074584961,
+        70.58924102783203,
+        120.12950897216797,
+        77.58924102783203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        110.1173324584961,
+        20.043746948242188,
+        110.1173324584961,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        4
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "±0.008",
+      "text_bbox": [
+        129.80441284179688,
+        78.99060821533203,
+        155.69235229492188,
+        85.99060821533203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        142.74972534179688,
+        20.043746948242188,
+        142.74972534179688,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        6
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.544",
+      "text_bbox": [
+        132.73410034179688,
+        70.58924102783203,
+        152.76190185546875,
+        77.58924102783203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        142.74972534179688,
+        20.043746948242188,
+        142.74972534179688,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        6
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "±0.003",
+      "text_bbox": [
+        162.43679809570312,
+        78.99060821533203,
+        188.32473754882812,
+        85.99060821533203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        175.38211059570312,
+        20.043746948242188,
+        175.38211059570312,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        8
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.285",
+      "text_bbox": [
+        165.36648559570312,
+        70.58924102783203,
+        185.394287109375,
+        77.58924102783203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        175.38211059570312,
+        20.043746948242188,
+        175.38211059570312,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        8
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "±0.019",
+      "text_bbox": [
+        195.06919860839844,
+        78.99060821533203,
+        220.95713806152344,
+        85.99060821533203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        208.01451110839844,
+        20.043746948242188,
+        208.01451110839844,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        10
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.382",
+      "text_bbox": [
+        197.99888610839844,
+        70.58924102783203,
+        218.0266876220703,
+        77.58924102783203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        208.01451110839844,
+        20.043746948242188,
+        208.01451110839844,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        10
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "±0.008",
+      "text_bbox": [
+        227.7015838623047,
+        78.99060821533203,
+        253.5895233154297,
+        85.99060821533203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        240.6468963623047,
+        20.043746948242188,
+        240.6468963623047,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        12
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-stroke",
+      "page": 1,
+      "message": "Text is crossed by 1 stroked path(s)",
+      "text": "0.530",
+      "text_bbox": [
+        230.6312713623047,
+        70.58924102783203,
+        250.65907287597656,
+        77.58924102783203
+      ],
+      "other_text": null,
+      "other_bbox": [
+        240.6468963623047,
+        20.043746948242188,
+        240.6468963623047,
+        137.06333923339844
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        12
+      ]
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 9.7% of the smaller box",
+      "text": "T missing",
+      "text_bbox": [
+        44.95298767089844,
+        143.81155395507812,
+        80.53777313232422,
+        165.72430419921875
+      ],
+      "other_text": "A missing",
+      "other_bbox": [
+        77.08973693847656,
+        143.81234741210938,
+        113.16851043701172,
+        165.95542907714844
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 9.6% of the smaller box",
+      "text": "A missing",
+      "text_bbox": [
+        77.08973693847656,
+        143.81234741210938,
+        113.16851043701172,
+        165.95542907714844
+      ],
+      "other_text": "V missing",
+      "other_bbox": [
+        109.72210693359375,
+        143.81234741210938,
+        145.80088806152344,
+        165.95542907714844
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 19.6% of the smaller box",
+      "text": "V missing",
+      "text_bbox": [
+        109.72210693359375,
+        143.81234741210938,
+        145.80088806152344,
+        165.95542907714844
+      ],
+      "other_text": "TA missing",
+      "other_bbox": [
+        138.72927856445312,
+        143.8118133544922,
+        178.4343719482422,
+        167.64588928222656
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 19.1% of the smaller box",
+      "text": "TA missing",
+      "text_bbox": [
+        138.72927856445312,
+        143.8118133544922,
+        178.4343719482422,
+        167.64588928222656
+      ],
+      "other_text": "TV missing",
+      "other_bbox": [
+        170.8377227783203,
+        143.8118133544922,
+        211.0667724609375,
+        167.8902130126953
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    },
+    {
+      "severity": "FAIL",
+      "kind": "text-text",
+      "page": 1,
+      "message": "Text boxes overlap by 19.0% of the smaller box",
+      "text": "TV missing",
+      "text_bbox": [
+        170.8377227783203,
+        143.8118133544922,
+        211.0667724609375,
+        167.8902130126953
+      ],
+      "other_text": "AV missing",
+      "other_bbox": [
+        203.41346740722656,
+        143.81259155273438,
+        243.69752502441406,
+        167.91664123535156
+      ],
+      "object_count": 1,
+      "object_indexes": []
+    }
+  ]
+}
