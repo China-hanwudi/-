@@ -1,5 +1,11 @@
 # CARMA-Affect / TemporalN3
 
+> **仓库现状（2026-10-06 更新）**：当前最新工作主线是 **ReCoMER 论文**（多模态对话情绪识别，CVPR 格式，正文恰好 8 页），全部材料在 [`ReCoMER_paper_20261006/`](ReCoMER_paper_20261006/)：修改版论文 PDF（v3）、LaTeX 工程、实验图 A–H、四数据集 × 5 臂 × 10 seed 矩阵、跨数据集实例化（IEMOCAP/MELD）、同协议复现基线（MLP 44.73 / DialogueRNN 41.61 vs ReCoMER 58.00）、SOTA 差距归因与问题清单。下文描述的 TemporalN3 v10 为历史主线，保留备查。
+
+---
+
+## （历史主线）TemporalN3 v10
+
 当前公开模型主线是面向 **M3ED、CMU-MOSEI、CH-SIMS_v2** 的 TemporalN3 v10 exploratory model。活动代码位于 [`模型/n3_affect/`](模型/n3_affect/)，冻结快照位于 [`模型/TemporalN3_TopJournal_v10_20260914/`](模型/TemporalN3_TopJournal_v10_20260914/)。MELD、IEMOCAP、EmotionTalk 不属于当前训练、基准或 SOTA 流程。
 
 当前主线与历史文档边界见 [`模型/ACTIVE_DATASETS.md`](模型/ACTIVE_DATASETS.md) 和 [`模型/GITHUB_ACTIVE_MAINLINE.md`](模型/GITHUB_ACTIVE_MAINLINE.md)。

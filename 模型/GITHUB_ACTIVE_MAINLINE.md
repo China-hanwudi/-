@@ -1,5 +1,7 @@
 # 当前活动主线（TemporalN3 v10 exploratory）
 
+> **2026-10-06 注记**：仓库最新工作已转向 **ReCoMER 论文**（见根目录 README 顶部与 `ReCoMER_paper_20261006/`）。本文档及以下内容描述的是 TemporalN3 v10 历史主线，保留备查。
+
 本仓库当前唯一活动模型主线是 `模型/` 下的 TemporalN3 v10，服务于：
 
 - M3ED：七分类，valid Weighted-F1 → Macro-F1 选择 checkpoint；

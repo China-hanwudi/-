@@ -1,5 +1,8 @@
 # TemporalN3 Top-Journal Exploratory Mainline (v10)
 
+> **2026-10-06 注记：** 仓库最新主线为 ReCoMER 论文（见根 README 顶部）；本目录为 TemporalN3 历史主线代码与快照，保留备查。
+>
+
 本版本唯一活动数据集是 **M3ED、CMU-MOSEI、CH-SIMS_v2**。MELD、IEMOCAP、EmotionTalk 不属于本版本研究范围，不得作为训练、基准或 SOTA 来源。
 
 v10 是在 v9 封存 test 结果之后建立的 post-test exploratory model。旧 test 不得再次用于调参或 checkpoint 选择，正式性能结论需要新的封存评估协议。

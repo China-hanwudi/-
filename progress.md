@@ -1,5 +1,14 @@
 # CARMA-Affect Progress Log
 
+## 2026-10-06 — ReCoMER 论文主线同步（当前最新）
+
+- 新增 `ReCoMER_paper_20261006/`：ReCoMER（MHnoU + 独立 cRBEF 专家 + 有界局部融合）论文工作区全量同步。
+- 论文 `ReCoMER_CVPR_修改版_v3_20261006.pdf`：正文恰好 8 页（参考文献自第 9 页起），LaTeX 工程可复编译。
+- 关键结果：M3ED 正式测试 ReCoMER WF1 58.00（等权 57.39，+0.607 显著；同协议复现 MLP 44.73 / DialogueRNN 41.61）；四数据集 × 5 臂 × 10 seed 矩阵中 evidence_solo 是唯一一致显著臂；跨数据集实例化 IEMOCAP 融合 +0.8 pp（3 seed 全正）、MELD 机制正确。
+- cRBEF 与 ReCoMER 差距已做样本级归因（附录图：η 回退 + MHnoU 少数类自信错误 + 有界修正容量）。
+- 服务器凭据与连接脚本不随仓库分发；`.kimi-latex` 编译缓存与 TIFF 高分辨率图未入库。
+- TemporalN3 v10 降为历史主线（见根 README 与 `模型/GITHUB_ACTIVE_MAINLINE.md` 顶部注记）。
+
 ## 2026-08-31 — Temporal N3 v4 public-source migration
 
 - Added an independent public Temporal N3 v4 module: variable candidate-axis
